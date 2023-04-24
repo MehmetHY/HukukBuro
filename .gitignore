@@ -1,6 +1,7 @@
 dev/
 */appsettings.json
 **/wwwroot/lib/
+**/[Mm]igrations/
 
 
 
