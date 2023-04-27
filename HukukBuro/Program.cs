@@ -1,4 +1,6 @@
 using HukukBuro.Data;
+using HukukBuro.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,26 @@ var baglantiStr = builder.Configuration.GetConnectionString("local")
         ?? throw new KeyNotFoundException("Baglanti metni bulunamadi.");
 
 builder.Services.AddDbContext<VeriTabani>(ayarlar => ayarlar.UseSqlServer(baglantiStr));
+
+builder.Services.AddIdentity<Personel, IdentityRole>(ayarlar =>
+{
+    ayarlar.SignIn.RequireConfirmedPhoneNumber = false;
+    ayarlar.SignIn.RequireConfirmedEmail = false;
+    ayarlar.SignIn.RequireConfirmedAccount = false;
+
+    ayarlar.Password.RequireNonAlphanumeric = false;
+    ayarlar.Password.RequireUppercase = false;
+    ayarlar.Password.RequireLowercase = false;
+    ayarlar.Password.RequiredLength = 6;
+})
+    .AddRoles<IdentityRole>()
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<VeriTabani>();
+
+builder.Services.ConfigureApplicationCookie(ayarlar =>
+{
+    ayarlar.LogoutPath = "/profil/cikis";
+});
 
 var app = builder.Build();
 
