@@ -39,11 +39,48 @@ public class KisilerController : Controller
         var sonuc = await _ky.ListeleVMGetirAsync(
             arama,
             sayfa,
-            Sabitler.SayfaBoyutu);
+            Sabit.SayfaBoyutu);
 
         if (!sonuc.BasariliMi)
-            return View("/hata", sonuc);
+            return View(Sabit.View.Hata, sonuc);
 
         return View(sonuc.Deger);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Ozet(int id)
+    {
+        var sonuc = await _ky.OzetVMGetirAsync(id);
+
+        if (sonuc.BasariliMi)
+            return View(sonuc.Deger);
+
+        return View(Sabit.View.Hata, sonuc);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Sil(int id)
+    {
+        var sonuc = await _ky.SilVMGetirAsync(id);
+
+        if (sonuc.BasariliMi)
+            return View(sonuc.Deger);
+
+        return View(Sabit.View.Hata, sonuc);
+    }
+
+    [HttpPost]
+    [ActionName("Sil")]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> SilPOST(int id)
+    {
+        var sonuc = await _ky.SilAsync(id);
+
+        if (sonuc.BasariliMi)
+            return RedirectToAction(nameof(Listele));
+
+        return View(Sabit.View.Hata, sonuc);
     }
 }

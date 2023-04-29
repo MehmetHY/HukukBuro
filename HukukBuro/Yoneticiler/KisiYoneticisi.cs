@@ -155,12 +155,144 @@ public class KisiYoneticisi
                 RandevuSayisi = k.Randevular.Where(r => r.TamamlandiMi).Count(),
 
                 GorevSayisi = k.IlgiliGorevler.Where(
-                    g => g.Durum.Isim == Sabitler.GorevDurumu.DevamEdiyor).Count(),
+                    g => g.Durum.Isim == Sabit.GorevDurumu.DevamEdiyor).Count(),
 
                 FinansSayisi = k.IlgiliFinansIslemleri.Where(f => !f.Odendi).Count()
             })
             .ToListAsync();
 
         return sonuc;
+    }
+
+    public async Task<Sonuc<KisiOzetVM>> OzetVMGetirAsync(int id)
+    {
+        if (id < 1)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.Kisiler
+            .AsNoTracking()
+            .Where(k => k.Id == id)
+            .Include(k => k.IlgiliKisiler)
+            .Include(k => k.IlgiliDosyalar)
+            .Include(k => k.Randevular)
+            .Include(k => k.IlgiliGorevler)
+            .Include(k => k.IlgiliFinansIslemleri)
+            .Include(k => k.Vekaletnameler)
+            .Include(k => k.Belgeler)
+            .Select(k => new KisiOzetVM
+            {
+                Id = id,
+                TuzelMi = k.TuzelMi,
+                Isim = k.Isim,
+                Soyisim = k.Soyisim,
+                TcKimlikNo = k.KimlikNo,
+                SirketIsmi = k.SirketIsmi,
+                VergiDairesi = k.VergiDairesi,
+                VergiNo = k.VergiNo,
+                Telefon = k.Telefon,
+                Email = k.Email,
+                Adres = k.AdresBilgisi,
+                BankaHesapBilgisi = k.BankaHesapBilgisi,
+                EkBilgi = k.EkBilgi,
+
+                IlgiliKisiSayisi = k.IlgiliKisiler.Count(),
+                IlgiliDosyaSayisi = k.IlgiliDosyalar.Count(),
+                RandevuSayisi = k.Randevular.Count(),
+                GorevSayisi = k.IlgiliGorevler.Count(),
+                FinansSayisi = k.IlgiliFinansIslemleri.Count(),
+                VekaletnameSayisi = k.Vekaletnameler.Count(),
+                BelgeSayisi = k.Belgeler.Count()
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<KisiSilVM>> SilVMGetirAsync(int id)
+    {
+        if (id < 1)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.Kisiler
+            .AsNoTracking()
+            .Where(k => k.Id == id)
+            .Include(k => k.IlgiliKisiler)
+            .Include(k => k.IlgiliDosyalar)
+            .Include(k => k.Randevular)
+            .Include(k => k.IlgiliGorevler)
+            .Include(k => k.IlgiliFinansIslemleri)
+            .Include(k => k.Vekaletnameler)
+            .Include(k => k.Belgeler)
+            .Select(k => new KisiSilVM
+            {
+                Id = id,
+                TuzelMi = k.TuzelMi,
+                Isim = k.Isim,
+                Soyisim = k.Soyisim,
+                SirketIsmi = k.SirketIsmi,
+
+                IlgiliKisiSayisi = k.IlgiliKisiler.Count(),
+                IlgiliDosyaSayisi = k.IlgiliDosyalar.Count(),
+                RandevuSayisi = k.Randevular.Count(),
+                GorevSayisi = k.IlgiliGorevler.Count(),
+                FinansSayisi = k.IlgiliFinansIslemleri.Count(),
+                VekaletnameSayisi = k.Vekaletnameler.Count(),
+                BelgeSayisi = k.Belgeler.Count()
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> SilAsync(int id)
+    {
+        if (id < 1)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var model = await _vt.Kisiler.FirstOrDefaultAsync(k => k.Id == id);    
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        _vt.Kisiler.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
     }
 }

@@ -1,0 +1,96 @@
+﻿@model KisiOzetVM
+
+@if (!Model.TuzelMi)
+{
+    <div>
+        <span>İsim</span>
+        <span>@Model.Isim</span>
+    </div>
+
+    <div>
+        <span>Soyisim</span>
+        <span>@Model.Soyisim</span>
+    </div>
+
+    <div>
+        <span>TC Kimlik No</span>
+        <span>@Model.TcKimlikNo</span>
+    </div>
+}
+else
+{
+    <div>
+        <span>Şirket</span>
+        <span>@Model.SirketIsmi</span>
+    </div>
+
+    <div>
+        <span>Vergi Dairesi</span>
+        <span>@Model.VergiDairesi</span>
+    </div>
+
+    <div>
+        <span>Vergi No</span>
+        <span>@Model.VergiNo</span>
+    </div>
+}
+
+<div>
+    <span>Telefon</span>
+    <span>@Model.Telefon</span>
+</div>
+
+<div>
+    <span>Email</span>
+    <span>@Model.Email</span>
+</div>
+
+<div>
+    <span>Adres Bilgisi</span>
+    <span>@Model.Adres</span>
+</div>
+
+<div>
+    <span>Banka Hesap Bilgisi</span>
+    <span>@Model.BankaHesapBilgisi</span>
+</div>
+
+<div>
+    <span>Ek Bilgi</span>
+    <span>@Model.EkBilgi</span>
+</div>
+
+<div>
+    <span>İlgili Kişiler</span>
+    <span>@Model.IlgiliKisiSayisi</span>
+</div>
+
+<div>
+    <span>Dosyalar</span>
+    <span>@Model.IlgiliDosyaSayisi</span>
+</div>
+
+<div>
+    <span>Randevular</span>
+    <span>@Model.RandevuSayisi</span>
+</div>
+
+<div>
+    <span>Görevler</span>
+    <span>@Model.GorevSayisi</span>
+</div>
+
+<div>
+    <span>Finans İşlemleri</span>
+    <span>@Model.FinansSayisi</span>
+</div>
+
+<div>
+    <span>Vekaletnameler</span>
+    <span>@Model.VekaletnameSayisi</span>
+</div>
+
+<div>
+    <span>Belgeler</span>
+    <span>@Model.BelgeSayisi</span>
+</div>

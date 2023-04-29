@@ -1,0 +1,64 @@
+﻿@model KisiSilVM
+
+@if (!Model.TuzelMi)
+{
+    <div>
+        <span>İsim</span>
+        <span>@Model.Isim</span>
+    </div>
+
+    <div>
+        <span>Soyisim</span>
+        <span>@Model.Soyisim</span>
+    </div>
+}
+else
+{
+    <div>
+        <span>Şirket</span>
+        <span>@Model.SirketIsmi</span>
+    </div>
+}
+
+<div>
+    <span>İlgili Kişiler</span>
+    <span>@Model.IlgiliKisiSayisi</span>
+</div>
+
+<div>
+    <span>Dosyalar</span>
+    <span>@Model.IlgiliDosyaSayisi</span>
+</div>
+
+<div>
+    <span>Randevular</span>
+    <span>@Model.RandevuSayisi</span>
+</div>
+
+<div>
+    <span>Görevler</span>
+    <span>@Model.GorevSayisi</span>
+</div>
+
+<div>
+    <span>Finans İşlemleri</span>
+    <span>@Model.FinansSayisi</span>
+</div>
+
+<div>
+    <span>Vekaletnameler</span>
+    <span>@Model.VekaletnameSayisi</span>
+</div>
+
+<div>
+    <span>Belgeler</span>
+    <span>@Model.BelgeSayisi</span>
+</div>
+
+<div>
+    <form method="post">
+        <p>Bu kişiyi silmek istiyor musunuz?</p>
+        <a asp-action="listele">İptal</a>
+        <button type="submit">Sil</button>
+    </form>
+</div>

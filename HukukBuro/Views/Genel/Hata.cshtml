@@ -1,0 +1,10 @@
+﻿@model Sonuc?
+
+<h1>
+    @(Model != null && !string.IsNullOrWhiteSpace(Model.HataBasligi) ?
+        Model.HataBasligi : "Hata")
+</h1>
+<p>
+    @(Model != null && !string.IsNullOrWhiteSpace(Model.HataMesaji) ?
+        Model.HataMesaji : "Beklenmedik bir hata oluştu")
+</p>
