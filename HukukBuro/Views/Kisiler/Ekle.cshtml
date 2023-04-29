@@ -1,0 +1,79 @@
+﻿@model KisilerEkleVM
+
+<form method="post" asp-action="ekle">
+    <div>
+        <label asp-for="TuzelMi"></label>
+        <input asp-for="TuzelMi" />
+    </div>
+
+    <div>
+        <label asp-for="Isim"></label>
+        <input asp-for="Isim" />
+        <span asp-validation-for="Isim"></span>
+    </div>
+
+    <div>
+        <label asp-for="Soyisim"></label>
+        <input asp-for="Soyisim" />
+        <span asp-validation-for="Soyisim"></span>
+    </div>
+
+    <div>
+        <label asp-for="TcKimlikNo"></label>
+        <input asp-for="TcKimlikNo" />
+        <span asp-validation-for="TcKimlikNo"></span>
+    </div>
+
+    <div>
+        <label asp-for="SirketIsmi"></label>
+        <input asp-for="SirketIsmi" />
+        <span asp-validation-for="SirketIsmi"></span>
+    </div>
+
+    <div>
+        <label asp-for="VergiDairesi"></label>
+        <input asp-for="VergiDairesi" />
+        <span asp-validation-for="VergiDairesi"></span>
+    </div>
+
+    <div>
+        <label asp-for="VergiNo"></label>
+        <input asp-for="VergiNo" />
+        <span asp-validation-for="VergiNo"></span>
+    </div>
+
+    <div>
+        <label asp-for="Telefon"></label>
+        <input asp-for="Telefon" />
+        <span asp-validation-for="Telefon"></span>
+    </div>
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label asp-for="Adres"></label>
+        <textarea asp-for="Adres"></textarea>
+        <span asp-validation-for="Adres"></span>
+    </div>
+
+    <div>
+        <label asp-for="BankaHesapBilgisi"></label>
+        <textarea asp-for="BankaHesapBilgisi"></textarea>
+        <span asp-validation-for="BankaHesapBilgisi"></span>
+    </div>
+
+    <div>
+        <label asp-for="EkBilgi"></label>
+        <textarea asp-for="EkBilgi"></textarea>
+        <span asp-validation-for="EkBilgi"></span>
+    </div>
+
+    <div>
+        <a asp-action="Listele">Geri</a>
+        <button type="submit">Tamam</button>
+    </div>
+</form>

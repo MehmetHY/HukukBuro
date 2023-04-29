@@ -13,6 +13,8 @@ public sealed class Randevu
 
     public DateTime Tarih { get; set; }
 
+    public bool TamamlandiMi { get; set; }
+
     public string Konu { get; set; }
 
     public string? Aciklama { get; set; }

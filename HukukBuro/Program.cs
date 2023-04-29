@@ -1,4 +1,5 @@
 using HukukBuro.Data;
+using HukukBuro.Yoneticiler;
 using HukukBuro.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,9 @@ builder.Services.ConfigureApplicationCookie(ayarlar =>
 {
     ayarlar.LogoutPath = "/profil/cikis";
 });
+
+
+builder.Services.AddScoped<KisiYoneticisi>();
 
 var app = builder.Build();
 

@@ -2,12 +2,16 @@
 
 namespace HukukBuro.Models;
 
+#pragma warning disable CS8618
+
 public sealed class Kisi
 {
     [Key]
     public int Id { get; set; }
 
     public bool TuzelMi { get; set; }
+
+    public string Kisaltma { get; set; }
 
     public string? Isim { get; set; }
 

@@ -1,0 +1,36 @@
+﻿@model KisilerListeleVM
+
+<a asp-action="ekle">Yeni Kişi Ekle</a>
+
+@foreach (var oge in Model.Ogeler)
+{
+    <div>
+        <strong>@oge.Kisaltma</strong>
+        <a asp-action="Ozet" asp-route-id="@oge.Id">@oge.Isim</a>
+
+        <div>
+            @if (!string.IsNullOrWhiteSpace(oge.KimlikVergiNo))
+            {
+                <small>@(oge.TuzelMi ? "Vergi No" : "TC Kimli No"): @oge.KimlikVergiNo</small>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(oge.Telefon))
+            {
+                <small>Telefon: @oge.Telefon</small>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(oge.Email))
+            {
+                <small>Email: @oge.Email</small>
+            }
+        </div>
+
+        <div>
+            <small>Dosya @oge.DosyaSayisi</small>
+            <small>Randevu @oge.RandevuSayisi</small>
+            <small>Görev @oge.GorevSayisi</small>
+            <small>Finans @oge.FinansSayisi</small>
+        </div>
+
+    </div>
+}
