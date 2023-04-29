@@ -1,5 +1,10 @@
 ﻿@model KisiOzetVM
 
+<div>
+    <a asp-action="listele">Geri</a>
+    <a asp-action="ozetduzenle" asp-route-id="@Model.Id">Düzenle</a>
+</div>
+
 @if (!Model.TuzelMi)
 {
     <div>
@@ -94,3 +99,4 @@ else
     <span>Belgeler</span>
     <span>@Model.BelgeSayisi</span>
 </div>
+

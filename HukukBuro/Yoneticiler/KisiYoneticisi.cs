@@ -77,8 +77,8 @@ public class KisiYoneticisi
         {
             TuzelMi = true,
             Kisaltma = vm.SirketIsmi.Length == 1 ?
-                $"{vm.SirketIsmi[0]}{vm.SirketIsmi[0]}".ToUpper() :
-                $"{vm.SirketIsmi[..2]}".ToUpper(),
+                vm.SirketIsmi[0].ToString().ToUpper() :
+                vm.SirketIsmi[..2].ToUpper(),
 
             SirketIsmi = vm.SirketIsmi,
             VergiDairesi = vm.VergiDairesi?.Trim(),
@@ -280,7 +280,7 @@ public class KisiYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-        var model = await _vt.Kisiler.FirstOrDefaultAsync(k => k.Id == id);    
+        var model = await _vt.Kisiler.FirstOrDefaultAsync(k => k.Id == id);
 
         if (model == null)
             return new()
@@ -291,6 +291,150 @@ public class KisiYoneticisi
             };
 
         _vt.Kisiler.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task<Sonuc<KisiOzetDuzenleVM>> OzetDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.Kisiler
+            .AsNoTracking()
+            .Where(k => k.Id == id)
+            .Include(k => k.IlgiliKisiler)
+            .Include(k => k.IlgiliDosyalar)
+            .Include(k => k.Randevular)
+            .Include(k => k.IlgiliGorevler)
+            .Include(k => k.IlgiliFinansIslemleri)
+            .Include(k => k.Vekaletnameler)
+            .Include(k => k.Belgeler)
+            .Select(k => new KisiOzetDuzenleVM
+            {
+                Id = id,
+                TuzelMi = k.TuzelMi,
+                Isim = k.Isim,
+                Soyisim = k.Soyisim,
+                TcKimlikNo = k.KimlikNo,
+                SirketIsmi = k.SirketIsmi,
+                VergiDairesi = k.VergiDairesi,
+                VergiNo = k.VergiNo,
+                Telefon = k.Telefon,
+                Email = k.Email,
+                Adres = k.AdresBilgisi,
+                BankaHesapBilgisi = k.BankaHesapBilgisi,
+                EkBilgi = k.EkBilgi,
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> OzetDuzenleAsync(KisiOzetDuzenleVM vm)
+    {
+        var model = await _vt.Kisiler.FirstOrDefaultAsync(k => k.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {vm.Id} bulunamadı"
+            };
+
+        return vm.TuzelMi ?
+            await SirketOzetDuzenleAsync(vm, model) :
+            await KisiOzetDuzenleAsync(vm, model);
+    }
+
+    private async Task<Sonuc> KisiOzetDuzenleAsync(KisiOzetDuzenleVM vm, Kisi model)
+    {
+        if (string.IsNullOrWhiteSpace(vm.Isim))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.Isim),
+                HataMesaji = "İsim gerekli"
+            };
+
+        if (string.IsNullOrWhiteSpace(vm.Soyisim))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.Soyisim),
+                HataMesaji = "Soyisim gerekli"
+            };
+
+        vm.Isim = vm.Isim.Trim();
+        vm.Soyisim = vm.Soyisim.Trim();
+
+        model.TuzelMi = false;
+        model.Kisaltma = $"{vm.Isim[0]}{vm.Soyisim[0]}".ToUpper();
+        model.Isim = vm.Isim;
+        model.Soyisim = vm.Soyisim;
+        model.KimlikNo = vm.TcKimlikNo?.Trim();
+        model.Telefon = vm.Telefon?.Trim();
+        model.Email = vm.Email?.Trim();
+        model.AdresBilgisi = vm.Adres?.Trim();
+        model.BankaHesapBilgisi = vm.BankaHesapBilgisi?.Trim();
+        model.EkBilgi = vm.EkBilgi?.Trim();
+
+        model.SirketIsmi = null;
+        model.VergiDairesi = null;
+        model.VergiNo = null;
+
+        _vt.Kisiler.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    private async Task<Sonuc> SirketOzetDuzenleAsync(KisiOzetDuzenleVM vm, Kisi model)
+    {
+        if (string.IsNullOrWhiteSpace(vm.SirketIsmi))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.SirketIsmi),
+                HataMesaji = "Şirket ismi gerekli"
+            };
+
+        vm.SirketIsmi = vm.SirketIsmi.Trim();
+
+        model.TuzelMi = true;
+        model.Kisaltma = vm.SirketIsmi.Length == 1 ?
+            vm.SirketIsmi[0].ToString().ToUpper() :
+            vm.SirketIsmi[..2].ToUpper();
+
+        model.SirketIsmi = vm.SirketIsmi;
+        model.VergiDairesi = vm.VergiDairesi?.Trim();
+        model.VergiNo = vm.VergiNo?.Trim();
+        model.Telefon = vm.Telefon?.Trim();
+        model.Email = vm.Email?.Trim();
+        model.AdresBilgisi = vm.Adres?.Trim();
+        model.BankaHesapBilgisi = vm.BankaHesapBilgisi?.Trim();
+        model.EkBilgi = vm.EkBilgi?.Trim();
+
+        model.Isim = null;
+        model.Soyisim = null;
+        model.KimlikNo = null;
+
+        _vt.Kisiler.Update(model);
         await _vt.SaveChangesAsync();
 
         return new();

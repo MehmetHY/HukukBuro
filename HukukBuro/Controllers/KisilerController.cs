@@ -83,4 +83,33 @@ public class KisilerController : Controller
 
         return View(Sabit.View.Hata, sonuc);
     }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> OzetDuzenle(int id)
+    {
+        var sonuc = await _ky.OzetDuzenleVMGetirAsync(id);
+
+        if (sonuc.BasariliMi)
+            return View(sonuc.Deger);
+
+        return View(Sabit.View.Hata, sonuc);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> OzetDuzenle(KisiOzetDuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _ky.OzetDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Listele));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        return View(vm);
+    }
 }
