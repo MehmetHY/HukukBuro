@@ -1,0 +1,24 @@
+﻿@model IlgiliKisiEkleVM
+
+<form method="post">
+    <input asp-for="KisiId" hidden />
+
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="IlgiliKisiId"></label>
+        <select asp-for="IlgiliKisiId" asp-items="@Model.Kisiler"></select>
+        <span asp-validation-for="IlgiliKisiId"></span>
+    </div>
+
+    <div>
+        <label asp-for="Pozisyon"></label>
+        <input asp-for="Pozisyon" />
+        <span asp-validation-for="Pozisyon"></span>
+    </div>
+
+    <div>
+        <a asp-action="IlgiliKisiler" asp-route-id="@Model.KisiId">Geri</a>
+        <button type="submit">Tamam</button>
+    </div>
+</form>

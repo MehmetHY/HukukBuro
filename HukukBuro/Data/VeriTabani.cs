@@ -126,7 +126,13 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
 
         builder.Entity<KisiBaglantisi>()
             .HasOne(k => k.IlgiliKisi)
-            .WithMany();
+            .WithMany()
+            .HasForeignKey(k => k.IlgiliKisiId);
+
+        builder.Entity<KisiBaglantisi>()
+            .HasOne(k => k.Kisi)
+            .WithMany(k => k.IlgiliKisiler)
+            .HasForeignKey(k => k.KisiId);
 
 
         builder.Entity<DurusmaAktiviteTuru>()

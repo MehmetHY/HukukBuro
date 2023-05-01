@@ -1,0 +1,10 @@
+﻿@model IlgiliKisilerVM
+
+<a asp-action="IlgiliKisiEkle" asp-route-id="@Model.Id">Yeni bağlantı ekle</a>
+
+@foreach (var oge in Model.Ogeler)
+{
+    <div>
+        @oge.Isim (@oge.Pozisyon)
+    </div>
+}

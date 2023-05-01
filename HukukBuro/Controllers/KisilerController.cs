@@ -34,12 +34,15 @@ public class KisilerController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Listele(string arama = "", int sayfa = 1)
+    public async Task<IActionResult> Listele(
+        string arama = "",
+        int sayfa = 1,
+        int sayfaBoyutu = Sabit.SayfaBoyutu)
     {
         var sonuc = await _ky.ListeleVMGetirAsync(
             arama,
             sayfa,
-            Sabit.SayfaBoyutu);
+            sayfaBoyutu);
 
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);
@@ -109,6 +112,57 @@ public class KisilerController : Controller
 
             ModelState.HataEkle(sonuc);
         }
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiler(
+        int id,
+        string arama = "",
+        int sayfa = 1,
+        int sayfaBoyutu = Sabit.SayfaBoyutu)
+    {
+        var sonuc = await _ky.IlgiliKisilerVMGetirAsync(
+            id,
+            arama,
+            sayfa,
+            sayfaBoyutu);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiEkle(int id)
+    {
+        var sonuc = await _ky.IlgiliKisiEkleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiEkle(IlgiliKisiEkleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _ky.IlgiliKisiEkleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(IlgiliKisiler));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Kisiler = await _ky.IlgiliKisilerSelectListItemGetirAsync(vm.KisiId);
 
         return View(vm);
     }

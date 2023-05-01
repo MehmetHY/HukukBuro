@@ -2,6 +2,7 @@
 using HukukBuro.Eklentiler;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HukukBuro.Yoneticiler;
@@ -439,4 +440,134 @@ public class KisiYoneticisi
 
         return new();
     }
+
+    public async Task<Sonuc<IlgiliKisilerVM>> IlgiliKisilerVMGetirAsync(
+        int id,
+        string arama,
+        int sayfa,
+        int sayfaBoyutu)
+    {
+        if (id < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var q = _vt.KisiBaglantilari
+            .Include(k => k.IlgiliKisi)
+            .Where(k => k.KisiId == id && k.IlgiliKisi != null)
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(arama))
+            q = q.Where(k =>
+                k.IlgiliKisi != null &&
+                ((k.IlgiliKisi.Kisaltma != null && k.IlgiliKisi.Kisaltma.Contains(arama)) ||
+                (k.IlgiliKisi.Isim != null && k.IlgiliKisi.Isim.Contains(arama)) ||
+                (k.IlgiliKisi.Soyisim != null && k.IlgiliKisi.Soyisim.Contains(arama)) ||
+                (k.IlgiliKisi.KimlikNo != null && k.IlgiliKisi.KimlikNo.Contains(arama)) ||
+                (k.IlgiliKisi.SirketIsmi != null && k.IlgiliKisi.SirketIsmi.Contains(arama)) ||
+                (k.IlgiliKisi.VergiDairesi != null && k.IlgiliKisi.VergiDairesi.Contains(arama)) ||
+                (k.IlgiliKisi.VergiNo != null && k.IlgiliKisi.VergiNo.Contains(arama)) ||
+                (k.IlgiliKisi.Telefon != null && k.IlgiliKisi.Telefon.Contains(arama)) ||
+                (k.IlgiliKisi.Email != null && k.IlgiliKisi.Email.Contains(arama)) ||
+                (k.IlgiliKisi.AdresBilgisi != null && k.IlgiliKisi.AdresBilgisi.Contains(arama)) ||
+                (k.IlgiliKisi.BankaHesapBilgisi != null && k.IlgiliKisi.BankaHesapBilgisi.Contains(arama)) ||
+                (k.IlgiliKisi.EkBilgi != null && k.IlgiliKisi.EkBilgi.Contains(arama)) ||
+                (k.Pozisyon != null && k.Pozisyon.Contains(arama)))
+            );
+
+        if (!await q.SayfaGecerliMiAsync(sayfa, sayfaBoyutu))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Sayfa",
+                HataMesaji = $"sayfa = {sayfa}, sayfa boyutu = {sayfaBoyutu}"
+            };
+
+        var deger = new IlgiliKisilerVM
+        {
+            Id = id,
+            Sayfa = sayfa,
+            ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu)
+        };
+
+        deger.Ogeler = await q
+            .Select(k => new IlgiliKisilerVM.Oge
+            {
+                Id = k.Id,
+
+                Isim = k.IlgiliKisi!.TuzelMi ?
+                    k.IlgiliKisi.SirketIsmi! :
+                    $"{k.IlgiliKisi.Isim} {k.IlgiliKisi.Soyisim}",
+
+                Pozisyon = k.Pozisyon
+            })
+            .ToListAsync();
+
+        return new() { Deger = deger };
+    }
+
+    public async Task<Sonuc<IlgiliKisiEkleVM>> IlgiliKisiEkleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = new IlgiliKisiEkleVM { KisiId = id };
+        vm.Kisiler = await IlgiliKisilerSelectListItemGetirAsync(id);
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> IlgiliKisiEkleAsync(IlgiliKisiEkleVM vm)
+    {
+        if (vm.KisiId < 1 ||
+            vm.IlgiliKisiId < 1 ||
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId) ||
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.IlgiliKisiId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.KisiId} bulunamadı"
+            };
+
+        if (vm.KisiId == vm.IlgiliKisiId)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.IlgiliKisiId),
+                HataMesaji = $"Kişi, kendisiyle bağlantı oluşturamaz."
+            };
+
+        var model = new KisiBaglantisi
+        {
+            KisiId = vm.KisiId,
+            IlgiliKisiId = vm.IlgiliKisiId,
+            Pozisyon = vm.Pozisyon
+        };
+
+        await _vt.KisiBaglantilari.AddAsync(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task<List<SelectListItem>> IlgiliKisilerSelectListItemGetirAsync(
+        int id)
+        => await _vt.Kisiler
+            .AsNoTracking()
+            .Where(k => k.Id != id)
+            .Select(k => new SelectListItem
+            {
+                Value = k.Id.ToString(),
+                Text = k.TuzelMi ? k.SirketIsmi : $"{k.Isim} {k.Soyisim}"
+            })
+            .ToListAsync();
 }
