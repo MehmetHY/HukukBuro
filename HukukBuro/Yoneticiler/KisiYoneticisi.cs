@@ -291,6 +291,7 @@ public class KisiYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
+        await KisiBaglantilarindakiKayitlariSilAsync(id);
         _vt.Kisiler.Remove(model);
         await _vt.SaveChangesAsync();
 
@@ -497,7 +498,6 @@ public class KisiYoneticisi
             .Select(k => new IlgiliKisilerVM.Oge
             {
                 Id = k.Id,
-
                 Isim = k.IlgiliKisi!.TuzelMi ?
                     k.IlgiliKisi.SirketIsmi! :
                     $"{k.IlgiliKisi.Isim} {k.IlgiliKisi.Soyisim}",
@@ -520,7 +520,7 @@ public class KisiYoneticisi
             };
 
         var vm = new IlgiliKisiEkleVM { KisiId = id };
-        vm.Kisiler = await IlgiliKisilerSelectListItemGetirAsync(id);
+        vm.Kisiler = await KisilerSelectListItemGetirAsync();
 
         return new() { Deger = vm };
     }
@@ -535,16 +535,9 @@ public class KisiYoneticisi
             {
                 BasariliMi = false,
                 HataBasligi = string.Empty,
-                HataMesaji = $"id: {vm.KisiId} bulunamadı"
+                HataMesaji = $"id: {vm.KisiId} ya da {vm.IlgiliKisiId} bulunamadı"
             };
 
-        if (vm.KisiId == vm.IlgiliKisiId)
-            return new()
-            {
-                BasariliMi = false,
-                HataBasligi = nameof(vm.IlgiliKisiId),
-                HataMesaji = $"Kişi, kendisiyle bağlantı oluşturamaz."
-            };
 
         var model = new KisiBaglantisi
         {
@@ -559,8 +552,8 @@ public class KisiYoneticisi
         return new();
     }
 
-    public async Task<List<SelectListItem>> IlgiliKisilerSelectListItemGetirAsync(
-        int id)
+    public async Task<List<SelectListItem>> KisilerSelectListItemGetirAsync(
+        int id = 0)
         => await _vt.Kisiler
             .AsNoTracking()
             .Where(k => k.Id != id)
@@ -570,4 +563,129 @@ public class KisiYoneticisi
                 Text = k.TuzelMi ? k.SirketIsmi : $"{k.Isim} {k.Soyisim}"
             })
             .ToListAsync();
+
+    public async Task<Sonuc<IlgiliKisiDuzenleVM>> IlgiliKisiDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 ||
+            !await _vt.KisiBaglantilari
+                .AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi Bağlantısı",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.KisiBaglantilari
+            .AsNoTracking()
+            .Where(k => k.Id == id)
+            .Select(k => new IlgiliKisiDuzenleVM
+            {
+                Id = id,
+                IlgiliKisiId = k.IlgiliKisiId,
+                KisiId = k.KisiId,
+                Pozisyon = k.Pozisyon
+            })
+            .FirstAsync();
+
+        vm.Kisiler = await KisilerSelectListItemGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> IlgiliKisiDuzenleAsync(IlgiliKisiDuzenleVM vm)
+    {
+        if (vm.Id < 1 ||
+            !await _vt.KisiBaglantilari.AnyAsync(k => k.Id == vm.Id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Geçersiz id: {vm.Id}"
+            };
+
+        if (vm.KisiId < 1 ||
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.KisiId),
+                HataMesaji = "Geçersiz kişi"
+            };
+
+        if (vm.IlgiliKisiId < 1 ||
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.IlgiliKisiId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.IlgiliKisiId),
+                HataMesaji = "Geçersiz kişi"
+            };
+
+        var model = await _vt.KisiBaglantilari.FirstAsync(k => k.Id == vm.Id);
+        model.KisiId = vm.KisiId;
+        model.IlgiliKisiId = vm.IlgiliKisiId;
+        model.Pozisyon = vm.Pozisyon;
+        _vt.KisiBaglantilari.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task KisiBaglantilarindakiKayitlariSilAsync(int id)
+    {
+        var modeller = await _vt.KisiBaglantilari
+            .Where(kb => kb.IlgiliKisiId == id)
+            .ToListAsync();
+
+        _vt.KisiBaglantilari.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task<Sonuc<IlgiliKisiSilVM>> IlgiliKisiSilVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.KisiBaglantilari.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi Bağlantısı",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.KisiBaglantilari
+            .AsNoTracking()
+            .Include(kb => kb.IlgiliKisi)
+            .Where(kb => kb.Id == id)
+            .Select(kb => new IlgiliKisiSilVM
+            {
+                Id = id,
+                KisiId = kb.KisiId,
+
+                IlgiliKisiIsim = kb.IlgiliKisi.TuzelMi ?
+                    kb.IlgiliKisi.SirketIsmi! :
+                    $"{kb.IlgiliKisi.Isim} {kb.IlgiliKisi.Soyisim}",
+
+                Pozisyon = kb.Pozisyon
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> IlgiliKisiSilAsync(int id)
+    {
+        if (id < 1 || !await _vt.KisiBaglantilari.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi Bağlantısı",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var model = await _vt.KisiBaglantilari.FirstAsync(kb => kb.Id == id);
+        _vt.KisiBaglantilari.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
 }

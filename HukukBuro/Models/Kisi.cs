@@ -46,7 +46,5 @@ public sealed class Kisi
 
     public List<KisiFinansIslemi> IlgiliFinansIslemleri { get; set; } = new();
 
-    public List<Vekaletname> Vekaletnameler { get; set; } = new();
-
     public List<KisiBelgesi> Belgeler { get; set; } = new();
 }

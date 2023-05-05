@@ -35,7 +35,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
     public DbSet<TarafKisi> TarafKisiler { get; set; }
     public DbSet<TarafTuru> TarafTurleri { get; set; }
     public DbSet<TemyizBilgileri> TemyizBilgileri { get; set; }
-    public DbSet<Vekaletname> Vekaletnameler { get; set; }
 
     public VeriTabani(DbContextOptions<VeriTabani> ayarlar) : base(ayarlar)
     {
@@ -117,22 +116,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .HasOne(d => d.IslemTuru)
             .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
-
-
-        builder.Entity<Kisi>()
-            .HasMany(k => k.IlgiliKisiler)
-            .WithOne(i => i.Kisi);
-
-
-        builder.Entity<KisiBaglantisi>()
-            .HasOne(k => k.IlgiliKisi)
-            .WithMany()
-            .HasForeignKey(k => k.IlgiliKisiId);
-
-        builder.Entity<KisiBaglantisi>()
-            .HasOne(k => k.Kisi)
-            .WithMany(k => k.IlgiliKisiler)
-            .HasForeignKey(k => k.KisiId);
 
 
         builder.Entity<DurusmaAktiviteTuru>()
@@ -237,6 +220,22 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
         builder.Entity<Personel>()
             .HasMany(p => p.IlgiliFinansIslemleri)
             .WithOne(i => i.Personel)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+        builder.Entity<KisiBaglantisi>()
+            .HasKey(kb => kb.Id);
+
+        builder.Entity<KisiBaglantisi>()
+            .HasOne(kb => kb.Kisi)
+            .WithMany(k => k.IlgiliKisiler)
+            .HasForeignKey(kb => kb.KisiId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<KisiBaglantisi>()
+            .HasOne(kb => kb.IlgiliKisi)
+            .WithMany()
+            .HasForeignKey(kb => kb.IlgiliKisiId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

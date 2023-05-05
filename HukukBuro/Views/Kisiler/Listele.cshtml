@@ -5,35 +5,44 @@
 @foreach (var oge in Model.Ogeler)
 {
     <div>
+        <hr />
+
         <strong>@oge.Kisaltma</strong>
+
+        &nbsp;
+
         <a asp-action="Ozet" asp-route-id="@oge.Id">@oge.Isim</a>
 
         <div>
             @if (!string.IsNullOrWhiteSpace(oge.KimlikVergiNo))
             {
-                <small>@(oge.TuzelMi ? "Vergi No" : "TC Kimli No"): @oge.KimlikVergiNo</small>
+                <small>&nbsp; @(oge.TuzelMi ? "Vergi No" : "TC Kimli No"): @oge.KimlikVergiNo</small>
             }
 
             @if (!string.IsNullOrWhiteSpace(oge.Telefon))
             {
-                <small>Telefon: @oge.Telefon</small>
+                <small>&nbsp; Telefon: @oge.Telefon</small>
             }
 
             @if (!string.IsNullOrWhiteSpace(oge.Email))
             {
-                <small>Email: @oge.Email</small>
+                <small>&nbsp; Email: @oge.Email</small>
             }
         </div>
 
         <div>
             <small>Dosya @oge.DosyaSayisi</small>
+            &nbsp;
             <small>Randevu @oge.RandevuSayisi</small>
+            &nbsp;
             <small>Görev @oge.GorevSayisi</small>
+            &nbsp;
             <small>Finans @oge.FinansSayisi</small>
         </div>
 
         <div>
             <a asp-action="ozet" asp-route-id="@oge.Id">Kişiye git</a>
+            &nbsp;
             <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
         </div>
 

@@ -1,0 +1,21 @@
+﻿@model IlgiliKisiSilVM
+
+<form method="post">
+    <input asp-for="Id" hidden />
+    <input asp-for="KisiId" hidden />
+
+    <div>
+        <label asp-for="IlgiliKisiIsim"></label>
+        <input asp-for="IlgiliKisiIsim" disabled />
+    </div>
+
+    <div>
+        <label asp-for="Pozisyon"></label>
+        <input asp-for="Pozisyon" disabled />
+    </div>
+
+    <div>
+        <a asp-action="IlgiliKisiler" asp-route-id="@Model.KisiId">Geri</a>
+        <button type="submit">Tamam</button>
+    </div>
+</form>

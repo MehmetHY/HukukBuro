@@ -1,10 +1,25 @@
 ﻿@model IlgiliKisilerVM
 
+<a asp-action="Ozet" asp-route-id="@Model.Id">Geri</a>
+&nbsp;
 <a asp-action="IlgiliKisiEkle" asp-route-id="@Model.Id">Yeni bağlantı ekle</a>
 
 @foreach (var oge in Model.Ogeler)
 {
+    <hr />
+
     <div>
-        @oge.Isim (@oge.Pozisyon)
+        <span>@oge.Isim</span>
+
+        @if (!string.IsNullOrWhiteSpace(oge.Pozisyon))
+        {
+            <span>&nbsp;(@oge.Pozisyon)</span>
+        }
+
+        &nbsp;
+         
+        <a asp-action="IlgiliKisiDuzenle" asp-route-id="@oge.Id">Düzenle</a>
+        &nbsp;
+        <a asp-action="IlgiliKisiSil" asp-route-id="@oge.Id">Sil</a>
     </div>
 }

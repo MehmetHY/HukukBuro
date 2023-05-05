@@ -157,13 +157,68 @@ public class KisilerController : Controller
             var sonuc = await _ky.IlgiliKisiEkleAsync(vm);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(IlgiliKisiler));
+                return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
 
             ModelState.HataEkle(sonuc);
         }
 
-        vm.Kisiler = await _ky.IlgiliKisilerSelectListItemGetirAsync(vm.KisiId);
+        vm.Kisiler = await _ky.KisilerSelectListItemGetirAsync();
 
         return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiDuzenle(int id)
+    {
+        var sonuc = await _ky.IlgiliKisiDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiDuzenle(IlgiliKisiDuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _ky.IlgiliKisiDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Kisiler = await _ky.KisilerSelectListItemGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiSil(int id)
+    {
+        var sonuc = await _ky.IlgiliKisiSilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> IlgiliKisiSil(IlgiliKisiSilVM vm)
+    {
+        var sonuc = await _ky.IlgiliKisiSilAsync(vm.Id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
     }
 }
