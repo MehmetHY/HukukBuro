@@ -33,6 +33,5 @@ public class KisiOzetVM
     public int RandevuSayisi { get; set; }
     public int GorevSayisi { get; set; }
     public int FinansSayisi { get; set; }
-    public int VekaletnameSayisi { get; set; }
     public int BelgeSayisi { get; set; }
 }

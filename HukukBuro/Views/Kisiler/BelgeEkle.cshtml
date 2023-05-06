@@ -1,0 +1,35 @@
+﻿@model KisiBelgesiEkleVM
+
+<a asp-action="Belgeler" asp-route-id="@Model.KisiId">Geri</a>
+
+<hr />
+
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="KisiId" hidden />
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Baslik"></label>
+        <input asp-for="Baslik" />
+        <span asp-validation-for="Baslik"></span>
+    </div>
+
+    <div>
+        <label asp-for="Aciklama"></label>
+        <input asp-for="Aciklama" />
+        <span asp-validation-for="Aciklama"></span>
+    </div>
+
+    <div>
+        <label asp-for="OzelMi"></label>
+        <input asp-for="OzelMi" />
+        <span asp-validation-for="OzelMi"></span>
+    </div>
+
+    <div>
+        <label>Belge</label>
+        <input type="file" name="belge" accept="image/png, image/jpeg, .webp, .pdf" required />
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

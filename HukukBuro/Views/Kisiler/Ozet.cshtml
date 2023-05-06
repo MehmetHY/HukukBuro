@@ -91,12 +91,7 @@ else
 </div>
 
 <div>
-    <span>Vekaletnameler</span>
-    <span>@Model.VekaletnameSayisi</span>
-</div>
-
-<div>
-    <span>Belgeler</span>
+    <a asp-action="Belgeler" asp-route-id="@Model.Id">Belgeler</a>
     <span>@Model.BelgeSayisi</span>
 </div>
 

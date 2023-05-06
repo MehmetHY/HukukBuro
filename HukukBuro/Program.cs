@@ -3,6 +3,7 @@ using HukukBuro.Yoneticiler;
 using HukukBuro.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.ConfigureApplicationCookie(ayarlar =>
 
 
 builder.Services.AddScoped<KisiYoneticisi>();
+
+builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10_000_000);
 
 var app = builder.Build();
 

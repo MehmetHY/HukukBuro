@@ -2,18 +2,20 @@
 using HukukBuro.ViewModels;
 using HukukBuro.Yoneticiler;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HukukBuro.Controllers;
 public class KisilerController : Controller
 {
+    #region Fields
     private readonly KisiYoneticisi _ky;
 
     public KisilerController(KisiYoneticisi ky)
     {
         _ky = ky;
     }
+    #endregion
 
+    #region Kisi
     [HttpGet]
     public IActionResult Ekle() => View();
 
@@ -115,7 +117,9 @@ public class KisilerController : Controller
 
         return View(vm);
     }
+    #endregion
 
+    #region KisiBaglantisi
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiler(
@@ -221,4 +225,48 @@ public class KisilerController : Controller
 
         return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
     }
+    #endregion
+
+    #region KisiBelgesi
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Belgeler(int id)
+    {
+        var sonuc = await _ky.BelgelerVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> BelgeEkle(int id)
+    {
+        var sonuc = await _ky.BelgeEkleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> BelgeEkle(KisiBelgesiEkleVM vm, IFormFile? belge)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _ky.BelgeEkleAsync(vm, belge);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Belgeler), new { id = vm.KisiId });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        return View(vm);
+    }
+    #endregion
 }

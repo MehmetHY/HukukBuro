@@ -15,4 +15,21 @@ public static class Sabit
     {
         public const string Hata = "~/Views/Genel/Hata.cshtml";
     }
+
+    public static class Belge
+    {
+        public static readonly string[] GecerliUzantilar = { ".JPG",
+                                                             ".JPEG",
+                                                             ".PNG",
+                                                             ".PDF",
+                                                             ".WEBP",
+                                                             ".DOCX",
+                                                             ".SVG",
+                                                             ".TXT"};
+
+        public const int MaxBoyut = 2_000_000;
+
+        public const string HataMaxBoyut = "Belge 2 MB'tan büyük olamaz.";
+        public const string HataGerekli = "Belge gerekli.";
+    }
 }

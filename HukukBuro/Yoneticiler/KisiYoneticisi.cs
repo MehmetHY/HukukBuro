@@ -9,13 +9,18 @@ namespace HukukBuro.Yoneticiler;
 
 public class KisiYoneticisi
 {
+    #region Fields
     private readonly VeriTabani _vt;
+    private readonly IWebHostEnvironment _env;
 
-    public KisiYoneticisi(VeriTabani vt)
+    public KisiYoneticisi(VeriTabani vt, IWebHostEnvironment env)
     {
         _vt = vt;
+        _env = env;
     }
+    #endregion
 
+    #region Kisi
     public async Task<Sonuc> EkleAsync(KisilerEkleVM vm)
     {
         return vm.TuzelMi ? await SirketEkleAsync(vm) : await KisiEkleAsync(vm);
@@ -183,7 +188,6 @@ public class KisiYoneticisi
             .Include(k => k.Randevular)
             .Include(k => k.IlgiliGorevler)
             .Include(k => k.IlgiliFinansIslemleri)
-            .Include(k => k.Vekaletnameler)
             .Include(k => k.Belgeler)
             .Select(k => new KisiOzetVM
             {
@@ -206,7 +210,6 @@ public class KisiYoneticisi
                 RandevuSayisi = k.Randevular.Count(),
                 GorevSayisi = k.IlgiliGorevler.Count(),
                 FinansSayisi = k.IlgiliFinansIslemleri.Count(),
-                VekaletnameSayisi = k.Vekaletnameler.Count(),
                 BelgeSayisi = k.Belgeler.Count()
             })
             .FirstOrDefaultAsync();
@@ -240,7 +243,6 @@ public class KisiYoneticisi
             .Include(k => k.Randevular)
             .Include(k => k.IlgiliGorevler)
             .Include(k => k.IlgiliFinansIslemleri)
-            .Include(k => k.Vekaletnameler)
             .Include(k => k.Belgeler)
             .Select(k => new KisiSilVM
             {
@@ -255,7 +257,6 @@ public class KisiYoneticisi
                 RandevuSayisi = k.Randevular.Count(),
                 GorevSayisi = k.IlgiliGorevler.Count(),
                 FinansSayisi = k.IlgiliFinansIslemleri.Count(),
-                VekaletnameSayisi = k.Vekaletnameler.Count(),
                 BelgeSayisi = k.Belgeler.Count()
             })
             .FirstOrDefaultAsync();
@@ -316,7 +317,6 @@ public class KisiYoneticisi
             .Include(k => k.Randevular)
             .Include(k => k.IlgiliGorevler)
             .Include(k => k.IlgiliFinansIslemleri)
-            .Include(k => k.Vekaletnameler)
             .Include(k => k.Belgeler)
             .Select(k => new KisiOzetDuzenleVM
             {
@@ -441,7 +441,9 @@ public class KisiYoneticisi
 
         return new();
     }
+    #endregion
 
+    #region KisiBaglantisi
     public async Task<Sonuc<IlgiliKisilerVM>> IlgiliKisilerVMGetirAsync(
         int id,
         string arama,
@@ -688,4 +690,118 @@ public class KisiYoneticisi
 
         return new();
     }
+    #endregion
+
+    #region KisiBelgesi
+    public async Task<Sonuc<KisiBelgeleriVM>> BelgelerVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = new KisiBelgeleriVM { Id = id };
+
+        vm.Ogeler = await _vt.KisiBelgeleri
+            .AsNoTracking()
+            .Where(kb => kb.KisiId == id)
+            .Select(kb => new KisiBelgeleriVM.Oge
+            {
+                Id = kb.Id,
+                Baslik = kb.Baslik,
+                Aciklama = kb.Aciklama,
+                Url = kb.Url,
+                OzelMi = kb.OzelMi,
+                OlusturmaTarihi = kb.OlusturmaTarihi,
+                Boyut = kb.Boyut,
+                Uzanti = kb.Uzanti
+            })
+            .ToListAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<KisiBelgesiEkleVM>> BelgeEkleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Kişi",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = new KisiBelgesiEkleVM { KisiId = id };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> BelgeEkleAsync(KisiBelgesiEkleVM vm, IFormFile? belge)
+    {
+        if (vm.KisiId < 1 ||
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.KisiId} bulunamadı"
+            };
+
+        if (belge == null || belge.Length == 0)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = Sabit.Belge.HataGerekli
+            };
+
+        if (belge.Length > Sabit.Belge.MaxBoyut)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = Sabit.Belge.HataMaxBoyut
+            };
+
+        var uzanti = Path.GetExtension(belge.FileName).ToUpperInvariant();
+
+        if (string.IsNullOrWhiteSpace(uzanti) || !Sabit.Belge.GecerliUzantilar.Contains(uzanti))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Yüklenebilir uzantılar: '{string.Join("', '", Sabit.Belge.GecerliUzantilar)}'"
+            };
+
+        var belgeUrl = $"belge/{Guid.NewGuid()}.{uzanti}";
+
+        var model = new KisiBelgesi
+        {
+            KisiId = vm.KisiId,
+            Baslik = vm.Baslik,
+            Aciklama = vm.Aciklama,
+            OzelMi = vm.OzelMi,
+            Uzanti = uzanti,
+            Boyut = belge.Length,
+            Url = belgeUrl
+        };
+
+        var belgeYolu = Path.Combine(_env.WebRootPath, belgeUrl);
+
+        using (var stream = new FileStream(belgeYolu, FileMode.Create))
+        {
+            belge.CopyTo(stream);
+        }
+
+        model.OlusturmaTarihi = DateTime.Now;
+
+        await _vt.KisiBelgeleri.AddAsync(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+    #endregion
 }
