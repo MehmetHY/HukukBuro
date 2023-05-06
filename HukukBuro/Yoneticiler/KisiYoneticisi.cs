@@ -855,5 +855,101 @@ public class KisiYoneticisi
 
         return new() { Deger = kisiId };
     }
+
+    public async Task<Sonuc<KisiBelgesiDuzenleVM>> BelgeDuzenleVMGetirAsync(
+        int id)
+    {
+        if (id < 1 || !await _vt.KisiBelgeleri.AnyAsync(kb => kb.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Belge",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.KisiBelgeleri
+            .AsNoTracking()
+            .Where(kb => kb.Id == id)
+            .Select(kb => new KisiBelgesiDuzenleVM
+            {
+                Id = id,
+                KisiId = kb.KisiId,
+                Baslik = kb.Baslik,
+                Aciklama = kb.Aciklama,
+                OzelMi = kb.OzelMi
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> BelgeDuzenleAsync(
+        KisiBelgesiDuzenleVM vm,
+        IFormFile? belge)
+    {
+        if (vm.Id < 1 || !await _vt.KisiBelgeleri.AnyAsync(kb => kb.Id == vm.Id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı"
+            };
+
+        var model = await _vt.KisiBelgeleri.FirstAsync(kb => kb.Id == vm.Id);
+
+        model.Baslik = vm.Baslik;
+        model.Aciklama = vm.Aciklama;
+        model.OzelMi = vm.OzelMi;
+
+        if (vm.BelgeyiDegistir)
+        {
+            if (belge == null || belge.Length == 0)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = Sabit.Belge.HataGerekli
+                };
+
+            if (belge.Length > Sabit.Belge.MaxBoyut)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = Sabit.Belge.HataMaxBoyut
+                };
+
+            var uzanti = Path.GetExtension(belge.FileName).ToUpperInvariant();
+
+            if (string.IsNullOrWhiteSpace(uzanti) || !Sabit.Belge.GecerliUzantilar.Contains(uzanti))
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = $"Yüklenebilir uzantılar: '{string.Join("', '", Sabit.Belge.GecerliUzantilar)}'"
+                };
+
+            var belgeUrl = $"belge/{Guid.NewGuid()}.{uzanti}";
+            var eskiBelgeYolu = Path.Combine(_env.WebRootPath, model.Url);
+            var belgeYolu = Path.Combine(_env.WebRootPath, belgeUrl);
+
+            using (var stream = new FileStream(belgeYolu, FileMode.Create))
+            {
+                belge.CopyTo(stream);
+            }
+
+            if (File.Exists(eskiBelgeYolu))
+                File.Delete(eskiBelgeYolu);
+
+            model.Url = belgeUrl;
+            model.Uzanti = uzanti;
+            model.Boyut = belge.Length;
+        }
+
+        _vt.KisiBelgeleri.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = model.KisiId };
+    }
     #endregion
 }

@@ -270,7 +270,7 @@ public class KisilerController : Controller
     }
 
     [HttpGet]
-    [Route("[controller]/{id}/[action]")]
+    [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeSil(int id)
     {
         var sonuc = await _ky.BelgeSilVMGetirAsync(id);
@@ -283,7 +283,7 @@ public class KisilerController : Controller
 
     [HttpPost]
     [ActionName(nameof(BelgeSil))]
-    [Route("[controller]/{id}/[action]")]
+    [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeSilPOST(int id)
     {
         var sonuc = await _ky.BelgeSilAsync(id);
@@ -292,6 +292,37 @@ public class KisilerController : Controller
             return View(Sabit.View.Hata, sonuc);
 
         return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+    }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> BelgeDuzenle(int id)
+    {
+        var sonuc = await _ky.BelgeDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> BelgeDuzenle(
+        KisiBelgesiDuzenleVM vm,
+        IFormFile? belge)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _ky.BelgeDuzenleAsync(vm, belge);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }    
+
+        return View(vm);
     }
     #endregion
 }
