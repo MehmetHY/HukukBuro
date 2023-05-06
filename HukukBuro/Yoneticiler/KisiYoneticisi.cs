@@ -716,7 +716,7 @@ public class KisiYoneticisi
                 Url = kb.Url,
                 OzelMi = kb.OzelMi,
                 OlusturmaTarihi = kb.OlusturmaTarihi,
-                Boyut = kb.Boyut,
+                Boyut = Yardimci.OkunabilirDosyaBoyutu(kb.Boyut),
                 Uzanti = kb.Uzanti
             })
             .ToListAsync();
@@ -802,6 +802,58 @@ public class KisiYoneticisi
         await _vt.SaveChangesAsync();
 
         return new();
+    }
+
+    public async Task<Sonuc<KisiBelgesiSilVM>> BelgeSilVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.KisiBelgeleri.AnyAsync(kb => kb.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Belge",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.KisiBelgeleri
+            .AsNoTracking()
+            .Where(kb => kb.Id == id)
+            .Select(kb => new KisiBelgesiSilVM
+            {
+                Id = id,
+                Baslik = kb.Baslik,
+                Aciklama = kb.Aciklama,
+                Url = kb.Url,
+                KisiId = kb.KisiId,
+                Uzanti = kb.Uzanti,
+                OlusturmaTarihi = kb.OlusturmaTarihi,
+                OzelMi = kb.OzelMi,
+                Boyut = Yardimci.OkunabilirDosyaBoyutu(kb.Boyut)
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> BelgeSilAsync(int id)
+    {
+        if (id < 1 || !await _vt.KisiBelgeleri.AnyAsync(kb => kb.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Belge",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var model = await _vt.KisiBelgeleri.FirstAsync(kb => kb.Id == id);
+        var kisiId = model.KisiId;
+        var belgeYolu = Path.Combine(_env.WebRootPath, model.Url);
+        _vt.KisiBelgeleri.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        if (File.Exists(belgeYolu))
+            File.Delete(belgeYolu);
+
+        return new() { Deger = kisiId };
     }
     #endregion
 }

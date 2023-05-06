@@ -268,5 +268,30 @@ public class KisilerController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> BelgeSil(int id)
+    {
+        var sonuc = await _ky.BelgeSilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(BelgeSil))]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> BelgeSilPOST(int id)
+    {
+        var sonuc = await _ky.BelgeSilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+    }
     #endregion
 }

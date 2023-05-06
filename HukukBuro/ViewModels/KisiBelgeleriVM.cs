@@ -22,9 +22,6 @@ public class KisiBelgeleriVM : SayfaListe<KisiBelgeleriVM.Oge>
 
         public DateTime OlusturmaTarihi { get; set; }
 
-        public long Boyut { get; set; }
-
-        public string OkunabilirBoyut => Boyut >= 1_000_000 ?
-            $"{Boyut / 1_000_000.0:F1} MB" : $"{Boyut / 1_000} KB";
+        public string Boyut { get; set; }
     }
 }
