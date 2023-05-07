@@ -72,7 +72,7 @@ public class DosyaYoneticisi
             .SayfaUygula(vm.Sayfa, vm.SayfaBoyutu)
             .ToListAsync();
 
-        return new() { Deger =  vm };
+        return new() { Deger = vm };
     }
 
     public async Task<List<SelectListItem>> DosyaTurleriGetirAsync()
@@ -131,7 +131,7 @@ public class DosyaYoneticisi
         await _vt.Dosyalar.AddAsync(model);
         await _vt.SaveChangesAsync();
     }
-    
+
     public async Task<Sonuc<OzetVM>> OzetVMGetirAsync(int id)
     {
         if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
@@ -161,6 +161,70 @@ public class DosyaYoneticisi
             .FirstAsync();
 
         return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.Dosyalar
+            .AsNoTracking()
+            .Where(d => d.Id == id)
+            .Select(d => new DuzenleVM
+            {
+                Id = d.Id,
+                DosyaNo = d.DosyaNo,
+                BuroNo = d.BuroNo,
+                Konu = d.Konu,
+                Aciklama = d.Aciklama ?? string.Empty,
+                DosyaTuruId = d.DosyaTuruId,
+                DosyaKategorisiId = d.DosyaKategorisiId,
+                DosyaDurumuId = d.DosyaDurumuId,
+                Mahkeme = d.Mahkeme ?? string.Empty,
+                AcilisTarihi = d.AcilisTarihi
+            })
+            .FirstAsync();
+
+        vm.DosyaTurleri = await DosyaTurleriGetirAsync();
+        vm.DosyaKategorileri = await DosyaKategorileriGetirAsync();
+        vm.DosyaDurumlari = await DosyaDurumlariGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
+    {
+        var model = await _vt.Dosyalar.FirstOrDefaultAsync(d => d.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Geçersiz id: {vm.Id}"
+            };
+
+        model.Id = vm.Id;
+        model.DosyaNo = vm.DosyaNo;
+        model.BuroNo = vm.BuroNo;
+        model.Konu = vm.Konu;
+        model.Aciklama = vm.Aciklama;
+        model.DosyaTuruId = vm.DosyaTuruId;
+        model.DosyaKategorisiId = vm.DosyaKategorisiId;
+        model.DosyaDurumuId = vm.DosyaDurumuId;
+        model.Mahkeme = vm.Mahkeme;
+        model.AcilisTarihi = vm.AcilisTarihi;
+
+        _vt.Dosyalar.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
     }
     #endregion
 }

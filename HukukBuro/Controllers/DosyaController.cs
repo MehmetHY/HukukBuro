@@ -1,4 +1,5 @@
-﻿using HukukBuro.ViewModels.Dosyalar;
+﻿using HukukBuro.Eklentiler;
+using HukukBuro.ViewModels.Dosyalar;
 using HukukBuro.Yoneticiler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,6 +62,39 @@ public class DosyaController : Controller
             return View(Sabit.View.Hata, sonuc);
 
         return View(sonuc.Deger);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Duzenle(int id)
+    {
+        var sonuc = await _dy.DuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Duzenle(DuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.DuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Listele));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.DosyaTurleri = await _dy.DosyaTurleriGetirAsync();
+        vm.DosyaKategorileri = await _dy.DosyaKategorileriGetirAsync();
+        vm.DosyaDurumlari = await _dy.DosyaDurumlariGetirAsync();
+
+        return View(vm);
     }
     #endregion
 }
