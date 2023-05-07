@@ -237,5 +237,21 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .WithMany()
             .HasForeignKey(kb => kb.IlgiliKisiId)
             .OnDelete(DeleteBehavior.NoAction);
+
+
+        builder.Entity<TarafKisi>()
+            .HasKey(t => t.Id);
+
+        builder.Entity<TarafKisi>()
+            .HasOne(t => t.Dosya)
+            .WithMany(d => d.Taraflar)
+            .HasForeignKey(t => t.DosyaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<TarafKisi>()
+            .HasOne(t => t.Kisi)
+            .WithMany(k => k.IlgiliDosyalar)
+            .HasForeignKey(t => t.KisiId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

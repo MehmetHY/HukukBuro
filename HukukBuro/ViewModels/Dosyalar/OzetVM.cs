@@ -4,6 +4,15 @@
 
 public class OzetVM
 {
+    public class Taraf
+    {
+        public int Id { get; set; }
+
+        public string Isim { get; set; }
+
+        public string TarafTuru { get; set; }
+    }
+
     public int Id { get; set; }
 
     public int DosyaNo { get; set; }
@@ -23,4 +32,7 @@ public class OzetVM
     public string Mahkeme { get; set; } 
 
     public DateTime AcilisTarihi { get; set; }
+
+    public List<Taraf> MuvekkilTaraf { get; set; } = new();
+    public List<Taraf> KarsiTaraf { get; set; } = new();
 }

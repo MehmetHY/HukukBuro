@@ -97,4 +97,38 @@ public class DosyaController : Controller
         return View(vm);
     }
     #endregion
+
+    #region Taraf
+    [HttpGet]
+    [Route("[controller]/{dosyaId}/[action]")]
+    public async Task<IActionResult> TarafEkle(int dosyaId)
+    {
+        var sonuc = await _dy.TarafEkleVMGetirAsync(dosyaId);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{dosyaId}/[action]")]
+    public async Task<IActionResult> TarafEkle(TarafEkleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.TarafEkleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Ozet), new { id = vm.DosyaId });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Kisiler = await _dy.KisileriGetirAsync();
+        vm.TarafTurleri = await _dy.TarafTurleriGetirAsync();
+
+        return View(vm);
+    }
+    #endregion
 }

@@ -160,6 +160,9 @@ public class DosyaYoneticisi
             })
             .FirstAsync();
 
+        vm.KarsiTaraf = await TarafGetirAsync(id, true);
+        vm.MuvekkilTaraf = await TarafGetirAsync(id, false);
+
         return new() { Deger = vm };
     }
 
@@ -226,5 +229,90 @@ public class DosyaYoneticisi
 
         return new();
     }
+    #endregion
+
+    #region Taraf
+    public async Task<Sonuc<TarafEkleVM>> TarafEkleVMGetirAsync(int dosyaId)
+    {
+        if (dosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == dosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz id",
+                HataMesaji = $"Id: {dosyaId} bulunamadı."
+            };
+
+        var vm = new TarafEkleVM
+        {
+            DosyaId = dosyaId,
+            Kisiler = await KisileriGetirAsync(),
+            TarafTurleri = await TarafTurleriGetirAsync()
+        };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> TarafEkleAsync(TarafEkleVM vm)
+    {
+        if (vm.DosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Id: {vm.DosyaId} bulunamadı."
+            };
+
+        var model = new TarafKisi
+        {
+            DosyaId = vm.DosyaId,
+            KisiId = vm.KisiId,
+            KarsiTaraf = vm.KarsiTarafMi,
+            TarafTuruId = vm.TarafTuruId
+        };
+
+        await _vt.TarafKisiler.AddAsync(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task<List<SelectListItem>> TarafTurleriGetirAsync()
+        => await _vt.TarafTurleri
+        .AsNoTracking()
+        .Select(t => new SelectListItem
+        {
+            Value = t.Id.ToString(),
+            Text = t.Isim
+        })
+        .ToListAsync();
+
+    public async Task<List<SelectListItem>> KisileriGetirAsync()
+        => await _vt.Kisiler
+        .AsNoTracking()
+        .Select(k => new SelectListItem
+        {
+            Value = k.Id.ToString(),
+            Text = k.TuzelMi ? k.SirketIsmi! : $"{k.Isim} {k.Soyisim}"
+        })
+        .ToListAsync();
+
+    public async Task<List<OzetVM.Taraf>> TarafGetirAsync(
+        int dosyaId, bool karsiTaraf)
+        => await _vt.TarafKisiler
+            .AsNoTracking()
+            .Where(t => t.DosyaId == dosyaId && t.KarsiTaraf == karsiTaraf)
+            .Include(t => t.Kisi)
+            .Include(t => t.TarafTuru)
+            .Select(t => new OzetVM.Taraf
+            {
+                Id = t.Id,
+
+                Isim = t.Kisi.TuzelMi ?
+                    t.Kisi.SirketIsmi! :
+                    $"{t.Kisi.Isim} {t.Kisi.Soyisim}",
+
+                TarafTuru = t.TarafTuru.Isim
+            })
+            .ToListAsync();
     #endregion
 }

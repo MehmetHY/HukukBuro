@@ -61,3 +61,43 @@
     &nbsp;
     @Model.AcilisTarihi
 </div>
+
+<hr />
+
+<h2>Taraflar</h2>
+&nbsp;
+<a asp-action="TarafEkle" asp-route-dosyaId="@Model.Id">Yeni taraf ekle</a>
+
+@if (Model.MuvekkilTaraf.Count > 0)
+{
+    <div>
+        <h3>Müvekkil Taraf</h3>
+
+        @foreach (var taraf in Model.MuvekkilTaraf)
+        {
+            <div>
+                <span>@taraf.Isim (@taraf.TarafTuru)&nbsp;</span>
+
+                <a asp-action="TarafDuzenle" asp-route-id="@taraf.Id">Düzenle&nbsp;</a>
+                <a asp-action="TarafSil" asp-route-id="@taraf.Id">Sil</a>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.KarsiTaraf.Count > 0)
+{
+    <div>
+        <h3>Karşı Taraf</h3>
+
+        @foreach (var taraf in Model.KarsiTaraf)
+        {
+            <div>
+                <span>@taraf.Isim (@taraf.TarafTuru)&nbsp;</span>
+
+                <a asp-action="TarafDuzenle" asp-route-id="@taraf.Id">Düzenle&nbsp;</a>
+                <a asp-action="TarafSil" asp-route-id="@taraf.Id">Sil</a>
+            </div>
+        }
+    </div>
+}
