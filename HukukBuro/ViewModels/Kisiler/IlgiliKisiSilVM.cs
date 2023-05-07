@@ -1,4 +1,4 @@
-﻿namespace HukukBuro.ViewModels;
+﻿namespace HukukBuro.ViewModels.Kisiler;
 
 #pragma warning disable CS8618
 

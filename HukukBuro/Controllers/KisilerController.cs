@@ -1,5 +1,5 @@
 ﻿using HukukBuro.Eklentiler;
-using HukukBuro.ViewModels;
+using HukukBuro.ViewModels.Kisiler;
 using HukukBuro.Yoneticiler;
 using Microsoft.AspNetCore.Mvc;
 

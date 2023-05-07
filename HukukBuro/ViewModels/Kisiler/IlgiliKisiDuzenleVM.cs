@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace HukukBuro.ViewModels;
+namespace HukukBuro.ViewModels.Kisiler;
 
 public class IlgiliKisiDuzenleVM
 {

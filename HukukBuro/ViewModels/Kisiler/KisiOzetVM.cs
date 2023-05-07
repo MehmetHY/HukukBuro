@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace HukukBuro.ViewModels.Kisiler;
 
-namespace HukukBuro.ViewModels;
-
-public class KisilerEkleVM
+public class KisiOzetVM
 {
-    [Required]
+    public int Id { get; set; }
+
     public bool TuzelMi { get; set; }
 
     public string? Isim { get; set; }
@@ -15,14 +14,12 @@ public class KisilerEkleVM
 
     public string? SirketIsmi { get; set; }
 
-    public string? VergiNo { get; set; }
-
     public string? VergiDairesi { get; set; }
 
-    [Phone]
+    public string? VergiNo { get; set; }
+
     public string? Telefon { get; set; }
 
-    [EmailAddress]
     public string? Email { get; set; }
 
     public string? Adres { get; set; }
@@ -30,4 +27,11 @@ public class KisilerEkleVM
     public string? BankaHesapBilgisi { get; set; }
 
     public string? EkBilgi { get; set; }
+
+    public int IlgiliKisiSayisi { get; set; }
+    public int IlgiliDosyaSayisi { get; set; }
+    public int RandevuSayisi { get; set; }
+    public int GorevSayisi { get; set; }
+    public int FinansSayisi { get; set; }
+    public int BelgeSayisi { get; set; }
 }

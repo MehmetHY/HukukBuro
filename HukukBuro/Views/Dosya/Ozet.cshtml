@@ -1,0 +1,63 @@
+﻿@model OzetVM
+
+<a asp-action="listele">Geri</a>
+&nbsp;
+<a asp-action="duzenle" asp-route-id="@Model.Id">Düzenle</a>
+&nbsp;
+<a asp-action="sil" asp-route-id="@Model.Id">Sil</a>
+
+<hr />
+
+<div>
+    <strong>Dosya No:</strong>
+    &nbsp;
+    @Model.DosyaNo
+</div>
+
+<div>
+    <strong>Büro No:</strong>
+    &nbsp;
+    @Model.BuroNo
+</div>
+
+<div>
+    <strong>Konu:</strong>
+    &nbsp;
+    @Model.Konu
+</div>
+
+<div>
+    <strong>Açıklama:</strong>
+    &nbsp;
+    @Model.Aciklama
+</div>
+
+<div>
+    <strong>Tür:</strong>
+    &nbsp;
+    @Model.DosyaTuru
+</div>
+
+<div>
+    <strong>Kategori:</strong>
+    &nbsp;
+    @Model.DosyaKategorisi
+</div>
+
+<div>
+    <strong>Durum:</strong>
+    &nbsp;
+    @Model.DosyaDurumu
+</div>
+
+<div>
+    <strong>Mahkeme:</strong>
+    &nbsp;
+    @Model.Mahkeme
+</div>
+
+<div>
+    <strong>Açılış Tarihi:</strong>
+    &nbsp;
+    @Model.AcilisTarihi
+</div>

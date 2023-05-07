@@ -1,8 +1,8 @@
-﻿namespace HukukBuro.ViewModels;
+﻿namespace HukukBuro.ViewModels.Dosyalar;
 
 #pragma warning disable CS8618
 
-public class DosyalarVM : SayfaListe<DosyalarVM.Oge>
+public class ListeleVM : SayfaListe<ListeleVM.Oge>
 {
     public class Oge
     {
@@ -20,7 +20,7 @@ public class DosyalarVM : SayfaListe<DosyalarVM.Oge>
 
         public string DosyaDurumu { get; set; }
 
-        public DateTime? AcilisTarihi { get; set; }
+        public DateTime AcilisTarihi { get; set; }
 
         public int GorevSayisi { get; set; }
 

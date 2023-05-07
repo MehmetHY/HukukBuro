@@ -1,5 +1,7 @@
 ﻿@model SayfaListe
 
+<hr />
+
 @if (Model.OncekiSayfaVarMi)
 {
     <a asp-route-sayfa="@(Model.Sayfa - 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Önceki</a>

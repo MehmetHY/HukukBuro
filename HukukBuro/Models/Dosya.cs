@@ -15,17 +15,20 @@ public sealed class Dosya
 
     public string Konu { get; set; }
 
+    public string? Aciklama { get; set; }
+
+    public int DosyaTuruId { get; set; }
     public DosyaTuru DosyaTuru { get; set; }
 
+    public int DosyaKategorisiId { get; set; }
     public DosyaKategorisi DosyaKategorisi { get; set; }
 
+    public int DosyaDurumuId { get; set; }
     public DosyaDurumu DosyaDurumu { get; set; }
 
     public string? Mahkeme { get; set; }
 
-    public DateTime? AcilisTarihi { get; set; }
-
-    public string? EkBilgiler { get; set; }
+    public DateTime AcilisTarihi { get; set; }
 
     public List<TarafKisi> Taraflar { get; set; } = new();
 

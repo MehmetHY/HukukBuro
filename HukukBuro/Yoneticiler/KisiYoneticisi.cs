@@ -2,6 +2,7 @@
 using HukukBuro.Eklentiler;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
+using HukukBuro.ViewModels.Kisiler;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 

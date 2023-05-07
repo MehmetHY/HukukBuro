@@ -1,0 +1,62 @@
+﻿@model EkleVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="DosyaNo"></label>
+        <input asp-for="DosyaNo" />
+        <span asp-validation-for="DosyaNo"></span>
+    </div>
+
+    <div>
+        <label asp-for="BuroNo"></label>
+        <input asp-for="BuroNo" />
+        <span asp-validation-for="BuroNo"></span>
+    </div>
+
+    <div>
+        <label asp-for="Konu"></label>
+        <input asp-for="Konu" />
+        <span asp-validation-for="Konu"></span>
+    </div>
+
+    <div>
+        <label asp-for="Aciklama"></label>
+        <textarea asp-for="Aciklama"></textarea>
+        <span asp-validation-for="Aciklama"></span>
+    </div>
+
+    <div>
+        <select asp-for="DosyaTuruId" asp-items="@Model.DosyaTurleri"></select>
+        <span asp-validation-for="DosyaTuruId"></span>
+    </div>
+
+    <div>
+        <select asp-for="DosyaKategorisiId" asp-items="@Model.DosyaKategorileri"></select>
+        <span asp-validation-for="DosyaKategorisiId"></span>
+    </div>
+
+    <div>
+        <select asp-for="DosyaDurumuId" asp-items="@Model.DosyaDurumlari"></select>
+        <span asp-validation-for="DosyaDurumuId"></span>
+    </div>
+
+    <div>
+        <label asp-for="Mahkeme"></label>
+        <input asp-for="Mahkeme" />
+        <span asp-validation-for="Mahkeme"></span>
+    </div>
+
+    <div>
+        <label asp-for="AcilisTarihi"></label>
+        <input asp-for="AcilisTarihi" />
+        <span asp-validation-for="AcilisTarihi"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

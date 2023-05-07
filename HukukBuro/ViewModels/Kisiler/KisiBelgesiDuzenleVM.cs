@@ -1,4 +1,4 @@
-﻿namespace HukukBuro.ViewModels;
+﻿namespace HukukBuro.ViewModels.Kisiler;
 
 public class KisiBelgesiDuzenleVM
 {

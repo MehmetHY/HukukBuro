@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HukukBuro.ViewModels;
+namespace HukukBuro.ViewModels.Kisiler;
 
-public class KisiOzetDuzenleVM
+public class KisilerEkleVM
 {
-    public int Id { get; set; }
-
     [Required]
     public bool TuzelMi { get; set; }
 
@@ -21,8 +19,10 @@ public class KisiOzetDuzenleVM
 
     public string? VergiDairesi { get; set; }
 
+    [Phone]
     public string? Telefon { get; set; }
 
+    [EmailAddress]
     public string? Email { get; set; }
 
     public string? Adres { get; set; }

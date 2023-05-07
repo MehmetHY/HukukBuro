@@ -1,0 +1,44 @@
+﻿@model ListeleVM
+
+<a asp-action="ekle">Yeni dosya ekle</a>
+&nbsp;
+<partial name="_Arama" model="Model" />
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        <div>
+            <a asp-action="Ozet" asp-route-id="@oge.Id"><strong>@oge.DosyaNo</strong></a>
+            &nbsp;
+            <span>Büro No: @oge.BuroNo</span>
+            &nbsp;
+            <span>Konu: @oge.Konu</span>
+        </div>
+        <div>
+            Tür: @oge.DosyaTuru
+            &nbsp;
+            Kategori: @oge.DosyaKategorisi
+            &nbsp;
+            Durum: @oge.DosyaDurumu
+            &nbsp;
+            Açılış Tarihi: @oge.AcilisTarihi
+        </div>
+        <div>
+            Görev @oge.GorevSayisi
+            &nbsp;
+            Duruşma @oge.DurusmaSayisi
+            &nbsp;
+            Belge @oge.BelgeSayisi
+            &nbsp;
+            Finans @oge.FinansSayisi
+        </div>
+        <div>
+            <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
+            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
+        </div>
+    </div>
+}
+
+<partial name="_Sayfa" model="Model" />
