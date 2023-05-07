@@ -230,9 +230,13 @@ public class KisilerController : Controller
     #region KisiBelgesi
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
-    public async Task<IActionResult> Belgeler(int id)
+    public async Task<IActionResult> Belgeler(
+        int id,
+        string arama = "",
+        int sayfa = 1,
+        int sayfaBoyutu = Sabit.SayfaBoyutu)
     {
-        var sonuc = await _ky.BelgelerVMGetirAsync(id);
+        var sonuc = await _ky.BelgelerVMGetirAsync(id, arama, sayfa, sayfaBoyutu);
 
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);

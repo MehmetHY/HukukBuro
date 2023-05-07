@@ -25,8 +25,6 @@ public sealed class Dosya
 
     public DateTime? AcilisTarihi { get; set; }
 
-    public DateTime OlusturmaTarihi { get; set; } = DateTime.Now;
-
     public string? EkBilgiler { get; set; }
 
     public List<TarafKisi> Taraflar { get; set; } = new();

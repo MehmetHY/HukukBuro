@@ -129,14 +129,16 @@ public class KisiYoneticisi
         {
             sonuc.BasariliMi = false;
             sonuc.HataBasligi = "Geçersiz Sayfa";
-            sonuc.HataMesaji = $"sayfa = {sayfa}, sayfa boyutu = {sayfaBoyutu}";
+            sonuc.HataMesaji = $"sayfa: {sayfa}, sayfa boyutu: {sayfaBoyutu}";
 
             return sonuc;
         }
 
         sonuc.Deger = new();
-        sonuc.Deger.ToplamSayfa = await q.CountAsync();
+        sonuc.Deger.ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu);
         sonuc.Deger.Sayfa = sayfa;
+        sonuc.Deger.Arama = arama;
+        sonuc.Deger.SayfaBoyutu = sayfaBoyutu;
 
         sonuc.Deger.Ogeler = await q.SayfaUygula(sayfa, sayfaBoyutu)
             .Include(k => k.IlgiliDosyalar)
@@ -493,7 +495,9 @@ public class KisiYoneticisi
         {
             Id = id,
             Sayfa = sayfa,
-            ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu)
+            ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu),
+            SayfaBoyutu = sayfaBoyutu,
+            Arama = arama
         };
 
         deger.Ogeler = await q
@@ -693,7 +697,8 @@ public class KisiYoneticisi
     #endregion
 
     #region KisiBelgesi
-    public async Task<Sonuc<KisiBelgeleriVM>> BelgelerVMGetirAsync(int id)
+    public async Task<Sonuc<KisiBelgeleriVM>> BelgelerVMGetirAsync(
+        int id, string arama, int sayfa, int sayfaBoyutu)
     {
         if (id < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == id))
             return new()
@@ -705,7 +710,7 @@ public class KisiYoneticisi
 
         var vm = new KisiBelgeleriVM { Id = id };
 
-        vm.Ogeler = await _vt.KisiBelgeleri
+        var q = _vt.KisiBelgeleri
             .AsNoTracking()
             .Where(kb => kb.KisiId == id)
             .Select(kb => new KisiBelgeleriVM.Oge
@@ -718,8 +723,27 @@ public class KisiYoneticisi
                 OlusturmaTarihi = kb.OlusturmaTarihi,
                 Boyut = Yardimci.OkunabilirDosyaBoyutu(kb.Boyut),
                 Uzanti = kb.Uzanti
-            })
-            .ToListAsync();
+            });
+
+        if (!string.IsNullOrWhiteSpace(arama))
+            q = q.Where(kb =>
+                kb.Baslik.Contains(arama) ||
+                (kb.Aciklama != null && kb.Aciklama.Contains(arama)) ||
+                kb.Uzanti.Contains(arama));
+
+        if (!await q.SayfaGecerliMiAsync(sayfa, sayfaBoyutu))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Sayfa",
+                HataMesaji = $"Sayfa: {sayfa}, Sayfa Boyutu: {sayfaBoyutu}"
+            };
+
+        vm.ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu);
+        vm.Sayfa = sayfa;
+        vm.SayfaBoyutu = sayfaBoyutu;
+        vm.Arama = arama;
+        vm.Ogeler = await q.SayfaUygula(sayfa, sayfaBoyutu).ToListAsync();
 
         return new() { Deger = vm };
     }

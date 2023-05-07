@@ -3,6 +3,8 @@
 <a asp-action="Ozet" asp-route-id="@Model.Id">Geri</a>
 &nbsp;
 <a asp-action="IlgiliKisiEkle" asp-route-id="@Model.Id">Yeni bağlantı ekle</a>
+&nbsp;
+<partial name="_Arama" model="Model" />
 
 @foreach (var oge in Model.Ogeler)
 {
@@ -23,3 +25,5 @@
         <a asp-action="IlgiliKisiSil" asp-route-id="@oge.Id">Sil</a>
     </div>
 }
+
+<partial name="_Sayfa" model="Model" />

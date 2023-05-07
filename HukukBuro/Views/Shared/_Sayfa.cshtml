@@ -1,0 +1,16 @@
+﻿@model SayfaListe
+
+@if (Model.OncekiSayfaVarMi)
+{
+    <a asp-route-sayfa="@(Model.Sayfa - 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Önceki</a>
+}
+
+@if (Model.ToplamSayfa > 1)
+{
+    <span>@Model.Sayfa</span>
+}
+
+@if (Model.SonrakiSayfaVarMi)
+{
+    <a asp-route-sayfa="@(Model.Sayfa + 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Sonraki</a>
+}

@@ -2,6 +2,10 @@
 
 <a asp-action="ekle">Yeni Kişi Ekle</a>
 
+&nbsp;
+
+<partial name="_Arama" model="Model" />
+
 @foreach (var oge in Model.Ogeler)
 {
     <div>
@@ -48,3 +52,5 @@
 
     </div>
 }
+
+<partial name="_Sayfa" model="Model" />
