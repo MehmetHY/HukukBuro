@@ -32,7 +32,7 @@ public sealed class Dosya
 
     public List<TarafKisi> Taraflar { get; set; } = new();
 
-    public List<Personel> SorumluPersonel { get; set; } = new();
+    public List<DosyaPersonel> SorumluPersonel { get; set; } = new();
 
     public List<DosyaBaglantisi> IlgiliDosyalar { get; set; } = new();
 

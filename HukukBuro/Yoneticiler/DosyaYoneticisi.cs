@@ -314,5 +314,109 @@ public class DosyaYoneticisi
                 TarafTuru = t.TarafTuru.Isim
             })
             .ToListAsync();
+
+    public async Task<Sonuc<TarafDuzenleVM>> TarafDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.TarafKisiler.AnyAsync(t => t.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.TarafKisiler
+            .Where(t => t.Id == id)
+            .Select(t => new TarafDuzenleVM
+            {
+                Id = id,
+                DosyaId = t.DosyaId,
+                KisiId = t.KisiId,
+                KarsiTarafMi = t.KarsiTaraf,
+                TarafTuruId = t.TarafTuruId
+            })
+            .FirstAsync();
+
+        vm.Kisiler = await KisileriGetirAsync();
+        vm.TarafTurleri = await TarafTurleriGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> TarafDuzenleAsync(TarafDuzenleVM vm)
+    {
+        var model = await _vt.TarafKisiler.FirstOrDefaultAsync(t => t.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı."
+            };
+
+        model.KisiId = vm.KisiId;
+        model.TarafTuruId = vm.TarafTuruId;
+        model.KarsiTaraf = vm.KarsiTarafMi;
+
+        _vt.TarafKisiler.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = model.DosyaId };
+    }
+
+    public async Task<Sonuc<TarafSilVM>> TarafSilVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.TarafKisiler.AnyAsync(t => t.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.TarafKisiler
+            .Where(t => t.Id == id)
+            .Include(t => t.Kisi)
+            .Include(t => t.TarafTuru)
+            .Select(t => new TarafSilVM
+            {
+                Id = id,
+                DosyaId = t.DosyaId,
+
+                Isim = t.Kisi.TuzelMi ?
+                    t.Kisi.SirketIsmi! :
+                    $"{t.Kisi.Isim} {t.Kisi.Soyisim}",
+
+                KarsiTarafMi = t.KarsiTaraf,
+                TarafTuru = t.TarafTuru.Isim
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> TarafSilAsync(int id)
+    {
+        var model = await _vt.TarafKisiler.FirstOrDefaultAsync(t => t.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var dosyaId = model.DosyaId;
+        _vt.TarafKisiler.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = dosyaId };
+    }
+    #endregion
+
+    #region Personel
+
     #endregion
 }

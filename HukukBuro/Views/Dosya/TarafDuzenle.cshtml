@@ -1,0 +1,30 @@
+﻿@model TarafDuzenleVM
+
+<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="Id" hidden />
+    <input asp-for="DosyaId" hidden />
+
+    <div>
+        <label asp-for="KisiId"></label>
+        <select asp-for="KisiId" asp-items="@Model.Kisiler"></select>
+        <span asp-validation-for="KisiId"></span>
+    </div>
+
+    <div>
+        <label asp-for="TarafTuruId"></label>
+        <select asp-for="TarafTuruId" asp-items="@Model.TarafTurleri"></select>
+        <span asp-validation-for="TarafTuruId"></span>
+    </div>
+
+    <div>
+        <label asp-for="KarsiTarafMi"></label>
+        <input asp-for="KarsiTarafMi" />
+        <span asp-validation-for="KarsiTarafMi"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

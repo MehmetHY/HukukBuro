@@ -44,10 +44,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Dosya>().Navigation(d => d.DosyaTuru).AutoInclude();
-        builder.Entity<Dosya>().Navigation(d => d.DosyaDurumu).AutoInclude();
-        builder.Entity<Dosya>().Navigation(d => d.DosyaKategorisi).AutoInclude();
-
         builder.Entity<Dosya>()
             .HasOne(d => d.DosyaTuru)
             .WithMany()
@@ -252,6 +248,22 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .HasOne(t => t.Kisi)
             .WithMany(k => k.IlgiliDosyalar)
             .HasForeignKey(t => t.KisiId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+        builder.Entity<DosyaPersonel>()
+            .HasKey(dp => dp.Id);
+
+        builder.Entity<DosyaPersonel>()
+            .HasOne(dp => dp.Dosya)
+            .WithMany(d => d.SorumluPersonel)
+            .HasForeignKey(dp => dp.DosyaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DosyaPersonel>()
+            .HasOne(dp => dp.Personel)
+            .WithMany(p => p.SorumluDosyalar)
+            .HasForeignKey(dp => dp.PersonelId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

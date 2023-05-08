@@ -130,5 +130,62 @@ public class DosyaController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> TarafDuzenle(int id)
+    {
+        var sonuc = await _dy.TarafDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> TarafDuzenle(TarafDuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.TarafDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Kisiler = await _dy.KisileriGetirAsync();
+        vm.TarafTurleri = await _dy.TarafTurleriGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> TarafSil(int id)
+    {
+        var sonuc = await _dy.TarafSilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(TarafSil))]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> TarafSilPOST(int id)
+    {
+        var sonuc = await _dy.TarafSilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+    }
     #endregion
 }
