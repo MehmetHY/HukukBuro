@@ -188,4 +188,30 @@ public class DosyaController : Controller
         return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
     }
     #endregion
+
+    #region Personel
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> PersonelDuzenle(int id)
+    {
+        var sonuc = await _dy.PersonelDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> PersonelDuzenle(PersonelDuzenleVM vm)
+    {
+        var sonuc = await _dy.PersonelDuzenleAsync(vm);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Ozet), new {id =  sonuc.Deger });
+    }
+    #endregion
 }

@@ -162,6 +162,7 @@ public class DosyaYoneticisi
 
         vm.KarsiTaraf = await TarafGetirAsync(id, true);
         vm.MuvekkilTaraf = await TarafGetirAsync(id, false);
+        vm.SorumluPersonel = await OzetPersonelGetirAsync(id);
 
         return new() { Deger = vm };
     }
@@ -417,6 +418,90 @@ public class DosyaYoneticisi
     #endregion
 
     #region Personel
+    public async Task<Sonuc<PersonelDuzenleVM>> PersonelDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz id",
+                HataMesaji = $"Id: {id} bulunamadı."
+            };
 
+        var vm = new PersonelDuzenleVM { Id = id };
+
+        vm.PersonelListe = await _vt.Users
+            .Include(p => p.SorumluDosyalar)
+            .Select(p => new CheckboxItem<string>
+            {
+                Checked = p.SorumluDosyalar.Any(dp => dp.DosyaId == id),
+                Value = p.Id,
+                Text = $"{p.Isim} {p.Soyisim}"
+            })
+            .ToListAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> PersonelDuzenleAsync(PersonelDuzenleVM vm)
+    {
+        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.Id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz id",
+                HataMesaji = $"Id: {vm.Id} bulunamadı."
+            };
+
+        var personeller = await _vt.Users
+            .Include(p => p.SorumluDosyalar)
+            .ToListAsync();
+
+        foreach (var personel in personeller)
+        {
+            var item = vm.PersonelListe.FirstOrDefault(p => p.Value == personel.Id);
+
+            if (item == null)
+                continue;
+
+            var dosyaPersonel = await _vt.DosyaPersonel
+                .FirstOrDefaultAsync(dp =>
+                    dp.DosyaId == vm.Id &&
+                    dp.PersonelId == item.Value);
+
+            if (dosyaPersonel != null && !item.Checked)
+                _vt.DosyaPersonel.Remove(dosyaPersonel);
+            else if (dosyaPersonel == null && item.Checked)
+                await _vt.DosyaPersonel.AddAsync(new()
+                {
+                    DosyaId = vm.Id,
+                    PersonelId = item.Value
+                });
+        }
+
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = vm.Id };
+    }
+
+    public async Task<List<OzetVM.Personel>> OzetPersonelGetirAsync(int id)
+    {
+        var personel = await _vt.DosyaPersonel
+            .Where(dp => dp.DosyaId == id)
+            .Select(dp => new OzetVM.Personel
+            {
+                TamIsim = $"{dp.Personel.Isim} {dp.Personel.Soyisim}",
+
+                AnaRol = _vt.UserClaims
+                    .Where(uc =>
+                        uc.UserId == dp.PersonelId &&
+                        uc.ClaimType == Sabit.AnaRol.Type)
+                    .Select(uc => uc.ClaimValue)
+                    .First() ?? Sabit.AnaRol.Calisan
+            })
+            .ToListAsync();
+
+        return personel;
+    }
     #endregion
 }

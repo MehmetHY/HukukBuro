@@ -1,0 +1,24 @@
+﻿@model PersonelDuzenleVM
+
+<a asp-action="Ozet" asp-route-id="@Model.Id">Geri</a>
+
+<form method="post">
+    <input asp-for="Id" hidden />
+
+    @for (int i = 0; i < Model.PersonelListe.Count; ++i)
+    {
+        <hr />
+
+        <input asp-for="PersonelListe[i].Value" hidden />
+
+        <div>
+            <label>
+                <input asp-for="PersonelListe[i].Checked" />
+                @Model.PersonelListe[i].Text
+            </label>
+        </div>
+    }
+
+    <hr />
+    <button type="submit">Tamam</button>
+</form>

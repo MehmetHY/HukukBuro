@@ -21,9 +21,10 @@ builder.Services.AddIdentity<Personel, IdentityRole>(ayarlar =>
     ayarlar.SignIn.RequireConfirmedAccount = false;
 
     ayarlar.Password.RequireNonAlphanumeric = false;
+    ayarlar.Password.RequiredUniqueChars = 0;
     ayarlar.Password.RequireUppercase = false;
     ayarlar.Password.RequireLowercase = false;
-    ayarlar.Password.RequiredLength = 6;
+    ayarlar.Password.RequiredLength = 3;
 })
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders()
@@ -37,6 +38,7 @@ builder.Services.ConfigureApplicationCookie(ayarlar =>
 
 builder.Services.AddScoped<KisiYoneticisi>();
 builder.Services.AddScoped<DosyaYoneticisi>();
+builder.Services.AddScoped<PersonelYoneticisi>();
 
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10_000_000);
 

@@ -13,6 +13,13 @@ public class OzetVM
         public string TarafTuru { get; set; }
     }
 
+    public class Personel
+    {
+        public string TamIsim { get; set; }
+
+        public string AnaRol { get; set; }
+    }
+
     public int Id { get; set; }
 
     public int DosyaNo { get; set; }
@@ -35,4 +42,6 @@ public class OzetVM
 
     public List<Taraf> MuvekkilTaraf { get; set; } = new();
     public List<Taraf> KarsiTaraf { get; set; } = new();
+
+    public List<Personel> SorumluPersonel { get; set; } = new();
 }

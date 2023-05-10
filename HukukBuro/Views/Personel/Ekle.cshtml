@@ -1,0 +1,62 @@
+﻿@model HukukBuro.ViewModels.Personeller.EkleVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label asp-for="Isim"></label>
+        <input asp-for="Isim" />
+        <span asp-validation-for="Isim"></span>
+    </div>
+
+    <div>
+        <label asp-for="Soyisim"></label>
+        <input asp-for="Soyisim" />
+        <span asp-validation-for="Soyisim"></span>
+    </div>
+
+    <div>
+        <label asp-for="Sifre"></label>
+        <input asp-for="Sifre" />
+        <span asp-validation-for="Sifre"></span>
+    </div>
+
+    <div>
+        <label asp-for="SifreTekrar"></label>
+        <input asp-for="SifreTekrar" />
+        <span asp-validation-for="SifreTekrar"></span>
+    </div>
+
+    <div>
+        <label asp-for="AnaRol"></label>
+        <select asp-for="AnaRol" asp-items="@Model.AnaRoller"></select>
+        <span asp-validation-for="AnaRol"></span>
+    </div>
+
+    <hr />
+    <strong>Yetkiler</strong>
+    @for (int i = 0; i < Model.Yetkiler.Count; ++i)
+    {
+        <div>
+            <input asp-for="Yetkiler[i].Value" hidden />
+
+            <label>
+                <input asp-for="Yetkiler[i].Checked" checked="@Model.Yetkiler[i].Checked" />
+                @Model.Yetkiler[i].Text
+            </label>
+        </div>
+    }
+
+    <hr />
+    <button type="submit">Tamam</button>
+</form>

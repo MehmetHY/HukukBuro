@@ -2,8 +2,14 @@
 
 namespace HukukBuro.Models;
 
+#pragma warning disable CS8618
+
 public sealed class Personel : IdentityUser
 {
+    public string Isim { get; set; }
+
+    public string Soyisim { get; set; }
+
     public List<PersonelFinansIslemi> IlgiliFinansIslemleri { get; set; } = new();
     public List<Duyuru> OkunmamisDuyurular { get; set; } = new();
 

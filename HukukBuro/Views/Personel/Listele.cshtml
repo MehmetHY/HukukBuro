@@ -1,0 +1,25 @@
+﻿@model HukukBuro.ViewModels.Personeller.ListeleVM
+
+<a asp-action="ekle">Yeni personel ekle</a>
+
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        <strong>
+            <a asp-action="duzenle" asp-route-id="@oge.Id">@oge.TamIsim</a>
+        </strong>
+
+        &nbsp;
+
+        <span>(@oge.Anarol)</span>
+
+        <div>
+            <span>Email: @oge.Email</span>
+        </div>
+    </div>
+}
+
+

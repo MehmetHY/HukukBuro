@@ -101,3 +101,16 @@
         }
     </div>
 }
+
+<hr />
+
+<h2>Sorumlu Personel</h2>
+&nbsp;
+<a asp-action="personelduzenle" asp-route-id="@Model.Id">Düzenle</a>
+
+@foreach (var p in Model.SorumluPersonel)
+{
+    <div>
+        <strong>@p.TamIsim</strong> (@p.AnaRol)
+    </div>
+}

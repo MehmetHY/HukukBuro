@@ -1,4 +1,5 @@
 ﻿using HukukBuro.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
     public DbSet<DosyaDurumu> DosyaDurumu { get; set; }
     public DbSet<DosyaFinansIslemi> DosyaFinansIslemleri { get; set; }
     public DbSet<DosyaGorevi> DosyaGorevleri { get; set; }
+    public DbSet<DosyaPersonel> DosyaPersonel { get; set; }
     public DbSet<DosyaKategorisi> DosyaKategorileri { get; set; }
     public DbSet<DosyaTuru> DosyaTurleri { get; set; }
     public DbSet<Durusma> Durusmalar { get; set; }
@@ -265,5 +267,46 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .WithMany(p => p.SorumluDosyalar)
             .HasForeignKey(dp => dp.PersonelId)
             .OnDelete(DeleteBehavior.NoAction);
+
+
+        builder.Entity<IdentityRole>()
+            .HasData(
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Kisi,
+                    NormalizedName = Sabit.Yetki.Kisi.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Dosya,
+                    NormalizedName = Sabit.Yetki.Dosya.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Personel,
+                    NormalizedName = Sabit.Yetki.Personel.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Gorev,
+                    NormalizedName = Sabit.Yetki.Gorev.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Duyuru,
+                    NormalizedName = Sabit.Yetki.Duyuru.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Rol,
+                    NormalizedName = Sabit.Yetki.Rol.ToUpper()
+                }
+            );
     }
 }
