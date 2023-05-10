@@ -1,0 +1,24 @@
+﻿@model DosyaBaglantisiEkleVM
+
+<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="DosyaId" hidden />
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="IlgiliDosyaId"></label>
+        <select asp-for="IlgiliDosyaId" asp-items="@Model.Dosyalar"></select>
+        <span asp-validation-for="IlgiliDosyaId"></span>
+    </div>
+
+    <div>
+        <label asp-for="Aciklama"></label>
+        <input asp-for="Aciklama" />
+        <span asp-validation-for="Aciklama"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

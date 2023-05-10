@@ -308,5 +308,21 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
                     NormalizedName = Sabit.Yetki.Rol.ToUpper()
                 }
             );
+
+
+        builder.Entity<DosyaBaglantisi>()
+            .HasKey(db => db.Id);
+
+        builder.Entity<DosyaBaglantisi>()
+            .HasOne(db => db.Dosya)
+            .WithMany(d => d.IlgiliDosyalar)
+            .HasForeignKey(db => db.DosyaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DosyaBaglantisi>()
+            .HasOne(db => db.IlgiliDosya)
+            .WithMany()
+            .HasForeignKey(db => db.IlgiliDosyaId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

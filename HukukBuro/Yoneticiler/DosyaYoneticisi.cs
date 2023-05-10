@@ -163,6 +163,7 @@ public class DosyaYoneticisi
         vm.KarsiTaraf = await TarafGetirAsync(id, true);
         vm.MuvekkilTaraf = await TarafGetirAsync(id, false);
         vm.SorumluPersonel = await OzetPersonelGetirAsync(id);
+        vm.DosyaBaglantilari = await OzetDosyaBaglantilariGetirAsync(id);
 
         return new() { Deger = vm };
     }
@@ -502,6 +503,199 @@ public class DosyaYoneticisi
             .ToListAsync();
 
         return personel;
+    }
+    #endregion
+
+    #region DosyaBaglantisi
+    public async Task<Sonuc<DosyaBaglantisiEkleVM>> DosyaBaglantisiEkleVMGetirAsync(
+        int dosyaId)
+    {
+        if (dosyaId < 1 ||
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == dosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {dosyaId} bulunamadı."
+            };
+
+        var vm = new DosyaBaglantisiEkleVM
+        {
+            DosyaId = dosyaId,
+            Dosyalar = await DosyalariGetirAsync()
+        };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> DosyaBaglantisiEkleAsync(DosyaBaglantisiEkleVM vm)
+    {
+        if (vm.DosyaId < 1 ||
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.DosyaId} bulunamadı."
+            };
+
+        if (vm.IlgiliDosyaId < 1 ||
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.IlgiliDosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.IlgiliDosyaId),
+                HataMesaji = $"id: {vm.IlgiliDosyaId} bulunamadı."
+            };
+
+        var model = new DosyaBaglantisi
+        {
+            DosyaId = vm.DosyaId,
+            IlgiliDosyaId = vm.IlgiliDosyaId,
+            Aciklama = vm.Aciklama
+        };
+
+        await _vt.DosyaBaglantilari.AddAsync(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = vm.DosyaId };
+    }
+
+    public async Task<List<SelectListItem>> DosyalariGetirAsync()
+        => await _vt.Dosyalar
+            .Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = $"{d.DosyaNo} {d.BuroNo} {d.Konu}"
+            })
+            .ToListAsync();
+
+    public async Task<List<OzetVM.Baglanti>> OzetDosyaBaglantilariGetirAsync(int id)
+        => await _vt.DosyaBaglantilari
+        .Include(db => db.IlgiliDosya)
+        .Where(db => db.DosyaId == id)
+        .Select(db => new OzetVM.Baglanti
+        {
+            Id = db.Id,
+            IlgiliDosyaId = db.IlgiliDosyaId,
+            DosyaNo = db.IlgiliDosya.DosyaNo,
+            BuroNo = db.IlgiliDosya.BuroNo,
+            Konu = db.IlgiliDosya.Konu
+        })
+        .ToListAsync();
+
+    public async Task<Sonuc<DosyaBaglantisiDuzenleVM>>
+        DosyaBaglantisiDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 ||
+            !await _vt.DosyaBaglantilari.AnyAsync(db => db.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.DosyaBaglantilari
+            .Select(db => new DosyaBaglantisiDuzenleVM
+            {
+                Id = id,
+                Aciklama = db.Aciklama,
+                DosyaId = db.DosyaId,
+                IlgiliDosyaId = db.IlgiliDosyaId
+            })
+            .FirstAsync();
+
+        vm.Dosyalar = await DosyalariGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> DosyaBaglantisiDuzenleAsync(
+        DosyaBaglantisiDuzenleVM vm)
+    {
+        var model = await _vt.DosyaBaglantilari
+            .FirstOrDefaultAsync(db => db.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı."
+            };
+
+        if (vm.DosyaId < 1 ||
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.DosyaId),
+                HataMesaji = $"id: {vm.DosyaId} bulunamadı."
+            };
+
+        if (vm.IlgiliDosyaId < 1 ||
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.IlgiliDosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.IlgiliDosyaId),
+                HataMesaji = $"id: {vm.IlgiliDosyaId} bulunamadı."
+            };
+
+        model.Aciklama = vm.Aciklama;
+        model.DosyaId = vm.DosyaId;
+        model.IlgiliDosyaId = vm.IlgiliDosyaId;
+        _vt.DosyaBaglantilari.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = vm.DosyaId };
+    }
+
+    public async Task<Sonuc<DosyaBaglantisiSilVM>> DosyaBaglantisiSilVMGetirAsync(
+        int id)
+    {
+        if (id < 1 ||
+            !await _vt.DosyaBaglantilari.AnyAsync(db => db.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.DosyaBaglantilari
+            .Include(db => db.IlgiliDosya)
+            .Select(db => new DosyaBaglantisiSilVM
+            {
+                Id = id,
+                Aciklama = db.Aciklama,
+                DosyaId = db.DosyaId,
+                IlgiliDosya = $"{db.IlgiliDosya.DosyaNo} {db.IlgiliDosya.BuroNo} {db.IlgiliDosya.Konu}"
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> DosyaBaglantisiSilAsync(int id)
+    {
+        var model = await _vt.DosyaBaglantilari
+            .FirstOrDefaultAsync(db => db.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        var dosyaId = model.DosyaId;
+        _vt.DosyaBaglantilari.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = dosyaId };
     }
     #endregion
 }

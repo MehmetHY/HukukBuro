@@ -1,0 +1,26 @@
+﻿@model DosyaBaglantisiSilVM
+
+<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="Id" hidden />
+
+    <div>
+        <strong>Ilgili Dosya:</strong>
+        &nbsp;
+        @Model.IlgiliDosya
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Aciklama))
+    {
+        <div>
+            <strong>Aciklama:</strong>
+            &nbsp;
+            @Model.Aciklama
+        </div>
+    }
+
+    <button type="submit">Sil</button>
+</form>

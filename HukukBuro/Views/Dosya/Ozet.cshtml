@@ -102,6 +102,7 @@
     </div>
 }
 
+
 <hr />
 
 <h2>Sorumlu Personel</h2>
@@ -112,5 +113,31 @@
 {
     <div>
         <strong>@p.TamIsim</strong> (@p.AnaRol)
+    </div>
+}
+
+
+<hr />
+
+<h2>Bağlantılı Dosyalar</h2>
+&nbsp;
+
+<a asp-action="dosyabaglantisiekle" asp-route-dosyaId="@Model.Id">Yeni bağlantı ekle</a>
+
+@foreach (var baglanti in Model.DosyaBaglantilari)
+{
+    <div>
+        <a asp-action="ozet" asp-route-id="@baglanti.IlgiliDosyaId">
+            @baglanti.DosyaNo
+            &nbsp;
+            @baglanti.BuroNo
+            &nbsp;
+            @baglanti.Konu
+        </a>
+
+        &nbsp;
+
+        <a asp-action="dosyabaglantisiduzenle" asp-route-id="@baglanti.Id">Düzenle</a>
+        <a asp-action="dosyabaglantisisil" asp-route-id="@baglanti.Id">Sil</a>
     </div>
 }

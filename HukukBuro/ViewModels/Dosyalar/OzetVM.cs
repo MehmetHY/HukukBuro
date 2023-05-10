@@ -20,6 +20,19 @@ public class OzetVM
         public string AnaRol { get; set; }
     }
 
+    public class Baglanti
+    {
+        public int Id { get; set; }
+
+        public int IlgiliDosyaId { get; set; }
+
+        public int DosyaNo { get; set; }
+
+        public string BuroNo { get; set; }
+
+        public string Konu { get; set; }
+    }
+
     public int Id { get; set; }
 
     public int DosyaNo { get; set; }
@@ -44,4 +57,6 @@ public class OzetVM
     public List<Taraf> KarsiTaraf { get; set; } = new();
 
     public List<Personel> SorumluPersonel { get; set; } = new();
+
+    public List<Baglanti> DosyaBaglantilari { get; set; } = new();
 }

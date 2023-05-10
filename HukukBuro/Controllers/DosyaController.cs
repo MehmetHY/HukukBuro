@@ -211,7 +211,96 @@ public class DosyaController : Controller
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);
 
-        return RedirectToAction(nameof(Ozet), new {id =  sonuc.Deger });
+        return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+    }
+    #endregion
+
+    #region DosyaBaglantisi
+    [HttpGet]
+    [Route("[controller]/{dosyaId}/[action]")]
+    public async Task<IActionResult> DosyaBaglantisiEkle(int dosyaId)
+    {
+        var sonuc = await _dy.DosyaBaglantisiEkleVMGetirAsync(dosyaId);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{dosyaId}/[action]")]
+    public async Task<IActionResult> DosyaBaglantisiEkle(DosyaBaglantisiEkleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.DosyaBaglantisiEkleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Dosyalar = await _dy.DosyalariGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DosyaBaglantisiDuzenle(int id)
+    {
+        var sonuc = await _dy.DosyaBaglantisiDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DosyaBaglantisiDuzenle(DosyaBaglantisiDuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.DosyaBaglantisiDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Dosyalar = await _dy.DosyalariGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DosyaBaglantisiSil(int id)
+    {
+        var sonuc = await _dy.DosyaBaglantisiSilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(DosyaBaglantisiSil))]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DosyaBaglantisiSilPOST(int id)
+    {
+        var sonuc = await _dy.DosyaBaglantisiSilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
     }
     #endregion
 }
