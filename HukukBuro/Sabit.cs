@@ -62,4 +62,19 @@ public static class Sabit
         public const string DuyuruText = "Duyuruları düzenleyebilir.";
         public const string RolText = "Rol ve yetkileri düzenleyebilir.";
     }
+
+    public static class DosyaTuru
+    {
+        public const int DavaId = 1;
+        public const int DanismanlikId = 2;
+        public const int IcraId = 3;
+        public const int ArabuluculukId = 4;
+        public const int SorusturmaId = 5;
+
+        public const string Dava = "Dava";
+        public const string Danismanlik = "Danışmanlık";
+        public const string Icra = "İcra";
+        public const string Arabuluculuk = "Arabuluculuk";
+        public const string Sorusturma = "Soruşturma";
+    }
 }

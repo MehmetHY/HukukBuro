@@ -2,6 +2,8 @@
 
 namespace HukukBuro.Models;
 
+#pragma warning disable CS8618
+
 public class MahkemeBilgileriBase
 {
     [Key]

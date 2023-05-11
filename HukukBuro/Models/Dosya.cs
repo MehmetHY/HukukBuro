@@ -53,4 +53,6 @@ public sealed class Dosya
     public KararDuzeltmeBilgileri? KararDuzeltmeBilgileri { get; set; }
 
     public KesinlesmeBilgileri? KesinlesmeBilgileri { get; set; }
+
+
 }

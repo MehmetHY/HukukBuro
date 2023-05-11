@@ -141,11 +141,11 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
         builder.Entity<DosyaTuru>()
             .HasData
             (
-                new DosyaTuru { Id = 1, Isim = "Dava" },
-                new DosyaTuru { Id = 2, Isim = "Danışmanlık" },
-                new DosyaTuru { Id = 3, Isim = "İcra" },
-                new DosyaTuru { Id = 4, Isim = "Arabuluculuk" },
-                new DosyaTuru { Id = 5, Isim = "Soruşturma" }
+                new DosyaTuru { Id = Sabit.DosyaTuru.DavaId, Isim = Sabit.DosyaTuru.Dava },
+                new DosyaTuru { Id = Sabit.DosyaTuru.DanismanlikId, Isim = Sabit.DosyaTuru.Danismanlik },
+                new DosyaTuru { Id = Sabit.DosyaTuru.IcraId, Isim = Sabit.DosyaTuru.Icra },
+                new DosyaTuru { Id = Sabit.DosyaTuru.ArabuluculukId, Isim = Sabit.DosyaTuru.Arabuluculuk },
+                new DosyaTuru { Id = Sabit.DosyaTuru.SorusturmaId, Isim = Sabit.DosyaTuru.Sorusturma }
             );
 
 
@@ -178,9 +178,9 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
         builder.Entity<GorevDurumu>()
             .HasData
             (
-                new GorevDurumu { Id = 1, Isim ="Tamamlandı" },
-                new GorevDurumu { Id = 2, Isim ="Devam Ediyor" },
-                new GorevDurumu { Id = 3, Isim ="İptal" }
+                new GorevDurumu { Id = 1, Isim = "Tamamlandı" },
+                new GorevDurumu { Id = 2, Isim = "Devam Ediyor" },
+                new GorevDurumu { Id = 3, Isim = "İptal" }
             );
 
 
@@ -203,9 +203,9 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
         builder.Entity<DuyuruKategorisi>()
             .HasData
             (
-                new DuyuruKategorisi { Id = 1, Isim ="Önemli" },
-                new DuyuruKategorisi { Id = 2, Isim ="Normal" },
-                new DuyuruKategorisi { Id = 3, Isim ="Uygulama Güncellemesi" }
+                new DuyuruKategorisi { Id = 1, Isim = "Önemli" },
+                new DuyuruKategorisi { Id = 2, Isim = "Normal" },
+                new DuyuruKategorisi { Id = 3, Isim = "Uygulama Güncellemesi" }
             );
 
 

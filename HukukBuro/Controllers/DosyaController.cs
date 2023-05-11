@@ -303,4 +303,47 @@ public class DosyaController : Controller
         return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
     }
     #endregion
+
+    #region Karar
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Karar(int id)
+    {
+        var sonuc = await _dy.KararVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> KararDuzenle(int id)
+    {
+        var sonuc = await _dy.KararVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> KararDuzenle(KararVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.KararDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Karar), new { id = vm.DosyaId });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        return View(vm);
+    }
+    #endregion
 }

@@ -128,6 +128,12 @@ public class DosyaYoneticisi
             AcilisTarihi = vm.AcilisTarihi
         };
 
+        model.KararBilgileri = new() { Dosya = model };
+        model.BolgeAdliyeMahkemesiBilgileri = new() { Dosya = model };
+        model.TemyizBilgileri = new() { Dosya = model };
+        model.KararDuzeltmeBilgileri = new() { Dosya = model };
+        model.KesinlesmeBilgileri = new() { Dosya = model };
+
         await _vt.Dosyalar.AddAsync(model);
         await _vt.SaveChangesAsync();
     }
@@ -696,6 +702,146 @@ public class DosyaYoneticisi
         await _vt.SaveChangesAsync();
 
         return new() { Deger = dosyaId };
+    }
+    #endregion
+
+    #region Karar
+    public async Task<Sonuc<KararVM>> KararVMGetirAsync(int dosyaId)
+    {
+        if (dosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == dosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"Id: {dosyaId} bulunamadı."
+            };
+
+        var vm = await _vt.Dosyalar
+            .Include(d => d.KararBilgileri)
+            .Include(d => d.BolgeAdliyeMahkemesiBilgileri)
+            .Include(d => d.TemyizBilgileri)
+            .Include(d => d.KararDuzeltmeBilgileri)
+            .Include(d => d.KesinlesmeBilgileri)
+            .Select(d => new KararVM
+            {
+                DosyaId = dosyaId,
+
+                KararBilgileri = new()
+                {
+                    KararNo = d.KararBilgileri!.KararNo,
+                    KararOzeti = d.KararBilgileri.KararOzeti,
+                    KararTarihi = d.KararBilgileri.KararTarihi,
+                    TebligTarihi = d.KararBilgileri.TebligTarihi
+                },
+
+                BolgeAdliyeMahkemesiBilgileri = new()
+                {
+                    Aciklama = d.BolgeAdliyeMahkemesiBilgileri!.Aciklama,
+                    EsasNo = d.BolgeAdliyeMahkemesiBilgileri.EsasNo,
+                    GondermeTarihi = d.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi,
+                    KararNo = d.BolgeAdliyeMahkemesiBilgileri.KararNo,
+                    KararOzeti = d.BolgeAdliyeMahkemesiBilgileri.KararOzeti,
+                    KararTarihi = d.BolgeAdliyeMahkemesiBilgileri.KararTarihi,
+                    Mahkeme = d.BolgeAdliyeMahkemesiBilgileri.Mahkeme,
+                    TebligTarihi = d.BolgeAdliyeMahkemesiBilgileri.TebligTarihi
+                },
+
+                TemyizBilgileri = new()
+                {
+                    Aciklama = d.TemyizBilgileri!.Aciklama,
+                    EsasNo = d.TemyizBilgileri.EsasNo,
+                    GondermeTarihi = d.TemyizBilgileri.GondermeTarihi,
+                    KararNo = d.TemyizBilgileri.KararNo,
+                    KararOzeti = d.TemyizBilgileri.KararOzeti,
+                    KararTarihi = d.TemyizBilgileri.KararTarihi,
+                    Mahkeme = d.TemyizBilgileri.Mahkeme,
+                    TebligTarihi = d.TemyizBilgileri.TebligTarihi
+                },
+
+                KararDuzeltmeBilgileri = new()
+                {
+                    Aciklama = d.KararDuzeltmeBilgileri!.Aciklama,
+                    EsasNo = d.KararDuzeltmeBilgileri.EsasNo,
+                    GondermeTarihi = d.KararDuzeltmeBilgileri.GondermeTarihi,
+                    KararNo = d.KararDuzeltmeBilgileri.KararNo,
+                    KararOzeti = d.KararDuzeltmeBilgileri.KararOzeti,
+                    KararTarihi = d.KararDuzeltmeBilgileri.KararTarihi,
+                    Mahkeme = d.KararDuzeltmeBilgileri.Mahkeme,
+                    TebligTarihi = d.KararDuzeltmeBilgileri.TebligTarihi
+                },
+
+                KesinlesmeBilgileri = new()
+                {
+                    KararOzeti = d.KesinlesmeBilgileri!.KararOzeti,
+                    KesinlesmeTarihi = d.KesinlesmeBilgileri.KesinlesmeTarihi
+                }
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> KararDuzenleAsync(KararVM vm)
+    {
+        var dosya = await _vt.Dosyalar
+            .Include(d => d.KararBilgileri)
+            .Include(d => d.BolgeAdliyeMahkemesiBilgileri)
+            .Include(d => d.TemyizBilgileri)
+            .Include(d => d.KararDuzeltmeBilgileri)
+            .Include(d => d.KesinlesmeBilgileri)
+            .FirstOrDefaultAsync(d => d.Id == vm.DosyaId);
+
+        if (dosya == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Id: {vm.DosyaId} bulunamadı."
+            };
+
+        dosya.KararBilgileri!.KararNo = vm.KararBilgileri!.KararNo;
+        dosya.KararBilgileri.KararOzeti = vm.KararBilgileri.KararOzeti;
+        dosya.KararBilgileri.KararTarihi = vm.KararBilgileri.KararTarihi;
+        dosya.KararBilgileri.TebligTarihi = vm.KararBilgileri.TebligTarihi;
+
+        dosya.BolgeAdliyeMahkemesiBilgileri!.Aciklama = vm.BolgeAdliyeMahkemesiBilgileri!.Aciklama;
+        dosya.BolgeAdliyeMahkemesiBilgileri.EsasNo = vm.BolgeAdliyeMahkemesiBilgileri.EsasNo;
+        dosya.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi = vm.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi;
+        dosya.BolgeAdliyeMahkemesiBilgileri.KararNo = vm.BolgeAdliyeMahkemesiBilgileri.KararNo;
+        dosya.BolgeAdliyeMahkemesiBilgileri.KararOzeti = vm.BolgeAdliyeMahkemesiBilgileri.KararOzeti;
+        dosya.BolgeAdliyeMahkemesiBilgileri.KararTarihi = vm.BolgeAdliyeMahkemesiBilgileri.KararTarihi;
+        dosya.BolgeAdliyeMahkemesiBilgileri.Mahkeme = vm.BolgeAdliyeMahkemesiBilgileri.Mahkeme;
+        dosya.BolgeAdliyeMahkemesiBilgileri.TebligTarihi = vm.BolgeAdliyeMahkemesiBilgileri.TebligTarihi;
+
+        dosya.TemyizBilgileri!.Aciklama = vm.TemyizBilgileri!.Aciklama;
+        dosya.TemyizBilgileri.EsasNo = vm.TemyizBilgileri.EsasNo;
+        dosya.TemyizBilgileri.GondermeTarihi = vm.TemyizBilgileri.GondermeTarihi;
+        dosya.TemyizBilgileri.KararNo = vm.TemyizBilgileri.KararNo;
+        dosya.TemyizBilgileri.KararOzeti = vm.TemyizBilgileri.KararOzeti;
+        dosya.TemyizBilgileri.KararTarihi = vm.TemyizBilgileri.KararTarihi;
+        dosya.TemyizBilgileri.Mahkeme = vm.TemyizBilgileri.Mahkeme;
+        dosya.TemyizBilgileri.TebligTarihi = vm.TemyizBilgileri.TebligTarihi;
+
+        dosya.KararDuzeltmeBilgileri!.Aciklama = vm.KararDuzeltmeBilgileri!.Aciklama;
+        dosya.KararDuzeltmeBilgileri.EsasNo = vm.KararDuzeltmeBilgileri.EsasNo;
+        dosya.KararDuzeltmeBilgileri.GondermeTarihi = vm.KararDuzeltmeBilgileri.GondermeTarihi;
+        dosya.KararDuzeltmeBilgileri.KararNo = vm.KararDuzeltmeBilgileri.KararNo;
+        dosya.KararDuzeltmeBilgileri.KararOzeti = vm.KararDuzeltmeBilgileri.KararOzeti;
+        dosya.KararDuzeltmeBilgileri.KararTarihi = vm.KararDuzeltmeBilgileri.KararTarihi;
+        dosya.KararDuzeltmeBilgileri.Mahkeme = vm.KararDuzeltmeBilgileri.Mahkeme;
+        dosya.KararDuzeltmeBilgileri.TebligTarihi = vm.KararDuzeltmeBilgileri.TebligTarihi;
+
+        dosya.KesinlesmeBilgileri!.KararOzeti = vm.KesinlesmeBilgileri!.KararOzeti;
+        dosya.KesinlesmeBilgileri.KesinlesmeTarihi = vm.KesinlesmeBilgileri.KesinlesmeTarihi;
+
+        _vt.KararBilgileri.Update(dosya.KararBilgileri);
+        _vt.BolgeAdliyeMahkemesiBilgileri.Update(dosya.BolgeAdliyeMahkemesiBilgileri);
+        _vt.TemyizBilgileri.Update(dosya.TemyizBilgileri);
+        _vt.KararDuzeltmeBilgileri.Update(dosya.KararDuzeltmeBilgileri);
+        _vt.KesinlesmeBilgileri.Update(dosya.KesinlesmeBilgileri);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = vm.DosyaId };
     }
     #endregion
 }

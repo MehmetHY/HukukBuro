@@ -1,0 +1,182 @@
+﻿@model KararVM
+
+<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="DosyaId" hidden />
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <h3>Karar Bilgileri</h3>
+    <div>
+        <label asp-for="KararBilgileri.KararNo"></label>
+        <input asp-for="KararBilgileri.KararNo" />
+        <span asp-validation-for="KararBilgileri.KararNo"></span>
+    </div>
+    <div>
+        <label asp-for="KararBilgileri.KararTarihi"></label>
+        <input asp-for="KararBilgileri.KararTarihi" />
+        <span asp-validation-for="KararBilgileri.KararTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="KararBilgileri.TebligTarihi"></label>
+        <input asp-for="KararBilgileri.TebligTarihi" />
+        <span asp-validation-for="KararBilgileri.TebligTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="KararBilgileri.KararOzeti"></label>
+        <input asp-for="KararBilgileri.KararOzeti" />
+        <span asp-validation-for="KararBilgileri.KararOzeti"></span>
+    </div>
+
+    <hr />
+
+    <h3>Bölge Adliye Mahkemesi Bilgileri</h3>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.KararNo"></label>
+        <input asp-for="BolgeAdliyeMahkemesiBilgileri.KararNo" />
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararNo"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi"></label>
+        <input asp-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi" />
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi"></label>
+        <input asp-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi" />
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></label>
+        <textarea asp-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></textarea>
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme"></label>
+        <input asp-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme" />
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi"></label>
+        <input asp-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi" />
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></label>
+        <textarea asp-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></textarea>
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></span>
+    </div>
+    <div>
+        <label asp-for="BolgeAdliyeMahkemesiBilgileri.EsasNo"></label>
+        <input asp-for="BolgeAdliyeMahkemesiBilgileri.EsasNo" />
+        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.EsasNo"></span>
+    </div>
+
+    <hr />
+
+    <h3>Temyiz Bilgileri</h3>
+    <div>
+        <label asp-for="TemyizBilgileri.KararNo"></label>
+        <input asp-for="TemyizBilgileri.KararNo" />
+        <span asp-validation-for="TemyizBilgileri.KararNo"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.KararTarihi"></label>
+        <input asp-for="TemyizBilgileri.KararTarihi" />
+        <span asp-validation-for="TemyizBilgileri.KararTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.TebligTarihi"></label>
+        <input asp-for="TemyizBilgileri.TebligTarihi" />
+        <span asp-validation-for="TemyizBilgileri.TebligTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.KararOzeti"></label>
+        <textarea asp-for="TemyizBilgileri.KararOzeti"></textarea>
+        <span asp-validation-for="TemyizBilgileri.KararOzeti"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.Mahkeme"></label>
+        <input asp-for="TemyizBilgileri.Mahkeme" />
+        <span asp-validation-for="TemyizBilgileri.Mahkeme"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.GondermeTarihi"></label>
+        <input asp-for="TemyizBilgileri.GondermeTarihi" />
+        <span asp-validation-for="TemyizBilgileri.GondermeTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.Aciklama"></label>
+        <textarea asp-for="TemyizBilgileri.Aciklama"></textarea>
+        <span asp-validation-for="TemyizBilgileri.Aciklama"></span>
+    </div>
+    <div>
+        <label asp-for="TemyizBilgileri.EsasNo"></label>
+        <input asp-for="TemyizBilgileri.EsasNo" />
+        <span asp-validation-for="TemyizBilgileri.EsasNo"></span>
+    </div>
+
+    <hr />
+
+    <h3>Karar Düzeltme Bilgileri</h3>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.KararNo"></label>
+        <input asp-for="KararDuzeltmeBilgileri.KararNo" />
+        <span asp-validation-for="KararDuzeltmeBilgileri.KararNo"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.KararTarihi"></label>
+        <input asp-for="KararDuzeltmeBilgileri.KararTarihi" />
+        <span asp-validation-for="KararDuzeltmeBilgileri.KararTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.TebligTarihi"></label>
+        <input asp-for="KararDuzeltmeBilgileri.TebligTarihi" />
+        <span asp-validation-for="KararDuzeltmeBilgileri.TebligTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.KararOzeti"></label>
+        <textarea asp-for="KararDuzeltmeBilgileri.KararOzeti"></textarea>
+        <span asp-validation-for="KararDuzeltmeBilgileri.KararOzeti"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.Mahkeme"></label>
+        <input asp-for="KararDuzeltmeBilgileri.Mahkeme" />
+        <span asp-validation-for="KararDuzeltmeBilgileri.Mahkeme"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.GondermeTarihi"></label>
+        <input asp-for="KararDuzeltmeBilgileri.GondermeTarihi" />
+        <span asp-validation-for="KararDuzeltmeBilgileri.GondermeTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.Aciklama"></label>
+        <textarea asp-for="KararDuzeltmeBilgileri.Aciklama"></textarea>
+        <span asp-validation-for="KararDuzeltmeBilgileri.Aciklama"></span>
+    </div>
+    <div>
+        <label asp-for="KararDuzeltmeBilgileri.EsasNo"></label>
+        <input asp-for="KararDuzeltmeBilgileri.EsasNo" />
+        <span asp-validation-for="KararDuzeltmeBilgileri.EsasNo"></span>
+    </div>
+
+    <hr />
+
+    <h3>Kesinleşme Bilgileri</h3>
+    <div>
+        <label asp-for="KesinlesmeBilgileri.KesinlesmeTarihi"></label>
+        <input asp-for="KesinlesmeBilgileri.KesinlesmeTarihi" />
+        <span asp-validation-for="KesinlesmeBilgileri.KesinlesmeTarihi"></span>
+    </div>
+    <div>
+        <label asp-for="KesinlesmeBilgileri.KararOzeti"></label>
+        <textarea asp-for="KesinlesmeBilgileri.KararOzeti"></textarea>
+        <span asp-validation-for="KesinlesmeBilgileri.KararOzeti"></span>
+    </div>
+
+    <hr />
+
+    <button type="submit">Tamam</button>
+</form>
