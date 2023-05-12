@@ -170,6 +170,7 @@ public class DosyaYoneticisi
         vm.MuvekkilTaraf = await TarafGetirAsync(id, false);
         vm.SorumluPersonel = await OzetPersonelGetirAsync(id);
         vm.DosyaBaglantilari = await OzetDosyaBaglantilariGetirAsync(id);
+        vm.Durusmalar = await OzetDurusmalariGetirAsync(id);
 
         return new() { Deger = vm };
     }
@@ -843,5 +844,166 @@ public class DosyaYoneticisi
 
         return new() { Deger = vm.DosyaId };
     }
+    #endregion
+
+    #region Durusma
+    public async Task<List<OzetVM.Durusma>> OzetDurusmalariGetirAsync(int id)
+        => await _vt.Durusmalar
+        .Where(d => d.DosyaId == id)
+        .Include(d => d.AktiviteTuru)
+        .Select(d => new OzetVM.Durusma
+        {
+            Id = d.Id,
+            AktiviteTuru = d.AktiviteTuru.Isim,
+            Tarih = d.Tarih,
+            Aciklama = d.Aciklama
+        })
+        .ToListAsync();
+
+    public async Task<Sonuc<DurusmaEkleVM>> DurusmaEkleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"Id: {id} bulunamadı."
+            };
+
+        var vm = new DurusmaEkleVM
+        {
+            DosyaId = id,
+            AktiviteTurleri = await DurusmaAktiviteTurleriGetirAsync()
+        };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> DurusmaEkleAsync(DurusmaEkleVM vm)
+    {
+        if (vm.DosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Id: {vm.DosyaId} bulunamadı."
+            };
+
+        var model = new Durusma
+        {
+            DosyaId = vm.DosyaId,
+            Aciklama = vm.Aciklama,
+            AktiviteTuruId = vm.AktiviteTuruId,
+            Tarih = vm.Tarih
+        };
+
+        await _vt.Durusmalar.AddAsync(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = vm.DosyaId };
+    }
+    public async Task<Sonuc<DurusmaDuzenleVM>> DurusmaDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Durusmalar.AnyAsync(d => d.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"Id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.Durusmalar
+            .Where(d => d.Id == id)
+            .Select(d => new DurusmaDuzenleVM
+            {
+                Id = d.Id,
+                DosyaId = d.DosyaId,
+                Aciklama = d.Aciklama,
+                AktiviteTuruId = d.AktiviteTuruId,
+                Tarih = d.Tarih
+            })
+            .FirstAsync();
+
+        vm.AktiviteTurleri = await DurusmaAktiviteTurleriGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> DurusmaDuzenleAsync(DurusmaDuzenleVM vm)
+    {
+        var model = await _vt.Durusmalar.FirstOrDefaultAsync(d => d.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"Id: {vm.Id} bulunamadı."
+            };
+
+        model.Aciklama = vm.Aciklama;
+        model.AktiviteTuruId = vm.AktiviteTuruId;
+        model.Tarih = vm.Tarih;
+
+        _vt.Durusmalar.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = model.DosyaId };
+    }
+
+    public async Task<Sonuc<DurusmaSilVM>> DurusmaSilVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Durusmalar.AnyAsync(d => d.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"Id: {id} bulunamadı."
+            };
+
+        var vm = await _vt.Durusmalar
+            .Where(d => d.Id == id)
+            .Include(d => d.AktiviteTuru)
+            .Select(d => new DurusmaSilVM
+            {
+                Id = d.Id,
+                DosyaId = d.DosyaId,
+                Aciklama = d.Aciklama,
+                AktiviteTuru = d.AktiviteTuru.Isim,
+                Tarih = d.Tarih
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> DurusmaSilAsync(int id)
+    {
+        var model = await _vt.Durusmalar.FirstOrDefaultAsync(d => d.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"Id: {id} bulunamadı."
+            };
+
+        var dosyaId = model.DosyaId;
+
+        _vt.Durusmalar.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = dosyaId };
+    }
+
+    public async Task<List<SelectListItem>> DurusmaAktiviteTurleriGetirAsync()
+        => await _vt.DurusmaAktiviteTurleri
+        .Select(d => new SelectListItem
+        {
+            Value = d.Id.ToString(),
+            Text = d.Isim
+        })
+        .ToListAsync();
     #endregion
 }

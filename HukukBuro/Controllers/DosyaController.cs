@@ -346,4 +346,91 @@ public class DosyaController : Controller
         return View(vm);
     }
     #endregion
+
+    #region Durusma
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> DurusmaEkle(int id)
+    {
+        var sonuc = await _dy.DurusmaEkleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> DurusmaEkle(DurusmaEkleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.DurusmaEkleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.AktiviteTurleri = await _dy.DurusmaAktiviteTurleriGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DurusmaDuzenle(int id)
+    {
+        var sonuc = await _dy.DurusmaDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DurusmaDuzenle(DurusmaDuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.DurusmaDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.AktiviteTurleri = await _dy.DurusmaAktiviteTurleriGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DurusmaSil(int id)
+    {
+        var sonuc = await _dy.DurusmaSilVMGetirAsync(id);
+
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(DurusmaSil))]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> DurusmaSilPOST(int id)
+    {
+        var sonuc = await _dy.DurusmaSilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
+    }
+    #endregion
 }

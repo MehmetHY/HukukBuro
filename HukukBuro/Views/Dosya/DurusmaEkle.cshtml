@@ -1,0 +1,31 @@
+﻿@model DurusmaEkleVM
+
+<a asp-action="Ozet" asp-route-id="@Model.DosyaId">Geri</a>
+
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <input asp-for="DosyaId" hidden />
+
+    <div>
+        <label asp-for="AktiviteTuruId"></label>
+        <select asp-for="AktiviteTuruId" asp-items="@Model.AktiviteTurleri"></select>
+        <span asp-validation-for="AktiviteTuruId"></span>
+    </div>
+
+    <div>
+        <label asp-for="Tarih"></label>
+        <input asp-for="Tarih" />
+        <span asp-validation-for="Tarih"></span>
+    </div>
+
+    <div>
+        <label asp-for="Aciklama"></label>
+        <input asp-for="Aciklama" />
+        <span asp-validation-for="Aciklama"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

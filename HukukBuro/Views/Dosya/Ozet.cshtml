@@ -144,3 +144,20 @@
 
 <hr />
 <a asp-action="karar" asp-route-id="@Model.Id">Karar</a>
+
+<hr />
+<h2>Duruşmalar</h2>
+<a asp-action="durusmaekle" asp-route-id="@Model.Id">Yeni duruşma ekle</a>
+@foreach (var durusma in Model.Durusmalar)
+{
+    <div>
+        <strong>@durusma.AktiviteTuru</strong>
+        &nbsp;
+        @durusma.Tarih
+        &nbsp;
+        <a asp-action="durusmaduzenle" asp-route-id="@durusma.Id">Düzenle</a>
+        &nbsp;
+        <a asp-action="durusmasil" asp-route-id="@durusma.Id">Sil</a>
+        <p>@durusma.Aciklama</p>
+    </div>
+}

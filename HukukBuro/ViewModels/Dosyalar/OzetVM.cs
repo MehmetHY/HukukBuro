@@ -33,6 +33,17 @@ public class OzetVM
         public string Konu { get; set; }
     }
 
+    public class Durusma
+    {
+        public int Id { get; set; }
+
+        public string AktiviteTuru { get; set; }
+
+        public DateTime Tarih { get; set; }
+
+        public string? Aciklama { get; set; }
+    }
+
     public int Id { get; set; }
 
     public int DosyaNo { get; set; }
@@ -59,4 +70,6 @@ public class OzetVM
     public List<Personel> SorumluPersonel { get; set; } = new();
 
     public List<Baglanti> DosyaBaglantilari { get; set; } = new();
+
+    public List<Durusma> Durusmalar { get; set; } = new();
 }

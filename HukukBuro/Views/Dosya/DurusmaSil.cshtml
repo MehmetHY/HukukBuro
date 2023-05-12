@@ -1,0 +1,28 @@
+﻿@model DurusmaSilVM
+
+<a asp-action="Ozet" asp-route-id="@Model.DosyaId">Geri</a>
+
+<hr />
+
+<div>
+    <strong>Aktivite Türü</strong>
+    &nbsp;
+    @Model.AktiviteTuru
+</div>
+
+<div>
+    <strong>Tarih</strong>
+    &nbsp;
+    @Model.Tarih
+</div>
+
+<div>
+    <strong>Açıklama</strong>
+    &nbsp;
+    @Model.Aciklama
+</div>
+
+<form method="post">
+    <input asp-for="Id" hidden />
+    <button type="submit">Sil</button>
+</form>
