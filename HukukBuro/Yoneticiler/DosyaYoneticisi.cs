@@ -1072,7 +1072,7 @@ public class DosyaYoneticisi
     public async Task<Sonuc<int>> BelgeEkleAsync(
         DosyaBelgesiEkleVM vm, IFormFile? belge)
     {
-        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(k => k.Id == vm.Id))
+        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.Id))
             return new()
             {
                 BasariliMi = false,
@@ -1122,6 +1122,165 @@ public class DosyaYoneticisi
         await _vt.SaveChangesAsync();
 
         return new() { Deger = vm.Id };
+    }
+
+    public async Task<Sonuc<DosyaBelgesiDuzenleVM>> BelgeDuzenleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.DosyaBelgeleri.AnyAsync(db => db.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.DosyaBelgeleri
+            .Where(db => db.Id == id)
+            .Select(db => new DosyaBelgesiDuzenleVM
+            {
+                Id = db.Id,
+                Aciklama = db.Aciklama,
+                Baslik = db.Baslik,
+                DosyaId = db.DosyaId
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> BelgeDuzenleAsync(
+        DosyaBelgesiDuzenleVM vm, IFormFile? belge)
+    {
+        var model = await _vt.DosyaBelgeleri.FirstOrDefaultAsync(db => db.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı"
+            };
+
+        if (vm.BelgeyiDegistir)
+        {
+            var yeniBelge = new BelgeAraci
+            {
+                Belge = belge,
+                Root = _env.WebRootPath,
+                Klasor = "belge",
+                UstuneYaz = true
+            };
+
+            var sonuc = yeniBelge.Onayla();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            var eskiBelge = new BelgeAraci
+            {
+                Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+            };
+
+            sonuc = eskiBelge.Sil();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            sonuc = yeniBelge.Olustur();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            model.Url = yeniBelge.Url!;
+            model.Uzanti = yeniBelge.Uzanti!;
+            model.Boyut = yeniBelge.Boyut;
+        }
+
+        model.Baslik = vm.Baslik;
+        model.Aciklama = vm.Aciklama;
+
+        _vt.DosyaBelgeleri.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = model.DosyaId };
+    }
+
+    public async Task<Sonuc<DosyaBelgesiSilVM>> BelgeSilVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.DosyaBelgeleri.AnyAsync(db => db.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = await _vt.DosyaBelgeleri
+            .Where(db => db.Id == id)
+            .Select(db => new DosyaBelgesiSilVM
+            {
+                Id = db.Id,
+                Aciklama = db.Aciklama,
+                Baslik = db.Baslik,
+                DosyaId = db.DosyaId,
+                Boyut = Yardimci.OkunabilirDosyaBoyutu(db.Boyut),
+                OlusturmaTarihi = db.OlusturmaTarihi,
+                Url = db.Url,
+                Uzanti = db.Uzanti
+            })
+            .FirstAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> BelgeSilAsync(int id)
+    {
+        var model = await _vt.DosyaBelgeleri.FirstOrDefaultAsync(db => db.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+            var belge = new BelgeAraci
+            {
+                Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+            };
+
+            var sonuc = belge.Sil();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+        var dosyaId = model.DosyaId;
+
+        _vt.DosyaBelgeleri.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = dosyaId };
     }
     #endregion
 }

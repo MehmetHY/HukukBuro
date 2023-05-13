@@ -1,12 +1,12 @@
-﻿@model KisiBelgesiDuzenleVM
+﻿@model DosyaBelgesiDuzenleVM
 
-<a asp-action="Belgeler" asp-route-id="@Model.KisiId">Geri</a>
+<a asp-action="Belgeler" asp-route-id="@Model.DosyaId">Geri</a>
 
 <hr />
 
 <form method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly"></div>
-    <input asp-for="KisiId" hidden/>
+    <input asp-for="DosyaId" hidden/> 
 
     <div>
         <label asp-for="Baslik"></label>
@@ -17,11 +17,6 @@
     <div>
         <label asp-for="Aciklama"></label>
         <input asp-for="Aciklama" />
-    </div>
-
-    <div>
-        <label asp-for="OzelMi"></label>
-        <input asp-for="OzelMi" />
     </div>
 
     <div>
