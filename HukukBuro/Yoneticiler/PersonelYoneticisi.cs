@@ -122,7 +122,7 @@ public class PersonelYoneticisi
                 HataMesaji = $"Sayfa: {vm.Sayfa}, Sayfa Boyutu: {vm.SayfaBoyutu}"
             };
 
-        vm.ToplamSayfa = await q.SayfaSayisi(vm.SayfaBoyutu);
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
         vm.Ogeler = await q.SayfaUygula(vm.Sayfa, vm.SayfaBoyutu).ToListAsync();
 
         foreach (var oge in vm.Ogeler)

@@ -1,4 +1,5 @@
-﻿using HukukBuro.Data;
+﻿using HukukBuro.Araclar;
+using HukukBuro.Data;
 using HukukBuro.Eklentiler;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
@@ -66,7 +67,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"Sayfa: {vm.Sayfa}, Sayfa Boyutu: {vm.SayfaBoyutu}"
             };
 
-        vm.ToplamSayfa = await q.SayfaSayisi(vm.SayfaBoyutu);
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
 
         vm.Ogeler = await q
             .SayfaUygula(vm.Sayfa, vm.SayfaBoyutu)
@@ -1005,5 +1006,122 @@ public class DosyaYoneticisi
             Text = d.Isim
         })
         .ToListAsync();
+    #endregion
+
+    #region DosyaBelgesi
+    public async Task<Sonuc<DosyaBelgeleriVM>> DosyaBelgeleriVMGetirAsync(
+        DosyaBelgeleriVM vm)
+    {
+        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.Id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"Id: {vm.Id} bulunamadı."
+            };
+
+        var q = _vt.DosyaBelgeleri
+            .Where(db => db.DosyaId == vm.Id)
+            .Select(db => new DosyaBelgeleriVM.Oge
+            {
+                Id = db.Id,
+                Aciklama = db.Aciklama,
+                Baslik = db.Baslik,
+                Boyut = Yardimci.OkunabilirDosyaBoyutu(db.Boyut),
+                OlusturmaTarihi = db.OlusturmaTarihi,
+                Url = db.Url,
+                Uzanti = db.Uzanti
+            });
+
+        if (!string.IsNullOrWhiteSpace(vm.Arama))
+            q = q.Where(db =>
+                (db.Aciklama != null && db.Aciklama.Contains(vm.Arama)) ||
+                db.Baslik.Contains(vm.Arama) ||
+                db.Boyut.Contains(vm.Arama) ||
+                db.Uzanti.Contains(vm.Arama));
+
+        if (!await q.SayfaGecerliMiAsync(vm.Sayfa, vm.SayfaBoyutu))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Sayfa",
+                HataMesaji = $"Sayfa: {vm.Sayfa}, Sayfa Boyutu: {vm.SayfaBoyutu}"
+            };
+
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
+        vm.Ogeler = await q.SayfaUygula(vm.Sayfa, vm.SayfaBoyutu).ToListAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<DosyaBelgesiEkleVM>> BelgeEkleVMGetirAsync(int id)
+    {
+        if (id < 1 || !await _vt.Dosyalar.AnyAsync(k => k.Id == id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı"
+            };
+
+        var vm = new DosyaBelgesiEkleVM { Id = id };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc<int>> BelgeEkleAsync(
+        DosyaBelgesiEkleVM vm, IFormFile? belge)
+    {
+        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(k => k.Id == vm.Id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı"
+            };
+
+        var belgeAraci = new BelgeAraci
+        {
+            Belge = belge,
+            Klasor = "belge",
+            Root = _env.WebRootPath
+        };
+
+        var sonuc = belgeAraci.Onayla();
+
+        if (!sonuc.BasariliMi)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = sonuc.HataMesaji
+            };
+
+        sonuc = belgeAraci.Olustur();
+
+        if (!sonuc.BasariliMi)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = sonuc.HataMesaji
+            };
+
+        var model = new DosyaBelgesi
+        {
+            Baslik = vm.Baslik,
+            Aciklama = vm.Aciklama,
+            DosyaId = vm.Id,
+            OlusturmaTarihi = DateTime.Now,
+            Url = belgeAraci.Url!,
+            Uzanti = belgeAraci.Uzanti!,
+            Boyut = belgeAraci.Boyut
+        };
+
+        await _vt.DosyaBelgeleri.AddAsync(model);
+        await _vt.SaveChangesAsync();
+
+        return new() { Deger = vm.Id };
+    }
     #endregion
 }

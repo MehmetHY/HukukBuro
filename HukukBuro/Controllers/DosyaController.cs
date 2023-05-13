@@ -433,4 +433,47 @@ public class DosyaController : Controller
         return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
     }
     #endregion
+
+    #region Belge
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> Belgeler(DosyaBelgeleriVM? vm)
+    {
+        var sonuc = await _dy.DosyaBelgeleriVMGetirAsync(vm ?? new());
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpGet]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> BelgeEkle(int id)
+    {
+        var sonuc = await _dy.BelgeEkleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [Route("[controller]/{id}/[action]")]
+    public async Task<IActionResult> BelgeEkle(DosyaBelgesiEkleVM vm, IFormFile? belge)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _dy.BelgeEkleAsync(vm, belge);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        return View(vm);
+    }
+    #endregion
 }

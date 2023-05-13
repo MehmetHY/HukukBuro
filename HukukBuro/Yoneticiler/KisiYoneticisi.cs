@@ -136,7 +136,7 @@ public class KisiYoneticisi
         }
 
         sonuc.Deger = new();
-        sonuc.Deger.ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu);
+        sonuc.Deger.ToplamSayfa = await q.ToplamSayfaAsync(sayfaBoyutu);
         sonuc.Deger.Sayfa = sayfa;
         sonuc.Deger.Arama = arama;
         sonuc.Deger.SayfaBoyutu = sayfaBoyutu;
@@ -496,7 +496,7 @@ public class KisiYoneticisi
         {
             Id = id,
             Sayfa = sayfa,
-            ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu),
+            ToplamSayfa = await q.ToplamSayfaAsync(sayfaBoyutu),
             SayfaBoyutu = sayfaBoyutu,
             Arama = arama
         };
@@ -740,7 +740,7 @@ public class KisiYoneticisi
                 HataMesaji = $"Sayfa: {sayfa}, Sayfa Boyutu: {sayfaBoyutu}"
             };
 
-        vm.ToplamSayfa = await q.SayfaSayisi(sayfaBoyutu);
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(sayfaBoyutu);
         vm.Sayfa = sayfa;
         vm.SayfaBoyutu = sayfaBoyutu;
         vm.Arama = arama;
@@ -791,7 +791,7 @@ public class KisiYoneticisi
                 HataMesaji = Sabit.Belge.HataMaxBoyut
             };
 
-        var uzanti = Path.GetExtension(belge.FileName).ToUpperInvariant();
+        var uzanti = Path.GetExtension(belge.FileName).ToLowerInvariant();
 
         if (string.IsNullOrWhiteSpace(uzanti) || !Sabit.Belge.GecerliUzantilar.Contains(uzanti))
             return new()
@@ -801,7 +801,7 @@ public class KisiYoneticisi
                 HataMesaji = $"Yüklenebilir uzantılar: '{string.Join("', '", Sabit.Belge.GecerliUzantilar)}'"
             };
 
-        var belgeUrl = $"belge/{Guid.NewGuid()}.{uzanti}";
+        var belgeUrl = $"belge/{Guid.NewGuid()}{uzanti}";
 
         var model = new KisiBelgesi
         {
@@ -944,7 +944,7 @@ public class KisiYoneticisi
                     HataMesaji = Sabit.Belge.HataMaxBoyut
                 };
 
-            var uzanti = Path.GetExtension(belge.FileName).ToUpperInvariant();
+            var uzanti = Path.GetExtension(belge.FileName).ToLowerInvariant();
 
             if (string.IsNullOrWhiteSpace(uzanti) || !Sabit.Belge.GecerliUzantilar.Contains(uzanti))
                 return new()

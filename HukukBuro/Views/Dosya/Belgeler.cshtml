@@ -1,0 +1,43 @@
+﻿@model DosyaBelgeleriVM
+
+<a asp-action="ozet" asp-route-id="@Model.Id">Geri</a>
+&nbsp;
+<a asp-action="BelgeEkle" asp-route-id="@Model.Id">Yeni Belge Ekle</a>
+&nbsp;
+<partial name="_Arama" model="@Model" />
+
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        <div>
+            <a href="@oge.Url" target="_blank">
+                <strong>@oge.Uzanti</strong>
+                &nbsp;
+                <span>@oge.Baslik</span>
+                &nbsp;
+            </a>
+            <span>Boyut: @oge.Boyut</span>
+            &nbsp;
+            <span>Oluşturma Tarihi: @oge.OlusturmaTarihi</span>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
+        {
+            <div>
+                @oge.Aciklama
+            </div>
+        }
+
+        <div>
+            <a asp-action="BelgeDuzenle" asp-route-id="@oge.Id">Düzenle</a>
+            <a asp-action="BelgeSil" asp-route-id="@oge.Id">Sil</a>
+        </div>
+    </div>
+}
+
+<hr />
+
+<partial name="_Sayfa" model="@Model" />

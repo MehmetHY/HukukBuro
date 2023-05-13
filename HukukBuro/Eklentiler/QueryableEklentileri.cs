@@ -32,7 +32,7 @@ public static class QueryableEklentileri
         return q.Skip((sayfa - 1) * sayfaBoyutu).Take(sayfaBoyutu);
     }
 
-    public static async Task<int> SayfaSayisi<T>(this IQueryable<T> q, int sayfaBoyutu)
+    public static async Task<int> ToplamSayfaAsync<T>(this IQueryable<T> q, int sayfaBoyutu)
     {
         int toplamSayfa = await q.CountAsync() / sayfaBoyutu;
 

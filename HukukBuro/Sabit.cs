@@ -21,14 +21,14 @@ public static class Sabit
 
     public static class Belge
     {
-        public static readonly string[] GecerliUzantilar = { ".JPG",
-                                                             ".JPEG",
-                                                             ".PNG",
-                                                             ".PDF",
-                                                             ".WEBP",
-                                                             ".DOCX",
-                                                             ".SVG",
-                                                             ".TXT"};
+        public static readonly string[] GecerliUzantilar = { ".jpg",
+                                                             ".jpeg",
+                                                             ".png",
+                                                             ".pdf",
+                                                             ".webp",
+                                                             ".docx",
+                                                             ".svg",
+                                                             ".txt"};
 
         public const int MaxBoyut = 2_000_000;
 

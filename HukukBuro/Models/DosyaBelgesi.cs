@@ -4,5 +4,6 @@
 
 public sealed class DosyaBelgesi : Belge
 {
+    public int DosyaId { get; set; }
     public Dosya Dosya { get; set; }
 }
