@@ -39,6 +39,7 @@ builder.Services.ConfigureApplicationCookie(ayarlar =>
 builder.Services.AddScoped<KisiYoneticisi>();
 builder.Services.AddScoped<DosyaYoneticisi>();
 builder.Services.AddScoped<PersonelYoneticisi>();
+builder.Services.AddScoped<RandevuYoneticisi>();
 
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10_000_000);
 

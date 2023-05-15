@@ -1,0 +1,42 @@
+﻿@model ListeleVM
+
+<a asp-action="ekle">Yeni randevu ekle</a>
+&nbsp;
+<partial name="_Arama" model="@Model" />
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        <strong>@oge.Konu</strong>
+        &nbsp;
+        @oge.Kisi
+        &nbsp;
+        @oge.Tarih
+        &nbsp;
+        <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
+        <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
+        &nbsp;
+
+        @if (oge.TamamlandiMi)
+        {
+            <strong>&nbsp;Tamamlandı</strong>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(oge.Sorumlu))
+        {
+            <strong>Sorumlu &nbsp;</strong>
+            @oge.Sorumlu
+        }
+
+        @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
+        {
+            <p>Açıklama: @oge.Aciklama</p>
+        }
+    </div>
+}
+
+<hr />
+
+<partial name="_Sayfa" model="@Model" />
