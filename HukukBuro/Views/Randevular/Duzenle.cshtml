@@ -1,0 +1,48 @@
+﻿@model DuzenleVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <input asp-for="Id" hidden />
+
+    <div>
+        <label asp-for="KisiId"></label>
+        <select asp-for="KisiId" asp-items="@Model.Kisiler"></select>
+        <span asp-validation-for="KisiId"></span>
+    </div>
+
+    <div>
+        <label asp-for="Konu"></label>
+        <input asp-for="Konu" />
+        <span asp-validation-for="Konu"></span>
+    </div>
+
+    <div>
+        <label asp-for="Aciklama"></label>
+        <input asp-for="Aciklama" />
+        <span asp-validation-for="Aciklama"></span>
+    </div>
+
+    <div>
+        <label asp-for="Tarih"></label>
+        <input asp-for="Tarih" />
+        <span asp-validation-for="Tarih"></span>
+    </div>
+
+    <div>
+        <label asp-for="TamamlandiMi"></label>
+        <input asp-for="TamamlandiMi" />
+        <span asp-validation-for="TamamlandiMi"></span>
+    </div>
+
+    <div>
+        <label asp-for="SorumluId"></label>
+        <select asp-for="SorumluId" asp-items="@Model.Personel"></select>
+        <span asp-validation-for="SorumluId"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

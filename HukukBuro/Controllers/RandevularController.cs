@@ -53,5 +53,35 @@ public class RandevularController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Duzenle(int id)
+    {
+        var sonuc = await _yonetici.DuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Duzenle(DuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _yonetici.DuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Listele));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Kisiler = await _yonetici.KisilerGetirAsync();
+        vm.Personel = await _yonetici.PersonelGetirAsync();
+
+        return View(vm);
+    }
     #endregion
 }

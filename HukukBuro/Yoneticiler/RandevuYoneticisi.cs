@@ -132,5 +132,79 @@ public class RandevuYoneticisi
 
         return new();
     }
+
+    public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
+    {
+        var vm = await _vt.Randevular
+            .Where(r => r.Id == id)
+            .Select(r => new DuzenleVM
+            {
+                Id = r.Id,
+                KisiId = r.KisiId,
+                Konu = r.Konu,
+                Aciklama = r.Aciklama,
+                Tarih = r.Tarih,
+                TamamlandiMi = r.TamamlandiMi,
+                SorumluId = r.SorumluId
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        vm.Kisiler = await KisilerGetirAsync();
+        vm.Personel = await PersonelGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
+    {
+        var model = await _vt.Randevular.FirstOrDefaultAsync(r => r.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı."
+            };
+
+        if (vm.KisiId != model.KisiId &&
+            (vm.KisiId < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId)))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.KisiId),
+                HataMesaji = $"id: {vm.KisiId} bulunamadı."
+            };
+
+        if (vm.SorumluId != model.SorumluId &&
+            !string.IsNullOrWhiteSpace(vm.SorumluId) &&
+            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.SorumluId),
+                HataMesaji = $"id: {vm.SorumluId} bulunamadı."
+            };
+
+        model.Konu = vm.Konu;
+        model.Aciklama = vm.Aciklama;
+        model.Tarih = vm.Tarih;
+        model.TamamlandiMi = vm.TamamlandiMi;
+        model.KisiId = vm.KisiId;
+        model.SorumluId = vm.SorumluId;
+
+        _vt.Randevular.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
     #endregion
 }
