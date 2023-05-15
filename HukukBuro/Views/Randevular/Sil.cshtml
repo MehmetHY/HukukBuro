@@ -1,0 +1,51 @@
+﻿@model SilVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="Id" hidden />
+
+    <div>
+        <strong>Konu</strong>
+        &nbsp;
+        @Model.Konu
+    </div>
+
+    <div>
+        <strong>Kişi</strong>
+        &nbsp;
+        @Model.Kisi
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Aciklama))
+    {
+        <div>
+            <strong>Açıklama</strong>
+            &nbsp;
+            @Model.Aciklama
+        </div>
+    }
+
+    <div>
+        <strong>Tarih</strong>
+        &nbsp;
+        @Model.Tarih
+    </div>
+
+    <div>
+        @(Model.TamamlandiMi ? "Tamamlandı" : "Tamamlanmadı")
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Sorumlu))
+    {
+        <div>
+            <strong>Sorumlu personel</strong>
+            &nbsp;
+            @Model.Sorumlu
+        </div>
+    }
+
+    <button type="submit">Sil</button>
+</form>

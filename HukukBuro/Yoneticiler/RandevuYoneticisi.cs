@@ -206,5 +206,57 @@ public class RandevuYoneticisi
 
         return new();
     }
+
+    public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
+    {
+        var vm = await _vt.Randevular
+            .Where(r => r.Id == id)
+            .Include(r => r.Kisi)
+            .Include(r => r.Sorumlu)
+            .Select(r => new SilVM
+            {
+                Id = r.Id,
+
+                Kisi = r.Kisi.TuzelMi ?
+                    r.Kisi.SirketIsmi! : $"{r.Kisi.Isim} {r.Kisi.Soyisim}",
+
+                Konu = r.Konu,
+                Aciklama = r.Aciklama,
+                Tarih = r.Tarih,
+                TamamlandiMi = r.TamamlandiMi,
+
+                Sorumlu = r.Sorumlu == null ?
+                    null : $"{r.Sorumlu.Isim} {r.Sorumlu.Soyisim}"
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> SilAsync(int id)
+    {
+        var model = await _vt.Randevular.FirstOrDefaultAsync(r => r.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        _vt.Randevular.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
     #endregion
 }

@@ -83,5 +83,28 @@ public class RandevularController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Sil(int id)
+    {
+        var sonuc = await _yonetici.SilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(Sil))]
+    public async Task<IActionResult> SilPOST(int id)
+    {
+        var sonuc = await _yonetici.SilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Listele));
+    }
     #endregion
 }
