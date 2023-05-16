@@ -380,4 +380,56 @@ public class GorevYoneticisi
 
         return new();
     }
+
+    public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
+    {
+        var vm = await _vt.Gorevler
+            .Where(g => g.Id == id)
+            .Include(g => g.Kisi)
+            .Include(g => g.Dosya)
+            .Include(g => g.Sorumlu)
+            .Include(g => g.Durum)
+            .Select(g => new SilVM
+            {
+                Id = g.Id,
+                BaglantiTuru = (BaglantiTuru)g.BaglantiTuru,
+                KisiIsmi = g.KisiId == null ? null : g.Kisi!.TamIsim,
+                DosyaIsmi=  g.DosyaId == null ? null : g.Dosya!.TamIsim,
+                SorumluIsmi = g.SorumluId == null ? null : g.Sorumlu!.TamIsim,
+                Konu = g.Konu,
+                Aciklama = g.Aciklama,
+                BitisTarihi = g.BitisTarihi,
+                OlusturmaTarihi = g.OlusturmaTarihi,
+                Durum = g.Durum.Isim
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> SilAsync(int id)
+    {
+        var model = await _vt.Gorevler.FirstOrDefaultAsync(g => g.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        _vt.Gorevler.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
 }

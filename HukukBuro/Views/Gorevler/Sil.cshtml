@@ -1,0 +1,62 @@
+﻿@model SilVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="Id" hidden />
+
+    <div>
+        @switch (Model.BaglantiTuru)
+        {
+            case BaglantiTuru.Dosya:
+                <span>
+                    Dosya: @Model.DosyaIsmi
+                    &nbsp;
+                </span>
+                break;
+            case BaglantiTuru.Kisi:
+                <span>
+                    Kişi: @Model.KisiIsmi
+                    &nbsp;
+                </span>
+                break;
+        }
+
+        <strong>@Model.Konu</strong>
+        &nbsp;
+        <a asp-action="duzenle" asp-route-id="@Model.Id">Düzenle</a>
+        <a asp-action="sil" asp-route-id="@Model.Id">Sil</a>
+    </div>
+
+    <div>
+        <strong>@Model.Durum</strong>
+    </div>
+
+    <div>
+        Bitiş tarihi: @Model.BitisTarihi
+    </div>
+
+    <div>
+        Oluşturma tarihi: @Model.OlusturmaTarihi
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.SorumluIsmi))
+    {
+        <div>
+            Sorumlu: @Model.SorumluIsmi
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Aciklama))
+    {
+        <div>
+            Açıklama: @Model.Aciklama
+        </div>
+    }
+
+    <button type="submit">Sil</button>
+</form>
+
+
