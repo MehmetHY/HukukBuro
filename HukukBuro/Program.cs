@@ -40,6 +40,7 @@ builder.Services.AddScoped<KisiYoneticisi>();
 builder.Services.AddScoped<DosyaYoneticisi>();
 builder.Services.AddScoped<PersonelYoneticisi>();
 builder.Services.AddScoped<RandevuYoneticisi>();
+builder.Services.AddScoped<GorevYoneticisi>();
 
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10_000_000);
 

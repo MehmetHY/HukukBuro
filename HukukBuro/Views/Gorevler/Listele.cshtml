@@ -1,0 +1,63 @@
+﻿@model ListeleVM
+
+<a asp-action="ekle">Yeni görev ekle</a>
+&nbsp;
+<partial name="_Arama" model="@Model" />
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        @switch (oge.BaglantiTuru)
+        {
+            case BaglantiTuru.Dosya:
+                <span>
+                    Dosya: @oge.DosyaIsmi
+                    &nbsp;
+                </span>
+                break;
+            case BaglantiTuru.Kisi:
+                <span>
+                    Kişi: @oge.KisiIsmi
+                    &nbsp;
+                </span>
+                break;
+        }
+
+        <strong>@oge.Konu</strong>
+        &nbsp;
+        <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
+        <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
+    </div>
+
+    <div>
+        <strong>@oge.Durum</strong>
+    </div>
+
+    <div>
+        Bitiş tarihi: @oge.BitisTarihi
+    </div>
+
+    <div>
+        Oluşturma tarihi: @oge.OlusturmaTarihi
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(oge.SorumluIsmi))
+    {
+        <div>
+            Sorumlu: @oge.SorumluIsmi
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
+    {
+        <div>
+            Açıklama: @oge.Aciklama
+        </div>
+    }
+}
+
+<hr />
+
+<partial name="_Sayfa" model="@Model" />

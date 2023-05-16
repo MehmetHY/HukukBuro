@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HukukBuro.Models;
 
@@ -36,7 +37,7 @@ public sealed class Dosya
 
     public List<DosyaBaglantisi> IlgiliDosyalar { get; set; } = new();
 
-    public List<DosyaGorevi> IlgiliGorevler { get; set; } = new();
+    public List<Gorev> IlgiliGorevler { get; set; } = new();
 
     public List<Durusma> Durusmalar { get; set; } = new();
 
@@ -54,5 +55,6 @@ public sealed class Dosya
 
     public KesinlesmeBilgileri? KesinlesmeBilgileri { get; set; }
 
-
+    [NotMapped]
+    public string TamIsim => $"{DosyaNo} {BuroNo} {Konu}";
 }

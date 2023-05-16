@@ -13,6 +13,7 @@ public sealed class Duyuru
 
     public string Mesaj { get; set; }
 
+    public int KategoriId { get; set; }
     public DuyuruKategorisi Kategori { get; set; }
 
     public List<Personel> Okumayanlar { get; set; } = new();

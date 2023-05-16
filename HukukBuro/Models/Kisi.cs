@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HukukBuro.Models;
 
@@ -42,9 +43,12 @@ public sealed class Kisi
 
     public List<Randevu> Randevular { get; set; } = new();
 
-    public List<KisiGorevi> IlgiliGorevler { get; set; } = new();
+    public List<Gorev> IlgiliGorevler { get; set; } = new();
 
     public List<KisiFinansIslemi> IlgiliFinansIslemleri { get; set; } = new();
 
     public List<KisiBelgesi> Belgeler { get; set; } = new();
+
+    [NotMapped]
+    public string? TamIsim  => TuzelMi ? SirketIsmi : $"{Isim} {Soyisim}";
 }

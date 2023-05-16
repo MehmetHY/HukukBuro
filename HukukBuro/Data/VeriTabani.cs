@@ -15,14 +15,13 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
     public DbSet<DosyaBelgesi> DosyaBelgeleri { get; set; }
     public DbSet<DosyaDurumu> DosyaDurumu { get; set; }
     public DbSet<DosyaFinansIslemi> DosyaFinansIslemleri { get; set; }
-    public DbSet<DosyaGorevi> DosyaGorevleri { get; set; }
     public DbSet<DosyaPersonel> DosyaPersonel { get; set; }
     public DbSet<DosyaKategorisi> DosyaKategorileri { get; set; }
     public DbSet<DosyaTuru> DosyaTurleri { get; set; }
     public DbSet<Durusma> Durusmalar { get; set; }
     public DbSet<DurusmaAktiviteTuru> DurusmaAktiviteTurleri { get; set; }
     public DbSet<FinansIslemTuru> FinansIslemTurleri { get; set; }
-    public DbSet<KisiGorevi> KisiGorevleri { get; set; }
+    public DbSet<Gorev> Gorevler { get; set; }
     public DbSet<GorevDurumu> GorevDurumlari { get; set; }
     public DbSet<KararBilgileri> KararBilgileri { get; set; }
     public DbSet<KararDuzeltmeBilgileri> KararDuzeltmeBilgileri { get; set; }
@@ -49,53 +48,70 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
         builder.Entity<Dosya>()
             .HasOne(d => d.DosyaTuru)
             .WithMany()
+            .HasForeignKey(d => d.DosyaTuruId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<Dosya>()
             .HasOne(d => d.DosyaDurumu)
             .WithMany()
+            .HasForeignKey(d => d.DosyaDurumuId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<Dosya>()
             .HasOne(d => d.DosyaKategorisi)
             .WithMany()
+            .HasForeignKey(d => d.DosyaKategorisiId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
         builder.Entity<DosyaBaglantisi>()
             .HasOne(d => d.IlgiliDosya)
             .WithMany()
+            .HasForeignKey(d => d.IlgiliDosyaId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
         builder.Entity<Durusma>()
             .HasOne(d => d.AktiviteTuru)
             .WithMany()
+            .HasForeignKey(d => d.AktiviteTuruId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
         builder.Entity<Duyuru>()
             .HasOne(d => d.Kategori)
             .WithMany()
+            .HasForeignKey(d => d.KategoriId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
         builder.Entity<TarafKisi>()
-            .HasOne(d => d.TarafTuru)
+            .HasOne(t => t.TarafTuru)
             .WithMany()
+            .HasForeignKey(t => t.TarafTuruId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
-        builder.Entity<KisiGorevi>()
-            .HasOne(d => d.Durum)
+        builder.Entity<Gorev>()
+            .HasOne(g => g.Durum)
             .WithMany()
+            .HasForeignKey(g => g.DurumId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        builder.Entity<Gorev>()
+            .HasOne(g => g.Kisi)
+            .WithMany(k => k.IlgiliGorevler)
+            .HasForeignKey(g => g.KisiId);
 
-        builder.Entity<DosyaGorevi>()
-            .HasOne(d => d.Durum)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<Gorev>()
+            .HasOne(g => g.Dosya)
+            .WithMany(d => d.IlgiliGorevler)
+            .HasForeignKey(g => g.DosyaId);
+
+        builder.Entity<Gorev>()
+            .HasOne(g => g.Sorumlu)
+            .WithMany(k => k.SorumluGorevler)
+            .HasForeignKey(g => g.SorumluId);
 
 
         builder.Entity<DosyaFinansIslemi>()
