@@ -1,0 +1,60 @@
+﻿@model DuzenleVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<form method="post">
+    <input asp-for="Id" hidden />
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="BaglantiTuru"></label>
+        <select asp-for="BaglantiTuru" asp-items="@Html.GetEnumSelectList<BaglantiTuru>()"></select>
+        <span asp-validation-for="BaglantiTuru"></span>
+    </div>
+
+    <div>
+        <label asp-for="DosyaId"></label>
+        <select asp-for="DosyaId" asp-items="@Model.Dosyalar"></select>
+        <span asp-validation-for="DosyaId"></span>
+    </div>
+
+    <div>
+        <label asp-for="KisiId"></label>
+        <select asp-for="KisiId" asp-items="@Model.Kisiler"></select>
+        <span asp-validation-for="KisiId"></span>
+    </div>
+
+    <div>
+        <label asp-for="Konu"></label>
+        <input asp-for="Konu" />
+        <span asp-validation-for="Konu"></span>
+    </div>
+
+    <div>
+        <label asp-for="Aciklama"></label>
+        <input asp-for="Aciklama" />
+        <span asp-validation-for="Aciklama"></span>
+    </div>
+
+    <div>
+        <label asp-for="BitisTarihi"></label>
+        <input asp-for="BitisTarihi" />
+        <span asp-validation-for="BitisTarihi"></span>
+    </div>
+
+    <div>
+        <label asp-for="SorumluId"></label>
+        <select asp-for="SorumluId" asp-items="@Model.Personel"></select>
+        <span asp-validation-for="SorumluId"></span>
+    </div>
+
+    <div>
+        <label asp-for="DurumId"></label>
+        <select asp-for="DurumId" asp-items="@Model.Durumlar"></select>
+        <span asp-validation-for="DurumId"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

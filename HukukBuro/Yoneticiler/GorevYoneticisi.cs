@@ -239,4 +239,145 @@ public class GorevYoneticisi
 
         return new();
     }
+
+    public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
+    {
+        var vm = await _vt.Gorevler
+            .Where(g => g.Id == id)
+            .Select(g => new DuzenleVM
+            {
+                Id = g.Id,
+                Konu = g.Konu,
+                Aciklama = g.Aciklama,
+                BitisTarihi = g.BitisTarihi,
+                DurumId = g.DurumId,
+                BaglantiTuru = (BaglantiTuru)g.BaglantiTuru,
+                DosyaId = g.DurumId,
+                KisiId = g.KisiId,
+                SorumluId = g.SorumluId
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        vm.Kisiler = await KisilerGetirAsync();
+        vm.Dosyalar = await DosyalariGetirAsync();
+        vm.Durumlar = await GorevDurumlariGetirAsync();
+        vm.Personel= await PersonelGetirAsync();
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
+    {
+        var model = await _vt.Gorevler.FirstOrDefaultAsync(g => g.Id == vm.Id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı."
+            };
+
+        if (vm.DurumId < 1 ||
+            !await _vt.GorevDurumlari.AnyAsync(gd => gd.Id == vm.DurumId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.DurumId),
+                HataMesaji = $"id: {vm.DurumId} bulunamadı."
+            };
+
+        if (vm.SorumluId != null &&
+            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.SorumluId),
+                HataMesaji = $"id: {vm.SorumluId} bulunamadı."
+            };
+
+        return vm.BaglantiTuru switch
+        {
+            BaglantiTuru.Dosya => await DosyaGoreviDuzenleAsync(vm, model),
+            BaglantiTuru.Kisi => await KisiGoreviDuzenleAsync(vm, model),
+            _ => await GenelGorevDuzenleAsync(vm, model)
+        };
+    }
+
+    public async Task<Sonuc> GenelGorevDuzenleAsync(DuzenleVM vm, Gorev model)
+    {
+        model.BaglantiTuru = (int)BaglantiTuru.Genel;
+        model.DosyaId = null;
+        model.KisiId = null;
+        model.Konu = vm.Konu;
+        model.Aciklama = vm.Aciklama;
+        model.BitisTarihi = vm.BitisTarihi;
+        model.DurumId = vm.DurumId;
+        model.SorumluId = vm.SorumluId;
+
+        _vt.Gorevler.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task<Sonuc> DosyaGoreviDuzenleAsync(DuzenleVM vm, Gorev model)
+    {
+        if (vm.DosyaId < 1 ||
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.DosyaId),
+                HataMesaji = $"id: {vm.DosyaId} bulunamadı."
+            };
+
+        model.BaglantiTuru = (int)BaglantiTuru.Genel;
+        model.DosyaId = vm.DosyaId;
+        model.KisiId = null;
+        model.Konu = vm.Konu;
+        model.Aciklama = vm.Aciklama;
+        model.BitisTarihi = vm.BitisTarihi;
+        model.DurumId = vm.DurumId;
+        model.SorumluId = vm.SorumluId;
+
+        _vt.Gorevler.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task<Sonuc> KisiGoreviDuzenleAsync(DuzenleVM vm, Gorev model)
+    {
+        if (vm.KisiId < 1 ||
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = nameof(vm.KisiId),
+                HataMesaji = $"id: {vm.KisiId} bulunamadı."
+            };
+
+        model.BaglantiTuru = (int)BaglantiTuru.Genel;
+        model.DosyaId = null;
+        model.KisiId = vm.KisiId;
+        model.Konu = vm.Konu;
+        model.Aciklama = vm.Aciklama;
+        model.BitisTarihi = vm.BitisTarihi;
+        model.DurumId = vm.DurumId;
+        model.SorumluId = vm.SorumluId;
+
+        _vt.Gorevler.Update(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
 }
