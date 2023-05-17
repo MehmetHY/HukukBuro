@@ -4,7 +4,7 @@
 &nbsp;
 <a asp-action="BelgeEkle" asp-route-id="@Model.Id">Yeni Belge Ekle</a>
 &nbsp;
-<partial name="_Arama" model="Model" />
+<partial name="_Arama" model="@Model" />
 
 @foreach (var oge in Model.Ogeler)
 {
@@ -12,7 +12,7 @@
 
     <div>
         <div>
-            <a href="/@oge.Url" target="_blank">
+            <a href="@oge.Url" target="_blank">
                 <strong>@oge.Uzanti</strong>
                 &nbsp;
                 <span>@oge.Baslik</span>

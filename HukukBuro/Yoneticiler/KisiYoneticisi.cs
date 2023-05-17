@@ -1,4 +1,5 @@
-﻿using HukukBuro.Data;
+﻿using HukukBuro.Araclar;
+using HukukBuro.Data;
 using HukukBuro.Eklentiler;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
@@ -295,7 +296,12 @@ public class KisiYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-        await KisiBaglantilarindakiKayitlariSilAsync(id);
+        await KisiBaglantilariniTemizleAsync(id);
+        await DosyaBaglantilariniTemizleAsync(id);
+        await GorevBaglantilariniTemizleAsync(id);
+        await FinansBaglantilariniTemizleAsync(id);
+        await BelgeleriTemizleAsync(id);
+
         _vt.Kisiler.Remove(model);
         await _vt.SaveChangesAsync();
 
@@ -639,16 +645,6 @@ public class KisiYoneticisi
         return new();
     }
 
-    public async Task KisiBaglantilarindakiKayitlariSilAsync(int id)
-    {
-        var modeller = await _vt.KisiBaglantilari
-            .Where(kb => kb.IlgiliKisiId == id)
-            .ToListAsync();
-
-        _vt.KisiBaglantilari.RemoveRange(modeller);
-        await _vt.SaveChangesAsync();
-    }
-
     public async Task<Sonuc<IlgiliKisiSilVM>> IlgiliKisiSilVMGetirAsync(int id)
     {
         if (id < 1 || !await _vt.KisiBaglantilari.AnyAsync(k => k.Id == id))
@@ -775,53 +771,44 @@ public class KisiYoneticisi
                 HataMesaji = $"id: {vm.KisiId} bulunamadı"
             };
 
-        if (belge == null || belge.Length == 0)
+        var belgeAraci = new BelgeAraci
+        {
+            Belge = belge,
+            Klasor = "belge",
+            Root = _env.WebRootPath
+        };
+
+        var sonuc = belgeAraci.Onayla();
+
+        if (!sonuc.BasariliMi)
             return new()
             {
                 BasariliMi = false,
                 HataBasligi = string.Empty,
-                HataMesaji = Sabit.Belge.HataGerekli
+                HataMesaji = sonuc.HataMesaji
             };
 
-        if (belge.Length > Sabit.Belge.MaxBoyut)
+        sonuc = belgeAraci.Olustur();
+
+        if (!sonuc.BasariliMi)
             return new()
             {
                 BasariliMi = false,
                 HataBasligi = string.Empty,
-                HataMesaji = Sabit.Belge.HataMaxBoyut
+                HataMesaji = sonuc.HataMesaji
             };
-
-        var uzanti = Path.GetExtension(belge.FileName).ToLowerInvariant();
-
-        if (string.IsNullOrWhiteSpace(uzanti) || !Sabit.Belge.GecerliUzantilar.Contains(uzanti))
-            return new()
-            {
-                BasariliMi = false,
-                HataBasligi = string.Empty,
-                HataMesaji = $"Yüklenebilir uzantılar: '{string.Join("', '", Sabit.Belge.GecerliUzantilar)}'"
-            };
-
-        var belgeUrl = $"belge/{Guid.NewGuid()}{uzanti}";
 
         var model = new KisiBelgesi
         {
-            KisiId = vm.KisiId,
             Baslik = vm.Baslik,
             Aciklama = vm.Aciklama,
-            OzelMi = vm.OzelMi,
-            Uzanti = uzanti,
-            Boyut = belge.Length,
-            Url = belgeUrl
+            KisiId = vm.KisiId,
+            OlusturmaTarihi = DateTime.Now,
+            Url = belgeAraci.Url!,
+            Uzanti = belgeAraci.Uzanti!,
+            Boyut = belgeAraci.Boyut,
+            OzelMi = vm.OzelMi
         };
-
-        var belgeYolu = Path.Combine(_env.WebRootPath, belgeUrl);
-
-        using (var stream = new FileStream(belgeYolu, FileMode.Create))
-        {
-            belge.CopyTo(stream);
-        }
-
-        model.OlusturmaTarihi = DateTime.Now;
 
         await _vt.KisiBelgeleri.AddAsync(model);
         await _vt.SaveChangesAsync();
@@ -861,22 +848,35 @@ public class KisiYoneticisi
 
     public async Task<Sonuc<int>> BelgeSilAsync(int id)
     {
-        if (id < 1 || !await _vt.KisiBelgeleri.AnyAsync(kb => kb.Id == id))
+        var model = await _vt.KisiBelgeleri.FirstOrDefaultAsync(kb => kb.Id == id);
+
+        if (model == null)
             return new()
             {
                 BasariliMi = false,
-                HataBasligi = "Geçersiz Belge",
+                HataBasligi = "Geçersiz Id",
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-        var model = await _vt.KisiBelgeleri.FirstAsync(kb => kb.Id == id);
+            var belge = new BelgeAraci
+            {
+                Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+            };
+
+            var sonuc = belge.Sil();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
         var kisiId = model.KisiId;
-        var belgeYolu = Path.Combine(_env.WebRootPath, model.Url);
+
         _vt.KisiBelgeleri.Remove(model);
         await _vt.SaveChangesAsync();
-
-        if (File.Exists(belgeYolu))
-            File.Delete(belgeYolu);
 
         return new() { Deger = kisiId };
     }
@@ -912,7 +912,9 @@ public class KisiYoneticisi
         KisiBelgesiDuzenleVM vm,
         IFormFile? belge)
     {
-        if (vm.Id < 1 || !await _vt.KisiBelgeleri.AnyAsync(kb => kb.Id == vm.Id))
+        var model = await _vt.KisiBelgeleri.FirstOrDefaultAsync(kb => kb.Id == vm.Id);
+
+        if (model == null)
             return new()
             {
                 BasariliMi = false,
@@ -920,61 +922,130 @@ public class KisiYoneticisi
                 HataMesaji = $"id: {vm.Id} bulunamadı"
             };
 
-        var model = await _vt.KisiBelgeleri.FirstAsync(kb => kb.Id == vm.Id);
+        if (vm.BelgeyiDegistir)
+        {
+            var yeniBelge = new BelgeAraci
+            {
+                Belge = belge,
+                Root = _env.WebRootPath,
+                Klasor = "belge",
+                UstuneYaz = true
+            };
+
+            var sonuc = yeniBelge.Onayla();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            var eskiBelge = new BelgeAraci
+            {
+                Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+            };
+
+            sonuc = eskiBelge.Sil();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            sonuc = yeniBelge.Olustur();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            model.Url = yeniBelge.Url!;
+            model.Uzanti = yeniBelge.Uzanti!;
+            model.Boyut = yeniBelge.Boyut;
+        }
 
         model.Baslik = vm.Baslik;
         model.Aciklama = vm.Aciklama;
         model.OzelMi = vm.OzelMi;
 
-        if (vm.BelgeyiDegistir)
-        {
-            if (belge == null || belge.Length == 0)
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = Sabit.Belge.HataGerekli
-                };
-
-            if (belge.Length > Sabit.Belge.MaxBoyut)
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = Sabit.Belge.HataMaxBoyut
-                };
-
-            var uzanti = Path.GetExtension(belge.FileName).ToLowerInvariant();
-
-            if (string.IsNullOrWhiteSpace(uzanti) || !Sabit.Belge.GecerliUzantilar.Contains(uzanti))
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = $"Yüklenebilir uzantılar: '{string.Join("', '", Sabit.Belge.GecerliUzantilar)}'"
-                };
-
-            var belgeUrl = $"belge/{Guid.NewGuid()}.{uzanti}";
-            var eskiBelgeYolu = Path.Combine(_env.WebRootPath, model.Url);
-            var belgeYolu = Path.Combine(_env.WebRootPath, belgeUrl);
-
-            using (var stream = new FileStream(belgeYolu, FileMode.Create))
-            {
-                belge.CopyTo(stream);
-            }
-
-            if (File.Exists(eskiBelgeYolu))
-                File.Delete(eskiBelgeYolu);
-
-            model.Url = belgeUrl;
-            model.Uzanti = uzanti;
-            model.Boyut = belge.Length;
-        }
-
         _vt.KisiBelgeleri.Update(model);
         await _vt.SaveChangesAsync();
 
         return new() { Deger = model.KisiId };
+    }
+    #endregion
+
+    #region Temizle
+    public async Task KisiBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.KisiBaglantilari
+            .Where(kb => kb.IlgiliKisiId == id)
+            .ToListAsync();
+
+        _vt.KisiBaglantilari.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task DosyaBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.TarafKisiler
+            .Where(t => t.KisiId == id)
+            .ToListAsync();
+
+        _vt.TarafKisiler.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task GorevBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.Gorevler
+            .Where(g => g.KisiId == id)
+            .ToListAsync();
+
+        _vt.Gorevler.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task FinansBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.FinansIslemleri
+            .Where(f => f.KisiId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+        {
+            model.KisiBaglantisiVar = false;
+            model.KisiId = null;
+        }
+
+        _vt.FinansIslemleri.UpdateRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task BelgeleriTemizleAsync(int id)
+    {
+        var modeller = await _vt.KisiBelgeleri
+            .Where(b => b.KisiId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+        {
+            var belgeYolu = Path.Combine(_env.WebRootPath, model.Url);
+
+            if (File.Exists(belgeYolu))
+                File.Delete(belgeYolu);
+        }
+
+        _vt.KisiBelgeleri.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
     }
     #endregion
 }

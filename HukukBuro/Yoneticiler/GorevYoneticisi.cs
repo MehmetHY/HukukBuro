@@ -340,7 +340,7 @@ public class GorevYoneticisi
                 HataMesaji = $"id: {vm.DosyaId} bulunamadı."
             };
 
-        model.BaglantiTuru = (int)BaglantiTuru.Genel;
+        model.BaglantiTuru = (int)BaglantiTuru.Dosya;
         model.DosyaId = vm.DosyaId;
         model.KisiId = null;
         model.Konu = vm.Konu;
@@ -366,7 +366,7 @@ public class GorevYoneticisi
                 HataMesaji = $"id: {vm.KisiId} bulunamadı."
             };
 
-        model.BaglantiTuru = (int)BaglantiTuru.Genel;
+        model.BaglantiTuru = (int)BaglantiTuru.Kisi;
         model.DosyaId = null;
         model.KisiId = vm.KisiId;
         model.Konu = vm.Konu;
