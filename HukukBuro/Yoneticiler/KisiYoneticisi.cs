@@ -1038,7 +1038,7 @@ public class KisiYoneticisi
 
         foreach (var model in modeller)
         {
-            var belgeYolu = Path.Combine(_env.WebRootPath, model.Url);
+            var belgeYolu = Path.Combine(_env.WebRootPath, model.Url[1..]);
 
             if (File.Exists(belgeYolu))
                 File.Delete(belgeYolu);
