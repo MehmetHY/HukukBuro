@@ -96,6 +96,29 @@ public class DosyaController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Sil(int id)
+    {
+        var sonuc = await _dy.SilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(Sil))]
+    public async Task<IActionResult> SilPOST(int id)
+    {
+        var sonuc = await _dy.SilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Listele));
+    }
     #endregion
 
     #region Taraf

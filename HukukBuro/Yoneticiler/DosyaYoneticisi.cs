@@ -239,6 +239,62 @@ public class DosyaYoneticisi
 
         return new();
     }
+    
+    public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
+    {
+        var vm = await _vt.Dosyalar
+            .Where(d => d.Id == id)
+            .Include(d => d.DosyaTuru)
+            .Include(d => d.DosyaKategorisi)
+            .Include(d => d.DosyaDurumu)
+            .Select(d => new SilVM
+            {
+                Id = d.Id,
+                Aciklama = d.Aciklama,
+                BuroNo = d.BuroNo,
+                Konu = d.Konu,
+                DosyaDurumu = d.DosyaDurumu.Isim,
+                DosyaKategorisi = d.DosyaKategorisi.Isim,
+                DosyaNo = d.DosyaNo,
+                DosyaTuru = d.DosyaTuru.Isim
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> SilAsync(int id)
+    {
+        var model = await _vt.Dosyalar.FirstOrDefaultAsync(d => d.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        await PersonelBaglantlariniTemizleAsync(id);
+        await DosyaBaglantilariniTemizleAsync(id);
+        await GorevBaglantilariniTemizleAsync(id);
+        await BelgeleriTemizleAsync(id);
+        await FinansBaglantilariniTemizleAsync(id);
+        await KararBilgileriniTemizleAsync(id);
+
+        _vt.Dosyalar.Remove(model);
+        await _vt.SaveChangesAsync();
+
+        return new();
+    }
     #endregion
 
     #region Taraf
@@ -1281,6 +1337,89 @@ public class DosyaYoneticisi
         await _vt.SaveChangesAsync();
 
         return new() { Deger = dosyaId };
+    }
+    #endregion
+
+    #region Temizle
+    public async Task PersonelBaglantlariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.DosyaPersonel
+            .Where(dp => dp.DosyaId == id)
+            .ToListAsync();
+
+        _vt.DosyaPersonel.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+    
+    public async Task DosyaBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.DosyaBaglantilari
+            .Where(db => db.IlgiliDosyaId == id)
+            .ToListAsync();
+
+        _vt.DosyaBaglantilari.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+    
+    public async Task GorevBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.Gorevler
+            .Where(db => db.DosyaId == id)
+            .ToListAsync();
+
+        _vt.Gorevler.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+    
+    public async Task BelgeleriTemizleAsync(int id)
+    {
+        var modeller = await _vt.DosyaBelgeleri
+            .Where(db => db.DosyaId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+        {
+            var belgeYolu = Path.Combine(_env.WebRootPath, model.Url[1..]);
+
+            if (File.Exists(belgeYolu))
+                File.Delete(belgeYolu);
+        }
+
+        _vt.DosyaBelgeleri.RemoveRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task FinansBaglantilariniTemizleAsync(int id)
+    {
+        var modeller = await _vt.FinansIslemleri
+            .Where(f => f.DosyaId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+        {
+            model.DosyaBaglantisiVar = false;
+            model.DosyaId = null;
+        }
+
+        _vt.FinansIslemleri.UpdateRange(modeller);
+        await _vt.SaveChangesAsync();
+    }
+
+    public async Task KararBilgileriniTemizleAsync(int id)
+    {
+        var kararModel = await _vt.KararBilgileri.FirstAsync(k => k.DosyaId == id);
+        var bolgeAdliyeModel = await _vt.BolgeAdliyeMahkemesiBilgileri.FirstAsync(k => k.DosyaId == id);
+        var temyizModel = await _vt.TemyizBilgileri.FirstAsync(k => k.DosyaId == id);
+        var duzeltmeModel = await _vt.KararDuzeltmeBilgileri.FirstAsync(k => k.DosyaId == id);
+        var kesinlesmeModel = await _vt.KesinlesmeBilgileri.FirstAsync(k => k.DosyaId == id);
+
+        _vt.KararBilgileri.Remove(kararModel);
+        _vt.BolgeAdliyeMahkemesiBilgileri.Remove(bolgeAdliyeModel);
+        _vt.TemyizBilgileri.Remove(temyizModel);
+        _vt.KararDuzeltmeBilgileri.Remove(duzeltmeModel);
+        _vt.KesinlesmeBilgileri.Remove(kesinlesmeModel);
+
+        await _vt.SaveChangesAsync();
     }
     #endregion
 }
