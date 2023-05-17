@@ -1,7 +1,4 @@
-﻿using HukukBuro.ViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace HukukBuro;
+﻿namespace HukukBuro;
 
 public static class Sabit
 {
@@ -76,5 +73,10 @@ public static class Sabit
         public const string Icra = "İcra";
         public const string Arabuluculuk = "Arabuluculuk";
         public const string Sorusturma = "Soruşturma";
+    }
+
+    public static class Regex
+    {
+        public const string Para = @"^\s*\d+[,|\.]?(?:\d{0,2})?\s*$";
     }
 }

@@ -1,0 +1,82 @@
+﻿@model ListeleVM
+
+<a asp-action="ekle">Yeni işlem ekle</a>
+&nbsp;
+<partial name="_Arama" model="@Model" />
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        <strong>@oge.Miktar TL</strong>
+        &nbsp;
+        @oge.IslemTuru.DisplayName()
+        &nbsp;
+        <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
+        &nbsp;
+        <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
+    </div>
+
+    @if (oge.Odendi)
+    {
+        <div>
+            Ödendi
+            &nbsp;
+            Ödeme Tarihi: @oge.OdemeTarihi
+        </div>
+
+        @if (oge.MakbuzKesildi)
+        {
+            <div>
+                Makbuz No: @oge.MakbuzNo
+                &nbsp;
+                Makbuz Tarihi: @oge.MakbuzTarihi
+            </div>
+        }
+    }
+    else
+    {
+        <span>Ödenmedi &nbsp;</span>
+        <span>Son Ödeme Tarihi: @oge.SonOdemeTarihi</span>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(oge.IslemYapan))
+    {
+        <div>
+            İşlem yapan: @oge.IslemYapan
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(oge.Kisi))
+    {
+        <div>
+            Kişi: @oge.Kisi
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(oge.Dosya))
+    {
+        <div>
+            Dosya: @oge.Dosya
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(oge.Personel))
+    {
+        <div>
+            Personel: @oge.Personel
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
+    {
+        <div>
+            Açıklama: @oge.Aciklama
+        </div>
+    }
+}
+
+
+<hr />
+<partial name="_Sayfa" model="@Model" />

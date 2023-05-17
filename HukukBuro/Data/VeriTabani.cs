@@ -14,13 +14,12 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
     public DbSet<DosyaBaglantisi> DosyaBaglantilari { get; set; }
     public DbSet<DosyaBelgesi> DosyaBelgeleri { get; set; }
     public DbSet<DosyaDurumu> DosyaDurumu { get; set; }
-    public DbSet<DosyaFinansIslemi> DosyaFinansIslemleri { get; set; }
     public DbSet<DosyaPersonel> DosyaPersonel { get; set; }
     public DbSet<DosyaKategorisi> DosyaKategorileri { get; set; }
     public DbSet<DosyaTuru> DosyaTurleri { get; set; }
     public DbSet<Durusma> Durusmalar { get; set; }
     public DbSet<DurusmaAktiviteTuru> DurusmaAktiviteTurleri { get; set; }
-    public DbSet<FinansIslemTuru> FinansIslemTurleri { get; set; }
+    public DbSet<FinansIslemi> FinansIslemleri { get; set; }
     public DbSet<Gorev> Gorevler { get; set; }
     public DbSet<GorevDurumu> GorevDurumlari { get; set; }
     public DbSet<KararBilgileri> KararBilgileri { get; set; }
@@ -29,9 +28,7 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
     public DbSet<Kisi> Kisiler { get; set; }
     public DbSet<KisiBaglantisi> KisiBaglantilari { get; set; }
     public DbSet<KisiBelgesi> KisiBelgeleri { get; set; }
-    public DbSet<KisiFinansIslemi> KisiFinansIslemleri { get; set; }
     public DbSet<Ofis> Ofis { get; set; }
-    public DbSet<PersonelFinansIslemi> PersonelFinansIslemleri { get; set; }
     public DbSet<Randevu> Randevular { get; set; }
     public DbSet<TarafKisi> TarafKisiler { get; set; }
     public DbSet<TarafTuru> TarafTurleri { get; set; }
@@ -114,24 +111,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .HasForeignKey(g => g.SorumluId);
 
 
-        builder.Entity<DosyaFinansIslemi>()
-            .HasOne(d => d.IslemTuru)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
-
-
-        builder.Entity<KisiFinansIslemi>()
-            .HasOne(d => d.IslemTuru)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
-
-
-        builder.Entity<PersonelFinansIslemi>()
-            .HasOne(d => d.IslemTuru)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
-
-
         builder.Entity<DurusmaAktiviteTuru>()
             .HasData
             (
@@ -200,22 +179,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             );
 
 
-        builder.Entity<FinansIslemTuru>()
-            .HasData
-            (
-                new FinansIslemTuru { Id = 1, Isim = "Dosya Geliri" },
-                new FinansIslemTuru { Id = 2, Isim = "Dosya Gideri" },
-                new FinansIslemTuru { Id = 3, Isim = "Ofis Genel Gideri" },
-                new FinansIslemTuru { Id = 4, Isim = "Personel Maaşı" },
-                new FinansIslemTuru { Id = 5, Isim = "Personel Avans" },
-                new FinansIslemTuru { Id = 6, Isim = "İade" },
-                new FinansIslemTuru { Id = 7, Isim = "Kasa Düzeltme" },
-                new FinansIslemTuru { Id = 8, Isim = "Transfer" },
-                new FinansIslemTuru { Id = 9, Isim = "Serbest Meslek" },
-                new FinansIslemTuru { Id = 10, Isim = "Diğer" }
-            );
-
-
         builder.Entity<DuyuruKategorisi>()
             .HasData
             (
@@ -225,16 +188,25 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             );
 
 
-        builder.Entity<Personel>()
-            .HasMany(p => p.SorumluPersonelFinansIslemi)
-            .WithOne(s => s.IslemYapan)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<FinansIslemi>()
+            .HasOne(f => f.IslemYapan)
+            .WithMany(p => p.SorumluFinansIslemleri)
+            .HasForeignKey(f => f.IslemYapanId);
 
+        builder.Entity<FinansIslemi>()
+            .HasOne(f => f.Personel)
+            .WithMany(p => p.IlgiliFinansIslemleri)
+            .HasForeignKey(f => f.PersonelId);
 
-        builder.Entity<Personel>()
-            .HasMany(p => p.IlgiliFinansIslemleri)
-            .WithOne(i => i.Personel)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<FinansIslemi>()
+            .HasOne(f => f.Kisi)
+            .WithMany(k => k.IlgiliFinansIslemleri)
+            .HasForeignKey(f => f.KisiId);
+
+        builder.Entity<FinansIslemi>()
+            .HasOne(f => f.Dosya)
+            .WithMany(d => d.IlgiliFinansIslemleri)
+            .HasForeignKey(f => f.DosyaId);
 
 
         builder.Entity<KisiBaglantisi>()

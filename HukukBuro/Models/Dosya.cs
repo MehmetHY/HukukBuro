@@ -43,7 +43,7 @@ public sealed class Dosya
 
     public List<DosyaBelgesi> Belgeler { get; set; } = new();
 
-    public List<DosyaFinansIslemi> IlgiliFinansIslemleri { get; set; } = new();
+    public List<FinansIslemi> IlgiliFinansIslemleri { get; set; } = new();
 
     public KararBilgileri? KararBilgileri { get; set; }
 
