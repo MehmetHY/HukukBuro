@@ -53,4 +53,58 @@ public class FinansIslemleriController : Controller
 
         return View(vm);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Duzenle(int id)
+    {
+        var sonuc = await _yonetici.DuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Duzenle(DuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _yonetici.DuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Listele));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Personel = await _yonetici.PersonelGetirAsync();
+        vm.Kisiler = await _yonetici.KisilerGetirAsync();
+        vm.Dosyalar = await _yonetici.DosyalarGetirAsync();
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Sil(int id)
+    {
+        var sonuc = await _yonetici.SilVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(Sil))]
+    public async Task<IActionResult> SilPOST(int id)
+    {
+        var sonuc = await _yonetici.SilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Listele));
+    }
 }

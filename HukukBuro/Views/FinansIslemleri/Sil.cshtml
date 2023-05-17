@@ -1,0 +1,76 @@
+﻿@model SilVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<div>
+    <strong>@Model.Miktar TL</strong>
+    &nbsp;
+    @Model.IslemTuru.DisplayName()
+</div>
+
+@if (Model.Odendi)
+{
+    <div>
+        Ödendi
+        &nbsp;
+        Ödeme Tarihi: @Model.OdemeTarihi
+    </div>
+
+    @if (Model.MakbuzKesildi)
+    {
+        <div>
+            Makbuz No: @Model.MakbuzNo
+            &nbsp;
+            Makbuz Tarihi: @Model.MakbuzTarihi
+        </div>
+    }
+}
+else
+{
+    <span>Ödenmedi &nbsp;</span>
+    <span>Son Ödeme Tarihi: @Model.SonOdemeTarihi</span>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.IslemYapan))
+{
+    <div>
+        İşlem yapan: @Model.IslemYapan
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Kisi))
+{
+    <div>
+        Kişi: @Model.Kisi
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Dosya))
+{
+    <div>
+        Dosya: @Model.Dosya
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Personel))
+{
+    <div>
+        Personel: @Model.Personel
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Aciklama))
+{
+    <div>
+        Açıklama: @Model.Aciklama
+    </div>
+}
+
+
+<hr />
+<form method="post">
+    <input asp-for="Id" hidden />
+    <button type="submit">Sil</button>
+</form>
