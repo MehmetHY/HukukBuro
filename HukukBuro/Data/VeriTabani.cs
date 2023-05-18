@@ -278,6 +278,18 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
                     Id = Guid.NewGuid().ToString("D"),
                     Name = Sabit.Yetki.Rol,
                     NormalizedName = Sabit.Yetki.Rol.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Finans,
+                    NormalizedName = Sabit.Yetki.Finans.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = Guid.NewGuid().ToString("D"),
+                    Name = Sabit.Yetki.Randevu,
+                    NormalizedName = Sabit.Yetki.Randevu.ToUpper()
                 }
             );
 

@@ -1,25 +1,39 @@
-﻿@model HukukBuro.ViewModels.Personeller.ListeleVM
+﻿@model ListeleVM
 
 <a asp-action="ekle">Yeni personel ekle</a>
-
+&nbsp;
+<partial name="_Arama" model="@Model" />
 
 @foreach (var oge in Model.Ogeler)
 {
     <hr />
 
     <div>
-        <strong>
-            <a asp-action="duzenle" asp-route-id="@oge.Id">@oge.TamIsim</a>
-        </strong>
-
-        &nbsp;
-
-        <span>(@oge.Anarol)</span>
-
         <div>
-            <span>Email: @oge.Email</span>
+            <img src="@oge.FotoUrl" width="64" height="64" />
+            &nbsp;
+            <strong>@oge.TamIsim</strong>
+            &nbsp;
+            (@oge.Anarol)
+        </div>
+        <div>
+            Email:
+            &nbsp;
+            @oge.Email
+        </div>
+        <div>
+            <small>İlgili Finans: @oge.IlgiliFinansIslemiSayisi</small>
+            &nbsp;
+            <small>Sorumlu Finans: @oge.SorumluFinansIslemiSayisi</small>
+            &nbsp;
+            <small>Sorumlu Dosya: @oge.SorumluDosyaSayisi</small>
+            &nbsp;
+            <small>Sorumlu Görev: @oge.SorumluGorevSayisi</small>
+            &nbsp;
+            <small>Sorumlu Randevu: @oge.SorumluRandevuSayisi</small>
         </div>
     </div>
 }
 
-
+<hr />
+<partial name="_Sayfa" model="@Model" />

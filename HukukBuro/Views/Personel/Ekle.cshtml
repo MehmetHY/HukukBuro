@@ -1,10 +1,10 @@
-﻿@model HukukBuro.ViewModels.Personeller.EkleVM
+﻿@model EkleVM
 
 <a asp-action="listele">Geri</a>
 
 <hr />
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly"></div>
 
     <div>
@@ -41,6 +41,11 @@
         <label asp-for="AnaRol"></label>
         <select asp-for="AnaRol" asp-items="@Model.AnaRoller"></select>
         <span asp-validation-for="AnaRol"></span>
+    </div>
+
+    <div>
+        <label>Profil Fotoğrafı</label>
+        <input name="foto" type="file" accept="image/png, image/jpeg, .webp" />
     </div>
 
     <hr />

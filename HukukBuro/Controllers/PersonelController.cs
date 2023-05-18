@@ -34,11 +34,11 @@ public class PersonelController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Ekle(EkleVM vm)
+    public async Task<IActionResult> Ekle(EkleVM vm, IFormFile? foto)
     {
         if (ModelState.IsValid)
         {
-            var sonuc = await _py.EkleAsync(vm);
+            var sonuc = await _py.EkleAsync(vm, foto);
 
             if (sonuc.BasariliMi)
                 return RedirectToAction(nameof(Listele));

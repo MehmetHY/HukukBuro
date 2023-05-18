@@ -31,6 +31,8 @@ public static class Sabit
 
         public const string HataMaxBoyut = "Belge 2 MB'tan büyük olamaz.";
         public const string HataGerekli = "Belge gerekli.";
+
+        public const string VarsayilanFotoUrl = "foto/kisi.jpg";
     }
 
     public static class AnaRol
@@ -51,6 +53,8 @@ public static class Sabit
         public const string Gorev = "GorevYoneticisi";
         public const string Duyuru = "DuyuruYoneticisi";
         public const string Rol = "RolYoneticisi";
+        public const string Finans = "FinansYoneticisi";
+        public const string Randevu = "RandevuYoneticisi";
 
         public const string KisiText = "Kişileri düzenleyebilir.";
         public const string DosyaText = "Dosyaları düzenleyebilir.";
@@ -58,6 +62,8 @@ public static class Sabit
         public const string GorevText = "Görevleri düzenleyebilir.";
         public const string DuyuruText = "Duyuruları düzenleyebilir.";
         public const string RolText = "Rol ve yetkileri düzenleyebilir.";
+        public const string FinansText = "Finans işlemlerini düzenleyebilir.";
+        public const string RandevuText = "Randevu düzenleyebilir.";
     }
 
     public static class DosyaTuru

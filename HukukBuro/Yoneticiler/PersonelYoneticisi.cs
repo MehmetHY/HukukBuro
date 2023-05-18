@@ -1,4 +1,5 @@
-﻿using HukukBuro.Data;
+﻿using HukukBuro.Araclar;
+using HukukBuro.Data;
 using HukukBuro.Eklentiler;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
@@ -6,6 +7,7 @@ using HukukBuro.ViewModels.Personeller;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace HukukBuro.Yoneticiler;
@@ -15,14 +17,16 @@ public class PersonelYoneticisi
     #region Fields
     private readonly VeriTabani _vt;
     private readonly UserManager<Personel> _um;
-    private readonly RoleManager<IdentityRole> _rm;
+    private readonly IWebHostEnvironment _env;
 
     public PersonelYoneticisi(
-        VeriTabani vt, UserManager<Personel> um, RoleManager<IdentityRole> rm)
+        VeriTabani vt,
+        UserManager<Personel> um,
+        IWebHostEnvironment env)
     {
         _vt = vt;
         _um = um;
-        _rm = rm;
+        _env = env;
     }
     #endregion
 
@@ -43,7 +47,9 @@ public class PersonelYoneticisi
             new() {Value = Sabit.Yetki.Personel, Text = Sabit.Yetki.PersonelText},
             new() {Value = Sabit.Yetki.Gorev, Text = Sabit.Yetki.GorevText},
             new() {Value = Sabit.Yetki.Duyuru, Text = Sabit.Yetki.DuyuruText},
-            new() {Value = Sabit.Yetki.Rol, Text = Sabit.Yetki.RolText}
+            new() {Value = Sabit.Yetki.Rol, Text = Sabit.Yetki.RolText},
+            new() {Value = Sabit.Yetki.Randevu, Text = Sabit.Yetki.RandevuText},
+            new() {Value = Sabit.Yetki.Finans, Text = Sabit.Yetki.FinansText}
         };
 
     public async Task<bool> EmailMevcutMuAsync(string email)
@@ -60,10 +66,11 @@ public class PersonelYoneticisi
     }
     #endregion
 
+    #region Personel
     public EkleVM EkleVMGetir()
         => new() { AnaRoller = AnaRolleriGetir(), Yetkiler = YetkileriGetir() };
 
-    public async Task<Sonuc> EkleAsync(EkleVM vm)
+    public async Task<Sonuc> EkleAsync(EkleVM vm, IFormFile? foto)
     {
         if (await EmailMevcutMuAsync(vm.Email))
             return new()
@@ -91,6 +98,41 @@ public class PersonelYoneticisi
                 HataMesaji = string.Join(", ", result.Errors.Select(e => e.Description).ToArray())
             };
 
+        if (foto != null)
+        {
+            var belgeAraci = new BelgeAraci
+            {
+                Belge = foto,
+                GecerliUzantilar = new[] { ".jpg", ".jpeg", ".png", ".webp" },
+                Klasor = "foto",
+                Root = _env.WebRootPath
+            };
+
+            var sonuc = belgeAraci.Onayla();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            sonuc = belgeAraci.Olustur();
+
+            if (!sonuc.BasariliMi)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = string.Empty,
+                    HataMesaji = sonuc.HataMesaji
+                };
+
+            model.FotoUrl = belgeAraci.Url!;
+        }
+        else
+            model.FotoUrl = Sabit.Belge.VarsayilanFotoUrl;
+
         foreach (var yetki in vm.Yetkiler)
             if (yetki.Checked)
                 await _um.AddToRoleAsync(model, yetki.Value);
@@ -103,31 +145,42 @@ public class PersonelYoneticisi
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
         var q = _vt.Users
-            .Select(u => new ListeleVM.Oge
+            .Where(u =>
+                string.IsNullOrWhiteSpace(vm.Arama) ||
+                $"{u.Email} {u.UserName} {u.Isim} {u.Soyisim}".Contains(vm.Arama))
+            .Select(u => new OzetVM
             {
                 Id = u.Id,
+                TamIsim = u.TamIsim,
                 Email = u.Email!,
-                TamIsim = $"{u.Isim} {u.Soyisim}"
-            });
+                FotoUrl = u.FotoUrl == null ? Sabit.Belge.VarsayilanFotoUrl : u.FotoUrl,
+                IlgiliFinansIslemiSayisi = u.IlgiliFinansIslemleri.Count(),
+                SorumluDosyaSayisi = u.SorumluDosyalar.Count(),
+                SorumluFinansIslemiSayisi = u.SorumluFinansIslemleri.Count(),
+                SorumluGorevSayisi = u.SorumluGorevler.Count(),
+                SorumluRandevuSayisi = u.SorumluRandevular.Count(),
 
-        if (!string.IsNullOrWhiteSpace(vm.Arama))
-            q = q.Where(u =>
-                u.Email.Contains(vm.Arama) || u.TamIsim.Contains(vm.Arama));
+                Anarol = _vt.UserClaims
+                    .Where(uc =>
+                        uc.UserId == u.Id &&
+                        uc.ClaimType == Sabit.AnaRol.Type)
+                    .Select(uc => uc.ClaimValue)
+                    .First()!
+            });
 
         if (!await q.SayfaGecerliMiAsync(vm.Sayfa, vm.SayfaBoyutu))
             return new()
             {
                 BasariliMi = false,
-                HataBasligi = "Geçersiz Sayfa",
-                HataMesaji = $"Sayfa: {vm.Sayfa}, Sayfa Boyutu: {vm.SayfaBoyutu}"
+                HataBasligi = "Geçersiz sayfa",
+                HataMesaji = $"Sayfa: {vm.Sayfa}, sayfa boyutu: {vm.SayfaBoyutu}"
             };
 
-        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
         vm.Ogeler = await q.SayfaUygula(vm.Sayfa, vm.SayfaBoyutu).ToListAsync();
-
-        foreach (var oge in vm.Ogeler)
-            oge.Anarol = await AnaRolGetirAsync(oge.Id);
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
 
         return new() { Deger = vm };
     }
 }
+
+#endregion
