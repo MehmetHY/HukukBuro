@@ -1,4 +1,5 @@
-﻿using HukukBuro.ViewModels.Duyurular;
+﻿using HukukBuro.Eklentiler;
+using HukukBuro.ViewModels.Duyurular;
 using HukukBuro.Yoneticiler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,5 +33,47 @@ public class DuyurularController : Controller
         await _yonetici.EkleAsync(vm);
 
         return RedirectToAction(nameof(Listele));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Duzenle(int id)
+    {
+        var sonuc = await _yonetici.DuzenleVMGetirAsync(id);
+
+        return sonuc.BasariliMi ? View(sonuc.Deger) : View(Sabit.View.Hata, sonuc);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Duzenle(DuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _yonetici.DuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Listele));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        return View(vm);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Sil(int id)
+    {
+        var sonuc = await _yonetici.OzetVMGetirAsync(id);
+
+        return sonuc.BasariliMi ? View(sonuc.Deger) : View(Sabit.View.Hata, sonuc);
+    }
+
+    [HttpPost]
+    [ActionName(nameof(Sil))]
+    public async Task<IActionResult> SilPOST(int id)
+    {
+        var sonuc = await _yonetici.SilAsync(id);
+
+        return sonuc.BasariliMi ?
+            RedirectToAction(nameof(Listele)) : View(Sabit.View.Hata, sonuc);
     }
 }

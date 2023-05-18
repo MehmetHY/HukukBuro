@@ -1,0 +1,27 @@
+﻿@model OzetVM
+
+<a asp-action="listele">Geri</a>
+
+<hr />
+
+<div>
+    <div>
+        <strong>@Model.Konu</strong>
+    </div>
+    <div>
+        @Model.Mesaj
+    </div>
+    <div>
+        @Model.Tarih.ToString()
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Url))
+    {
+        <a href="@Model.Url">Göster</a>
+    }
+</div>
+
+<form method="post">
+    <input asp-for="Id" hidden />
+    <button type="submit">Sil</button>
+</form>

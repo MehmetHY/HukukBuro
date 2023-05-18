@@ -2,8 +2,10 @@
 
 #pragma warning disable CS8618
 
-public class EkleVM
+public class DuzenleVM
 {
+    public int Id { get; set; }
+
     public string Konu { get; set; }
 
     public string Mesaj { get; set; }

@@ -19,10 +19,19 @@
             @oge.Tarih.ToString()
         </div>
 
-        @if (!string.IsNullOrWhiteSpace(oge.Url))
-        {
-            <a href="@oge.Url">Göster</a>
-        }
+        <div>
+            @if (!string.IsNullOrWhiteSpace(oge.Url))
+            {
+                <a href="@oge.Url">Göster</a>
+                <span>&nbsp;</span>
+            }
+
+            <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
+            &nbsp;
+            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
+        </div>
+
+
     </div>
 }
 
