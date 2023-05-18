@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace HukukBuro.Models;
+﻿namespace HukukBuro.ViewModels.Duyurular;
 
 #pragma warning disable CS8618
 
-public sealed class Duyuru
+public class OzetVM
 {
     public int Id { get; set; }
 
@@ -14,5 +12,5 @@ public sealed class Duyuru
 
     public string? Url { get; set; }
 
-    public DateTime Tarih { get; set; } = DateTime.Now;
+    public DateTime Tarih { get; set; }
 }

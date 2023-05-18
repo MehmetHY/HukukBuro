@@ -1,0 +1,30 @@
+﻿@model ListeleVM
+
+<a asp-action="ekle">Yeni duyuru ekle</a>
+&nbsp;
+<partial name="_Arama" model="@Model" />
+
+@foreach (var oge in Model.Ogeler)
+{
+    <hr />
+
+    <div>
+        <div>
+            <strong>@oge.Konu</strong>
+        </div>
+        <div>
+            @oge.Mesaj
+        </div>
+        <div>
+            @oge.Tarih.ToString()
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(oge.Url))
+        {
+            <a href="@oge.Url">Göster</a>
+        }
+    </div>
+}
+
+<hr />
+<partial name="_Sayfa" model="@Model" />

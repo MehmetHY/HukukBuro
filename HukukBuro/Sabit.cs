@@ -79,4 +79,9 @@ public static class Sabit
     {
         public const string Para = @"^\s*\d+[,|\.]?(?:\d{0,2})?\s*$";
     }
+
+    public static class Mesaj
+    {
+        public const string YeniDuyuru = "Yeni bir duyuru eklendi.";
+    }
 }

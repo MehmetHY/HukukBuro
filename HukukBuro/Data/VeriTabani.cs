@@ -7,8 +7,8 @@ namespace HukukBuro.Data;
 
 public sealed class VeriTabani : IdentityDbContext<Personel>
 {
+    public DbSet<Bildirim> Bildirimler { get; set; }
     public DbSet<Duyuru> Duyurular { get; set; }
-    public DbSet<DuyuruKategorisi> DuyuruKategorileri { get; set; }
     public DbSet<BolgeAdliyeMahkemesiBilgileri> BolgeAdliyeMahkemesiBilgileri { get; set; }
     public DbSet<Dosya> Dosyalar { get; set; }
     public DbSet<DosyaBaglantisi> DosyaBaglantilari { get; set; }
@@ -72,13 +72,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .HasOne(d => d.AktiviteTuru)
             .WithMany()
             .HasForeignKey(d => d.AktiviteTuruId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-
-        builder.Entity<Duyuru>()
-            .HasOne(d => d.Kategori)
-            .WithMany()
-            .HasForeignKey(d => d.KategoriId)
             .OnDelete(DeleteBehavior.NoAction);
 
 
@@ -176,15 +169,6 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
                 new GorevDurumu { Id = 1, Isim = "Tamamlandı" },
                 new GorevDurumu { Id = 2, Isim = "Devam Ediyor" },
                 new GorevDurumu { Id = 3, Isim = "İptal" }
-            );
-
-
-        builder.Entity<DuyuruKategorisi>()
-            .HasData
-            (
-                new DuyuruKategorisi { Id = 1, Isim = "Önemli" },
-                new DuyuruKategorisi { Id = 2, Isim = "Normal" },
-                new DuyuruKategorisi { Id = 3, Isim = "Uygulama Güncellemesi" }
             );
 
 
@@ -312,5 +296,12 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .WithMany()
             .HasForeignKey(db => db.IlgiliDosyaId)
             .OnDelete(DeleteBehavior.NoAction);
+
+
+        builder.Entity<Bildirim>()
+            .HasOne(b => b.Personel)
+            .WithMany(p => p.Bildirimler)
+            .HasForeignKey(b => b.PersonelId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

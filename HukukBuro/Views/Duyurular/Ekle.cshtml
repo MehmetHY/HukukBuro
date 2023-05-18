@@ -1,0 +1,28 @@
+﻿@model EkleVM
+
+<a asp-action="listele">Geri</a>
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Konu"></label>
+        <input asp-for="Konu" />
+        <span asp-validation-for="Konu"></span>
+    </div>
+
+    <div>
+        <label asp-for="Mesaj"></label>
+        <input asp-for="Mesaj" />
+        <span asp-validation-for="Mesaj"></span>
+    </div>
+
+    <div>
+        <label asp-for="Url"></label>
+        <input asp-for="Url" />
+        <span asp-validation-for="Url"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>
