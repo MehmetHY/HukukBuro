@@ -2,6 +2,7 @@
 using HukukBuro.Models;
 using HukukBuro.ViewModels.Personeller;
 using HukukBuro.Yoneticiler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ public class PersonelController : Controller
     }
     #endregion
 
+    #region giris
     public async Task<IActionResult> Listele(ListeleVM? vm)
     {
         var sonuc = await _yonetici.ListeleVMGetirAsync(vm ?? new());
@@ -88,4 +90,24 @@ public class PersonelController : Controller
 
         return View(vm);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Cikis(string? returnUrl)
+    {
+        if (_girisYoneticisi.IsSignedIn(User))
+            await _girisYoneticisi.SignOutAsync();
+
+        return LocalRedirect(returnUrl ?? "/");
+    }
+    #endregion
+
+    #region personel
+    [Authorize]
+    public async Task<IActionResult> Profil()
+    {
+        var vm = await _yonetici.ProfilVMGetirAsync(User.Identity!.Name!);
+
+        return View(vm);
+    }
+    #endregion
 }

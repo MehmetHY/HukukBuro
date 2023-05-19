@@ -124,7 +124,8 @@ public class RandevuYoneticisi
             KisiId = vm.KisiId,
             SorumluId = vm.SorumluId,
             TamamlandiMi = vm.TamamlandiMi,
-            Tarih = vm.Tarih
+            Tarih = vm.Tarih,
+            OlusturmaTarihi = DateTime.Now
         };
 
         await _vt.Randevular.AddAsync(model);

@@ -42,4 +42,6 @@ public class FinansIslemi
     public bool PersonelBaglantisiVar { get; set; }
     public string? PersonelId { get; set; }
     public Personel? Personel { get; set; }
+
+    public DateTime OlusturmaTarihi { get; set; }
 }

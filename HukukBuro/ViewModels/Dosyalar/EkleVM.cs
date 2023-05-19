@@ -7,7 +7,7 @@ namespace HukukBuro.ViewModels.Dosyalar;
 
 public class EkleVM
 {
-    public int DosyaNo { get; set; }
+    public string DosyaNo { get; set; }
 
     public string BuroNo { get; set; }
 

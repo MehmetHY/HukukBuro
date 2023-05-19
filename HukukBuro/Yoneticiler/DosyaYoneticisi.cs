@@ -134,6 +134,7 @@ public class DosyaYoneticisi
         model.TemyizBilgileri = new() { Dosya = model };
         model.KararDuzeltmeBilgileri = new() { Dosya = model };
         model.KesinlesmeBilgileri = new() { Dosya = model };
+        model.OlusturmaTarihi = DateTime.Now;
 
         await _vt.Dosyalar.AddAsync(model);
         await _vt.SaveChangesAsync();

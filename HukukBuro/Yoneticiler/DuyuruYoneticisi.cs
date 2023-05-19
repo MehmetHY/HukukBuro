@@ -21,7 +21,9 @@ public class DuyuruYoneticisi
         var q = _vt.Duyurular
             .Where(d =>
                 string.IsNullOrWhiteSpace(vm.Arama) ||
-                $"{d.Konu} {d.Mesaj} {d.Tarih}".Contains(vm.Arama))
+                d.Konu.Contains(vm.Arama) ||
+                d.Mesaj.Contains(vm.Arama) ||
+                d.Tarih.ToString().Contains(vm.Arama))
             .OrderByDescending(d => d.Tarih)
             .Select(d => new OzetVM
             {

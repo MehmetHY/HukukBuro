@@ -22,4 +22,6 @@ public sealed class Randevu
 
     public string? SorumluId { get; set; }
     public Personel? Sorumlu { get; set; }
+
+    public DateTime OlusturmaTarihi { get; set; }
 }

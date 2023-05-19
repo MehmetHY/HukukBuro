@@ -10,7 +10,7 @@ public sealed class Dosya
     [Key]
     public int Id { get; set; }
 
-    public int DosyaNo { get; set; }
+    public string DosyaNo { get; set; }
 
     public string BuroNo { get; set; }
 
@@ -54,6 +54,8 @@ public sealed class Dosya
     public KararDuzeltmeBilgileri? KararDuzeltmeBilgileri { get; set; }
 
     public KesinlesmeBilgileri? KesinlesmeBilgileri { get; set; }
+
+    public DateTime OlusturmaTarihi { get; set; }
 
     [NotMapped]
     public string TamIsim => $"{DosyaNo} {BuroNo} {Konu}";

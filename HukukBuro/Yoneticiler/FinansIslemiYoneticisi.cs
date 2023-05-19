@@ -243,6 +243,7 @@ public class FinansIslemiYoneticisi
             model.SonOdemeTarhi = vm.SonOdemeTarhi;
         }
 
+        model.OlusturmaTarihi = DateTime.Now;
         await _vt.FinansIslemleri.AddAsync(model);
         await _vt.SaveChangesAsync();
 

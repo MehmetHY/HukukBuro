@@ -11,7 +11,7 @@ public sealed class Personel : IdentityUser
 
     public string Soyisim { get; set; }
 
-    public string? FotoUrl { get; set; }
+    public string FotoUrl { get; set; }
 
     public List<Bildirim> Bildirimler { get; set; } = new();
     public List<FinansIslemi> IlgiliFinansIslemleri { get; set; } = new();

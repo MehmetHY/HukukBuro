@@ -50,5 +50,5 @@ public sealed class Kisi
     public List<KisiBelgesi> Belgeler { get; set; } = new();
 
     [NotMapped]
-    public string? TamIsim  => TuzelMi ? SirketIsmi : $"{Isim} {Soyisim}";
+    public string TamIsim  => TuzelMi ? SirketIsmi : $"{Isim} {Soyisim}";
 }

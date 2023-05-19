@@ -1,0 +1,103 @@
+﻿@model ProfilVM
+
+<h2>@Model.TamIsim</h2>
+
+<img src="@Model.FotoUrl" width="256" height="256" />
+<a asp-action="fotoduzenle">Fotoğrafı düzenle</a>
+<a asp-action="fotokaldir">Fotoğrafı kaldır</a>
+<hr />
+
+<div>
+    <strong>Pozisyon:</strong>
+    &nbsp;
+    @Model.Anarol
+</div>
+
+<div>
+    <strong>Email:</strong>
+    &nbsp;
+    @Model.Email
+</div>
+
+<hr />
+
+<h4>Sorumluluklar</h4>
+
+<h6>Dosyalar</h6>
+
+@foreach (var dosya in Model.Dosyalar)
+{
+    <div>
+        <a asp-controller="dosya" asp-action="ozet" asp-route-id="@dosya.Id">
+            @dosya.TamIsim
+        </a>
+        &nbsp;
+        <small>@dosya.DosyaTuru</small>
+        &nbsp;
+        <small>@dosya.DosyaDurumu</small>
+        &nbsp;
+        <small>@dosya.DosyaKategorisi</small>
+    </div>
+}
+
+<h6>Finans İşlemleri</h6>
+
+@foreach (var finans in Model.FinansIslemleri)
+{
+    <div>
+        <a asp-controller="finansislemleri" asp-action="ozet" asp-route-id="@finans.Id">
+            <strong>@finans.Miktar TL</strong>
+            &nbsp;
+            @finans.IslemTuru
+        </a>
+
+        &nbsp;
+
+        @if (finans.Odendi)
+        {
+            <span>@finans.OdemeTarihi tarihinde ödendi.</span>
+        }
+        else
+        {
+            <span>Son ödeme tarihi: @finans.OdemeTarihi</span>
+        }
+    </div>
+}
+
+<h6>Görevler</h6>
+
+@foreach (var gorev in Model.Gorevler)
+{
+    <div>
+        <a asp-controller="gorevler" asp-action="ozet" asp-route-id="@gorev.Id">
+            <strong>@gorev.Konu</strong>
+            &nbsp;
+            @gorev.Durum
+        </a>
+
+        &nbsp;
+        Bitiş: @gorev.BitisTarihi
+    </div>
+}
+
+<h6>Randevular</h6>
+
+@foreach (var randevu in Model.Randevular)
+{
+    <div>
+        <a asp-controller="randevular" asp-action="ozet" asp-route-id="@randevu.Id">
+            <strong>@randevu.Konu</strong>
+            &nbsp;
+
+            @if (randevu.Tamamlandi)
+            {
+                <span>(Tamamlandı)&nbsp;</span>
+            }
+
+            @randevu.Kisi
+            &nbsp;
+            @randevu.Tarih
+        </a>
+    </div>
+}
+
