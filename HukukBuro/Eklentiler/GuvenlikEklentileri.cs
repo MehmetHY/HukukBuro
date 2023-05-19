@@ -5,10 +5,8 @@ namespace HukukBuro.Eklentiler;
 
 public static class GuvenlikEklentileri
 {
-    public static string? AnaRolGetir(this ClaimsPrincipal principal)
-    {
-        throw new NotImplementedException();
-    }
+    public static string AnaRolGetir(this ClaimsPrincipal personel)
+        => personel.Claims.First(c => c.Type == Sabit.AnaRol.Type).Value;
 
     #region AnaRol
     public static string? AnarolGetir(this AuthorizationHandlerContext context)

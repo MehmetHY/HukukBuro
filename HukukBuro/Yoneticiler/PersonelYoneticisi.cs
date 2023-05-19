@@ -7,7 +7,6 @@ using HukukBuro.ViewModels.Personeller;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace HukukBuro.Yoneticiler;
@@ -15,18 +14,21 @@ namespace HukukBuro.Yoneticiler;
 public class PersonelYoneticisi
 {
     #region Fields
-    private readonly VeriTabani _vt;
-    private readonly UserManager<Personel> _um;
+    private readonly VeriTabani _veriTabani;
+    private readonly UserManager<Personel> _kullaniciYoneticisi;
+    private readonly SignInManager<Personel> _girisYoneticisi;
     private readonly IWebHostEnvironment _env;
 
     public PersonelYoneticisi(
         VeriTabani vt,
         UserManager<Personel> um,
-        IWebHostEnvironment env)
+        IWebHostEnvironment env,
+        SignInManager<Personel> girisYoneticisi)
     {
-        _vt = vt;
-        _um = um;
+        _veriTabani = vt;
+        _kullaniciYoneticisi = um;
         _env = env;
+        _girisYoneticisi = girisYoneticisi;
     }
     #endregion
 
@@ -53,11 +55,11 @@ public class PersonelYoneticisi
         };
 
     public async Task<bool> EmailMevcutMuAsync(string email)
-        => await _vt.Users.AnyAsync(u => u.Email == email);
+        => await _veriTabani.Users.AnyAsync(u => u.Email == email);
 
     public async Task<string> AnaRolGetirAsync(string id)
     {
-        var anarol = await _vt.UserClaims
+        var anarol = await _veriTabani.UserClaims
             .Where(uc => uc.UserId == id && uc.ClaimType == Sabit.AnaRol.Type)
             .Select(uc => uc.ClaimValue)
             .FirstAsync();
@@ -67,10 +69,9 @@ public class PersonelYoneticisi
     #endregion
 
     #region Personel
-    public EkleVM EkleVMGetir()
-        => new() { AnaRoller = AnaRolleriGetir(), Yetkiler = YetkileriGetir() };
+    public KaydolVM KaydolVMGetir() => new();
 
-    public async Task<Sonuc> EkleAsync(EkleVM vm, IFormFile? foto)
+    public async Task<Sonuc> KaydolAsync(KaydolVM vm)
     {
         if (await EmailMevcutMuAsync(vm.Email))
             return new()
@@ -85,10 +86,11 @@ public class PersonelYoneticisi
             Email = vm.Email,
             UserName = vm.Email,
             Isim = vm.Isim,
-            Soyisim = vm.Soyisim
+            Soyisim = vm.Soyisim,
+            FotoUrl = Sabit.Belge.VarsayilanFotoUrl
         };
 
-        var result = await _um.CreateAsync(model, vm.Sifre);
+        var result = await _kullaniciYoneticisi.CreateAsync(model, vm.Sifre);
 
         if (!result.Succeeded)
             return new()
@@ -98,56 +100,21 @@ public class PersonelYoneticisi
                 HataMesaji = string.Join(", ", result.Errors.Select(e => e.Description).ToArray())
             };
 
-        if (foto != null)
-        {
-            var belgeAraci = new BelgeAraci
-            {
-                Belge = foto,
-                GecerliUzantilar = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-                Klasor = "foto",
-                Root = _env.WebRootPath
-            };
-
-            var sonuc = belgeAraci.Onayla();
-
-            if (!sonuc.BasariliMi)
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = sonuc.HataMesaji
-                };
-
-            sonuc = belgeAraci.Olustur();
-
-            if (!sonuc.BasariliMi)
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = sonuc.HataMesaji
-                };
-
-            model.FotoUrl = belgeAraci.Url!;
-        }
-        else
-            model.FotoUrl = Sabit.Belge.VarsayilanFotoUrl;
-
-        foreach (var yetki in vm.Yetkiler)
-            if (yetki.Checked)
-                await _um.AddToRoleAsync(model, yetki.Value);
-
-        await _um.AddClaimAsync(model, new Claim(Sabit.AnaRol.Type, vm.AnaRol));
+        await _kullaniciYoneticisi.AddClaimAsync(
+            model,
+            new Claim(Sabit.AnaRol.Type, Sabit.AnaRol.Onaylanmamis));
 
         return new();
     }
 
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
-        var q = _vt.Users
+        var q = _veriTabani.Users
             .Where(u =>
                 string.IsNullOrWhiteSpace(vm.Arama) ||
                 $"{u.Email} {u.UserName} {u.Isim} {u.Soyisim}".Contains(vm.Arama))
+            .OrderBy(u => u.Isim)
+            .ThenBy(u => u.Soyisim)
             .Select(u => new OzetVM
             {
                 Id = u.Id,
@@ -160,7 +127,7 @@ public class PersonelYoneticisi
                 SorumluGorevSayisi = u.SorumluGorevler.Count(),
                 SorumluRandevuSayisi = u.SorumluRandevular.Count(),
 
-                Anarol = _vt.UserClaims
+                Anarol = _veriTabani.UserClaims
                     .Where(uc =>
                         uc.UserId == u.Id &&
                         uc.ClaimType == Sabit.AnaRol.Type)
@@ -181,6 +148,26 @@ public class PersonelYoneticisi
 
         return new() { Deger = vm };
     }
+
+    public GirisVM GirisVMGetir() => new();
+
+    public async Task<Sonuc> GirisAsync(GirisVM vm)
+    {
+        var model = await _kullaniciYoneticisi.FindByNameAsync(vm.Email);
+
+        if (model == null ||
+            !await _kullaniciYoneticisi.CheckPasswordAsync(model, vm.Sifre))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = "Geçersiz email ya da şifre."
+            };
+
+        await _girisYoneticisi.SignInAsync(model, vm.Hatirla);
+
+        return new();
+    }
+    #endregion
 }
 
-#endregion

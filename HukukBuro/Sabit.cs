@@ -43,6 +43,7 @@ public static class Sabit
         public const string Yonetici = "Yönetici";
         public const string Avukat = "Avukat";
         public const string Calisan = "Çalışan";
+        public const string Onaylanmamis = "Onaylanmamış";
     }
 
     public static class Yetki

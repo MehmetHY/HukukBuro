@@ -5,7 +5,7 @@ namespace HukukBuro.ViewModels.Personeller;
 
 #pragma warning disable CS8618
 
-public class EkleVM
+public class KaydolVM
 {
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
@@ -20,9 +20,4 @@ public class EkleVM
     [DataType(DataType.Password)]
     [Compare(nameof(Sifre))]
     public string SifreTekrar { get; set; }
-
-    public string AnaRol { get; set; }
-    public List<SelectListItem> AnaRoller { get; set; } = new();
-
-    public List<CheckboxItem<string>> Yetkiler { get; set; } = new();
 }

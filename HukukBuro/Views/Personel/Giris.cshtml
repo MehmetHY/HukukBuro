@@ -1,0 +1,27 @@
+﻿@model GirisVM
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label asp-for="Sifre"></label>
+        <input asp-for="Sifre" />
+        <span asp-validation-for="Sifre"></span>
+    </div>
+
+    <div>
+        <label asp-for="Hatirla"></label>
+        <input asp-for="Hatirla" />
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>
+
+<hr />
+<a asp-action="kaydol">Kaydol</a>
