@@ -39,13 +39,13 @@ public class VeriBaslatici
         var adminIsmi = _config["AdminIsmi"] ??
             throw new KeyNotFoundException("Admin ismini çevre değişkenlerine ya da appsettings.json'a ekle ekle. (key: AdminIsmi)");
 
-        var adminSoyismi = _config["AdminIsmi"] ??
+        var adminSoyismi = _config["AdminSoyismi"] ??
             throw new KeyNotFoundException("Admin soyismini çevre değişkenlerine ya da appsettings.json'a ekle ekle. (key: AdminSoyismi)");
 
-        var adminEmail = _config["AdminIsmi"] ??
+        var adminEmail = _config["AdminEmail"] ??
             throw new KeyNotFoundException("Admin emailini çevre değişkenlerine ya da appsettings.json'a ekle ekle. (key: AdminEmail)");
 
-        var adminSifre = _config["AdminIsmi"] ??
+        var adminSifre = _config["AdminSifre"] ??
             throw new KeyNotFoundException("Admin şifresini çevre değişkenlerine ya da appsettings.json'a ekle ekle. (key: AdminSifre)");
 
         var admin = new Personel

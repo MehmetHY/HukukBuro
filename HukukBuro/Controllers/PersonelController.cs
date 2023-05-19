@@ -23,6 +23,8 @@ public class PersonelController : Controller
     #endregion
 
     #region giris
+
+    [Authorize]
     public async Task<IActionResult> Listele(ListeleVM? vm)
     {
         var sonuc = await _yonetici.ListeleVMGetirAsync(vm ?? new());
@@ -85,12 +87,16 @@ public class PersonelController : Controller
             if (sonuc.BasariliMi)  
                 return LocalRedirect(returnUrl ?? "/");
 
+            if (!sonuc.Onayli)
+                return View(Sabit.View.Hata, sonuc);
+
             ModelState.HataEkle(sonuc);
         }
 
         return View(vm);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Cikis(string? returnUrl)
     {
@@ -103,9 +109,36 @@ public class PersonelController : Controller
 
     #region personel
     [Authorize]
+    [HttpGet]
     public async Task<IActionResult> Profil()
     {
         var vm = await _yonetici.ProfilVMGetirAsync(User.Identity!.Name!);
+
+        return View(vm);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Duzenle()
+    {
+        var vm = await _yonetici.DuzenleVMGetirAsync(User.Identity!.Name!);
+
+        return View(vm);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> Duzenle(DuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _yonetici.DuzenleAsync(vm, User.Identity!.Name!);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Profil));
+
+            ModelState.HataEkle(sonuc);
+        }
 
         return View(vm);
     }

@@ -1,0 +1,53 @@
+﻿@model DuzenleVM
+
+<a asp-action="profil">Geri</a>
+
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label asp-for="Isim"></label>
+        <input asp-for="Isim" />
+        <span asp-validation-for="Isim"></span>
+    </div>
+
+    <div>
+        <label asp-for="Soyisim"></label>
+        <input asp-for="Soyisim" />
+        <span asp-validation-for="Soyisim"></span>
+    </div>
+
+    <div>
+        <label asp-for="SifreDegistir"></label>
+        <input asp-for="SifreDegistir" />
+        <span asp-validation-for="SifreDegistir"></span>
+    </div>
+
+    <div>
+        <label asp-for="EskiSifre"></label>
+        <input asp-for="EskiSifre" />
+        <span asp-validation-for="EskiSifre"></span>
+    </div>
+
+    <div>
+        <label asp-for="YeniSifre"></label>
+        <input asp-for="YeniSifre" />
+        <span asp-validation-for="YeniSifre"></span>
+    </div>
+
+    <div>
+        <label asp-for="YeniSifreTekrar"></label>
+        <input asp-for="YeniSifreTekrar" />
+        <span asp-validation-for="YeniSifreTekrar"></span>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>

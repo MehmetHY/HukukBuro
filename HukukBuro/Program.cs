@@ -25,6 +25,7 @@ builder.Services.AddIdentity<Personel, IdentityRole>(ayarlar =>
     ayarlar.Password.RequireUppercase = false;
     ayarlar.Password.RequireLowercase = false;
     ayarlar.Password.RequiredLength = 3;
+    ayarlar.Password.RequireDigit = false;
 })
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders()
@@ -32,7 +33,9 @@ builder.Services.AddIdentity<Personel, IdentityRole>(ayarlar =>
 
 builder.Services.ConfigureApplicationCookie(ayarlar =>
 {
-    ayarlar.LogoutPath = "/profil/cikis";
+    ayarlar.LogoutPath = "/personel/cikis";
+    ayarlar.LoginPath = "/personel/giris";
+    ayarlar.AccessDeniedPath = "/personel/girisengellendi";
 });
 
 builder.Services.AddScoped<KisiYoneticisi>();

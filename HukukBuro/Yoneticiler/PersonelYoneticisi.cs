@@ -6,6 +6,7 @@ using HukukBuro.ViewModels.Personeller;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace HukukBuro.Yoneticiler;
@@ -65,6 +66,12 @@ public class PersonelYoneticisi
 
         return anarol ?? Sabit.AnaRol.Calisan;
     }
+
+    public async Task<bool> OnayliMiAsync(Personel personel)
+        => await _veriTabani.UserClaims.Where(uc =>
+            uc.UserId == personel.Id && uc.ClaimType == Sabit.AnaRol.Type)
+            .Select(uc => uc.ClaimValue)
+            .FirstAsync() != Sabit.AnaRol.Onaylanmamis;
     #endregion
 
     #region Personel
@@ -177,7 +184,7 @@ public class PersonelYoneticisi
 
     public GirisVM GirisVMGetir() => new();
 
-    public async Task<Sonuc> GirisAsync(GirisVM vm)
+    public async Task<OnaySonuc> GirisAsync(GirisVM vm)
     {
         var model = await _kullaniciYoneticisi.FindByNameAsync(vm.Email);
 
@@ -188,6 +195,15 @@ public class PersonelYoneticisi
                 BasariliMi = false,
                 HataBasligi = string.Empty,
                 HataMesaji = "Geçersiz email ya da şifre."
+            };
+
+        if (!await OnayliMiAsync(model))
+            return new()
+            {
+                BasariliMi = false,
+                Onayli = false,
+                HataBasligi = "Onaysız Kullanıcı",
+                HataMesaji = "Yöneticiler henüz hesabını onaylamadı."
             };
 
         await _girisYoneticisi.SignInAsync(model, vm.Hatirla);
@@ -273,6 +289,94 @@ public class PersonelYoneticisi
             .ToListAsync();
 
         return vm;
+    }
+
+    public async Task<DuzenleVM> DuzenleVMGetirAsync(string email)
+        => await _veriTabani.Users
+            .Where(u => u.Email == email)
+            .Select(u => new DuzenleVM
+            {
+                Email = email,
+                Isim = u.Isim,
+                Soyisim = u.Soyisim
+            })
+            .FirstAsync();
+
+    public async Task<Sonuc> DuzenleAsync(DuzenleVM vm, string email)
+    {
+        var model = await _veriTabani.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"email: {email} bulunamadı"
+            };
+
+        if (model.Email != vm.Email)
+        {
+            if (await _veriTabani.Users.AnyAsync(u => u.Id != model.Id && u.Email == vm.Email))
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = nameof(vm.Email),
+                    HataMesaji = $"Zaten mevcut."
+                };
+
+            model.Email = vm.Email;
+            model.UserName = model.Email;
+            model.NormalizedEmail = vm.Email.ToUpper();
+            model.NormalizedUserName = model.NormalizedEmail;
+        }
+
+        if (vm.SifreDegistir)
+        {
+            if (string.IsNullOrWhiteSpace(vm.EskiSifre))
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = nameof(vm.EskiSifre),
+                    HataMesaji = $"Gerekli."
+                };
+
+            if (string.IsNullOrWhiteSpace(vm.YeniSifre))
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = nameof(vm.YeniSifre),
+                    HataMesaji = $"Gerekli."
+                };
+
+            if (string.IsNullOrWhiteSpace(vm.YeniSifreTekrar))
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = nameof(vm.YeniSifreTekrar),
+                    HataMesaji = $"Gerekli."
+                };
+
+            var result = await _kullaniciYoneticisi.ChangePasswordAsync(
+                model, vm.EskiSifre, vm.YeniSifre);
+
+            if (!result.Succeeded)
+                return new()
+                {
+                    BasariliMi = false,
+                    HataBasligi = nameof(vm.YeniSifre),
+                    HataMesaji = $"Başarısız."
+                };
+        }
+
+        model.Isim = vm.Isim;
+        model.Soyisim = vm.Soyisim;
+
+        _veriTabani.Users.Update(model);
+        await _veriTabani.SaveChangesAsync();
+
+        await _girisYoneticisi.RefreshSignInAsync(model);
+
+        return new();
     }
     #endregion
 }
