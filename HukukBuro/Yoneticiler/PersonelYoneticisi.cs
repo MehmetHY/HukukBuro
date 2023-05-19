@@ -103,6 +103,32 @@ public class PersonelYoneticisi
             model,
             new Claim(Sabit.AnaRol.Type, Sabit.AnaRol.Onaylanmamis));
 
+        var adminIdleri = await _veriTabani.UserClaims
+            .Where(uc =>
+                uc.ClaimType == Sabit.AnaRol.Type &&
+                uc.ClaimValue == Sabit.AnaRol.Admin)
+            .Select(uc => uc.UserId)
+            .ToListAsync();
+
+        var yoneticiIdleri =
+            (await _kullaniciYoneticisi.GetUsersInRoleAsync(Sabit.Yetki.Personel))
+            .Select(p => p.Id)
+            .ToList()
+            .Union(adminIdleri);
+
+        foreach (var yoneticiId in yoneticiIdleri)
+        {
+            await _veriTabani.Bildirimler.AddAsync(new Bildirim
+            {
+                PersonelId = yoneticiId,
+                Tarih = DateTime.Now,
+                Mesaj = "Yeni bir kullanıcı kaydoldu.",
+                Url = $"/personel/profil/{model.Id}"
+            });
+        }
+
+        await _veriTabani.SaveChangesAsync();
+
         return new();
     }
 

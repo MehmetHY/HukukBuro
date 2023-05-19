@@ -35,7 +35,6 @@ builder.Services.ConfigureApplicationCookie(ayarlar =>
     ayarlar.LogoutPath = "/profil/cikis";
 });
 
-
 builder.Services.AddScoped<KisiYoneticisi>();
 builder.Services.AddScoped<DosyaYoneticisi>();
 builder.Services.AddScoped<PersonelYoneticisi>();
@@ -43,6 +42,7 @@ builder.Services.AddScoped<RandevuYoneticisi>();
 builder.Services.AddScoped<GorevYoneticisi>();
 builder.Services.AddScoped<FinansIslemiYoneticisi>();
 builder.Services.AddScoped<DuyuruYoneticisi>();
+builder.Services.AddScoped<VeriBaslatici>();
 
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10_000_000);
 
@@ -60,6 +60,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+using(var scope = app.Services.CreateScope())
+{
+    var veriBaslatici = scope.ServiceProvider.GetRequiredService<VeriBaslatici>();
+    veriBaslatici.BaslangicVerileriniKaydet();
+}
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
