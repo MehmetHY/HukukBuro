@@ -1,4 +1,5 @@
-﻿using HukukBuro.Data;
+﻿using HukukBuro.Araclar;
+using HukukBuro.Data;
 using HukukBuro.Eklentiler;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
@@ -377,6 +378,80 @@ public class PersonelYoneticisi
         await _girisYoneticisi.RefreshSignInAsync(model);
 
         return new();
+    }
+
+    public async Task<FotoVM> FotoVMGetirAsync(string email)
+        => await _veriTabani.Users
+            .Where(u => u.Email == email)
+            .Select(u => new FotoVM
+            {
+                Url = u.FotoUrl
+            })
+            .FirstAsync();
+
+    public async Task<Sonuc> FotoDuzenleAsync(string email, IFormFile? foto)
+    {
+        var model = await _veriTabani.Users.FirstAsync(u => u.Email == email);
+
+        var belgeAraci = new BelgeAraci
+        {
+            Belge = foto,
+            GecerliUzantilar = Sabit.Belge.GecerliFotoUzantilari,
+            Klasor = "foto",
+            Root = _env.WebRootPath
+        };
+
+        var sonuc = belgeAraci.Onayla();
+
+        if (!sonuc.BasariliMi)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = sonuc.HataMesaji
+            };
+
+        sonuc = belgeAraci.Olustur();
+
+        if (!sonuc.BasariliMi)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = sonuc.HataMesaji
+            };
+
+        if (model.FotoUrl != Sabit.Belge.VarsayilanFotoUrl)
+        {
+            var eskiFoto = Path.Combine(_env.WebRootPath, model.FotoUrl[1..]);
+
+            if (File.Exists(eskiFoto))
+                File.Delete(eskiFoto);
+        }
+
+        model.FotoUrl = belgeAraci.Url!;
+
+        _veriTabani.Users.Update(model);
+        await _veriTabani.SaveChangesAsync();
+
+        return new();
+    }
+
+    public async Task FotoSilAsync(string email)
+    {
+        var model = await _veriTabani.Users.FirstAsync(u => u.Email == email);
+
+        if (model.FotoUrl == Sabit.Belge.VarsayilanFotoUrl)
+            return;
+
+        var eskiFoto = Path.Combine(_env.WebRootPath, model.FotoUrl[1..]);
+
+        if (File.Exists(eskiFoto))
+            File.Delete(eskiFoto);
+
+        model.FotoUrl = Sabit.Belge.VarsayilanFotoUrl;
+        _veriTabani.Users.Update(model);
+        await _veriTabani.SaveChangesAsync();
     }
     #endregion
 }

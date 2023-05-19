@@ -18,21 +18,28 @@ public static class Sabit
 
     public static class Belge
     {
-        public static readonly string[] GecerliUzantilar = { ".jpg",
-                                                             ".jpeg",
-                                                             ".png",
-                                                             ".pdf",
-                                                             ".webp",
-                                                             ".docx",
-                                                             ".svg",
-                                                             ".txt"};
+        public static readonly string[] GecerliBelgeUzantilari = { ".jpg",
+                                                                   ".jpeg",
+                                                                   ".png",
+                                                                   ".pdf",
+                                                                   ".webp",
+                                                                   ".docx",
+                                                                   ".svg",
+                                                                   ".txt"};
+
+        public static readonly string[] GecerliFotoUzantilari = { ".jpg",
+                                                                  ".jpeg",
+                                                                  ".png",
+                                                                  ".webp",
+                                                                  ".gif",
+                                                                  ".svg"};
 
         public const int MaxBoyut = 2_000_000;
 
         public const string HataMaxBoyut = "Belge 2 MB'tan büyük olamaz.";
         public const string HataGerekli = "Belge gerekli.";
 
-        public const string VarsayilanFotoUrl = "foto/kisi.jpg";
+        public const string VarsayilanFotoUrl = "/foto/kisi.jpg";
     }
 
     public static class AnaRol

@@ -7,7 +7,7 @@ public class BelgeAraci
     public IFormFile? Belge { get; set; }
     public long MinBoyut { get; set; } = 0;
     public long MaxBoyut { get; set; } = Sabit.Belge.MaxBoyut;
-    public string[] GecerliUzantilar { get; set; } = Sabit.Belge.GecerliUzantilar;
+    public string[] GecerliUzantilar { get; set; } = Sabit.Belge.GecerliBelgeUzantilari;
 
     public string? Root { get; set; }
     public string? Klasor { get; set; }

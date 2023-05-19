@@ -142,5 +142,42 @@ public class PersonelController : Controller
 
         return View(vm);
     }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult FotoDuzenle() => View();
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> FotoDuzenle(IFormFile? foto)
+    {
+        var sonuc = await _yonetici.FotoDuzenleAsync(User.Identity!.Name!, foto);
+
+        if (sonuc.BasariliMi)
+            return RedirectToAction(nameof(Profil));
+
+        ModelState.HataEkle(sonuc);
+
+        return View();
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> FotoKaldir()
+    {
+        var vm = await _yonetici.FotoVMGetirAsync(User.Identity!.Name!);
+
+        return View(vm);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ActionName(nameof(FotoKaldir))]
+    public async Task<IActionResult> FotoKaldirPOST()
+    {
+        await _yonetici.FotoSilAsync(User.Identity!.Name!);
+
+        return RedirectToAction(nameof(Profil));
+    }
     #endregion
 }

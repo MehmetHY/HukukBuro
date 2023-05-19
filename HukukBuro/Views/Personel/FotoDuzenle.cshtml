@@ -1,0 +1,13 @@
+﻿<a asp-action="profil">Geri</a>
+<hr />
+
+<form method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label>Fotoğraf</label>
+        <input type="file" name="foto" accept="image/png, image/jpeg, image/gif, .svg, .webp" required/>
+    </div>
+
+    <button type="submit">Tamam</button>
+</form>
