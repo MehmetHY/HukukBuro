@@ -1,5 +1,6 @@
 ﻿using HukukBuro.Eklentiler;
 using HukukBuro.Models;
+using HukukBuro.ViewModels;
 using HukukBuro.ViewModels.Personeller;
 using HukukBuro.Yoneticiler;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +25,7 @@ public class PersonelController : Controller
 
     #region giris
 
-    [Authorize]
+    [Authorize(Policy = Sabit.Policy.Personel)]
     public async Task<IActionResult> Listele(ListeleVM? vm)
     {
         var sonuc = await _yonetici.ListeleVMGetirAsync(vm ?? new());
@@ -234,6 +235,19 @@ public class PersonelController : Controller
             return View(Sabit.View.Hata, sonuc);
 
         return RedirectToAction(nameof(Listele));
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult ErisimEngellendi()
+    {
+        var vm = new Sonuc
+        {
+            HataBasligi = "Erişim Engellendi",
+            HataMesaji = "Bu adrese erişim izniniz yok"
+        };
+
+        return View(Sabit.View.Hata, vm);
     }
     #endregion
 }

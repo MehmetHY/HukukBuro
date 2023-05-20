@@ -74,6 +74,18 @@ public static class Sabit
         public const string RandevuText = "Randevu düzenleyebilir.";
     }
 
+    public static class Policy
+    {
+        public const string Dosya = nameof(Dosya);
+        public const string Duyuru = nameof(Duyuru);
+        public const string Finans = nameof(Finans);
+        public const string Gorev = nameof(Gorev);
+        public const string Kisi = nameof(Kisi);
+        public const string Personel = nameof(Personel);
+        public const string Randevu = nameof(Randevu);
+        public const string Rol = nameof(Rol);
+    }
+
     public static class DosyaTuru
     {
         public const int DavaId = 1;
