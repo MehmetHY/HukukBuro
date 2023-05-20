@@ -210,5 +210,30 @@ public class PersonelController : Controller
 
         return View(vm);
     }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Sil(string id)
+    {
+        var sonuc = await _yonetici.OzetVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ActionName(nameof(Sil))]
+    public async Task<IActionResult> SilPOST(string id)
+    {
+        var sonuc = await _yonetici.SilAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return RedirectToAction(nameof(Listele));
+    }
     #endregion
 }

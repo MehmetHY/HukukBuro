@@ -1,7 +1,5 @@
 ﻿@model ListeleVM
 
-<a asp-action="ekle">Yeni personel ekle</a>
-&nbsp;
 <partial name="_Arama" model="@Model" />
 
 @foreach (var oge in Model.Ogeler)
@@ -17,6 +15,8 @@
             (@oge.Anarol)
             &nbsp;
             <a asp-action="yetkiduzenle" asp-route-id="@oge.Id">Yetkiler</a>
+            &nbsp;
+            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
         </div>
         <div>
             Email:

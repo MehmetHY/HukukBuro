@@ -171,7 +171,7 @@ public class PersonelYoneticisi
                 Id = u.Id,
                 TamIsim = u.TamIsim,
                 Email = u.Email!,
-                FotoUrl = u.FotoUrl == null ? Sabit.Belge.VarsayilanFotoUrl : u.FotoUrl,
+                FotoUrl = u.FotoUrl,
                 IlgiliFinansIslemiSayisi = u.IlgiliFinansIslemleri.Count(),
                 SorumluDosyaSayisi = u.SorumluDosyalar.Count(),
                 SorumluFinansIslemiSayisi = u.SorumluFinansIslemleri.Count(),
@@ -543,6 +543,133 @@ public class PersonelYoneticisi
         await _veriTabani.SaveChangesAsync();
 
         return new();
+    }
+    
+    public async Task<Sonuc<OzetVM>> OzetVMGetirAsync(string id)
+    {
+        var vm = await _veriTabani.Users
+            .Where(u => u.Id == id)
+            .Include(u => u.IlgiliFinansIslemleri)
+            .Include(u => u.SorumluDosyalar)
+            .Include(u => u.SorumluFinansIslemleri)
+            .Include(u => u.SorumluGorevler)
+            .Include(u => u.SorumluRandevular)
+            .Select(u => new OzetVM
+            {
+                Id = u.Id,
+                TamIsim = u.TamIsim,
+                Email = u.Email!,
+                FotoUrl = u.FotoUrl,
+                IlgiliFinansIslemiSayisi = u.IlgiliFinansIslemleri.Count(),
+                SorumluDosyaSayisi = u.SorumluDosyalar.Count(),
+                SorumluFinansIslemiSayisi = u.SorumluFinansIslemleri.Count(),
+                SorumluGorevSayisi = u.SorumluGorevler.Count(),
+                SorumluRandevuSayisi = u.SorumluRandevular.Count(),
+
+                Anarol = _veriTabani.UserClaims
+                    .Where(uc =>
+                        uc.UserId == u.Id &&
+                        uc.ClaimType == Sabit.AnaRol.Type)
+                    .Select(uc => uc.ClaimValue)
+                    .First()!
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> SilAsync(string id)
+    {
+        var model = await _veriTabani.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+        if (model == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        await BaglantiliDosyalariTemizleAsync(id);
+        await BaglantiliFinansIslemleriniTemizleAsync(id);
+        await IlgiliFinansIslemleriniTemizleAsync(id);
+        await BaglantiliGorevleriTemizleAsync(id);
+        await BaglantiliRandevulariTemizleAsync(id);
+
+        _veriTabani.Users.Remove(model);
+        await _veriTabani.SaveChangesAsync();
+
+        return new();
+    }
+    #endregion
+
+    #region Temizle
+    public async Task BaglantiliFinansIslemleriniTemizleAsync(string id)
+    {
+        var modeller = await _veriTabani.FinansIslemleri
+            .Where(f => f.IslemYapanId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+            model.IslemYapanId = null;
+
+        _veriTabani.FinansIslemleri.UpdateRange(modeller);
+    }
+
+    public async Task IlgiliFinansIslemleriniTemizleAsync(string id)
+    {
+        var modeller = await _veriTabani.FinansIslemleri
+            .Where(f => f.PersonelBaglantisiVar && f.PersonelId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+        {
+            model.PersonelBaglantisiVar = false;
+            model.PersonelId = null;
+        }    
+
+        _veriTabani.FinansIslemleri.UpdateRange(modeller);
+    }
+
+    public async Task BaglantiliDosyalariTemizleAsync(string id)
+    {
+        var modeller = await _veriTabani.DosyaPersonel
+            .Where(dp => dp.PersonelId == id)
+            .ToListAsync();
+
+        _veriTabani.DosyaPersonel.RemoveRange(modeller);
+    }
+
+    public async Task BaglantiliGorevleriTemizleAsync(string id)
+    {
+        var modeller = await _veriTabani.Gorevler
+            .Where(g => g.SorumluId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+            model.SorumluId = null;
+
+        _veriTabani.Gorevler.UpdateRange(modeller);
+    }
+
+    public async Task BaglantiliRandevulariTemizleAsync(string id)
+    {
+        var modeller = await _veriTabani.Randevular
+            .Where(g => g.SorumluId == id)
+            .ToListAsync();
+
+        foreach (var model in modeller)
+            model.SorumluId = null;
+
+        _veriTabani.Randevular.UpdateRange(modeller);
     }
     #endregion
 }
