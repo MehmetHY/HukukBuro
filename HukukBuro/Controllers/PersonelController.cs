@@ -250,4 +250,29 @@ public class PersonelController : Controller
         return View(Sabit.View.Hata, vm);
     }
     #endregion
+
+    #region Bildirim
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Bildirimler(BildirimListeleVM? vm)
+    {
+        var sonuc = await _yonetici.BildirimListeleVMGetirAsync(
+            vm ?? new(),
+            User.Identity!.Name!);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> BildirimleriTemizle()
+    {
+        await _yonetici.BildirimleriTemizleAsync(User.Identity!.Name!);
+
+        return RedirectToAction(nameof(Bildirimler));
+    }
+    #endregion
 }

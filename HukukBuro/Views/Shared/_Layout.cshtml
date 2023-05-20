@@ -1,6 +1,6 @@
 ﻿@inject SignInManager<Personel> girisYoneticisi
 @inject UserManager<Personel> kullaniciYoneticisi
-
+@inject PersonelYoneticisi personelYoneticisi
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +18,18 @@
 
         @if (girisYoneticisi.IsSignedIn(User))
         {
+            var bildirimSayisi = await personelYoneticisi
+                .OkunmamisBildirimSayisiGetirAsync(User.Identity!.Name!);
+
+            <a asp-controller="personel" asp-action="bildirimler">
+                Bildirimler
+
+                @if (bildirimSayisi > 0)
+                {
+                    <span> (@bildirimSayisi)</span>
+                }
+            </a>
+            <span>&nbsp;</span>
             <a asp-controller="personel" asp-action="profil">
                 @User.Identity!.Name (@User.AnaRolGetir())
             </a>

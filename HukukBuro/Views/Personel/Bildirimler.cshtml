@@ -1,0 +1,40 @@
+﻿@model BildirimListeleVM
+
+<form method="post" asp-action="bildirimleritemizle">
+    <button type="submit">Temizle</button>
+</form>
+
+@foreach (var bildirim in Model.Ogeler)
+{
+    <div>
+
+        @if (bildirim.Url != null)
+        {
+            <a href="@bildirim.Url">
+                @if (!bildirim.Okundu)
+                {
+                    <strong>Yeni&nbsp;</strong>
+                }
+
+                @bildirim.Mesaj
+                &nbsp;
+                @bildirim.Tarih
+            </a>
+        }
+        else
+        {
+            @if (!bildirim.Okundu)
+            {
+                <strong>Yeni&nbsp;</strong>
+            }
+
+            @bildirim.Mesaj
+            <span>&nbsp;</span>
+            @bildirim.Tarih
+        }
+
+    </div>
+}
+
+<hr />
+<partial name="_Sayfa" model="@Model" />

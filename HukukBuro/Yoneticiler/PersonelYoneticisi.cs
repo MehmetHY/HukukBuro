@@ -544,7 +544,7 @@ public class PersonelYoneticisi
 
         return new();
     }
-    
+
     public async Task<Sonuc<OzetVM>> OzetVMGetirAsync(string id)
     {
         var vm = await _veriTabani.Users
@@ -634,7 +634,7 @@ public class PersonelYoneticisi
         {
             model.PersonelBaglantisiVar = false;
             model.PersonelId = null;
-        }    
+        }
 
         _veriTabani.FinansIslemleri.UpdateRange(modeller);
     }
@@ -670,6 +670,71 @@ public class PersonelYoneticisi
             model.SorumluId = null;
 
         _veriTabani.Randevular.UpdateRange(modeller);
+    }
+    #endregion
+
+    #region Bildirim
+    public async Task<int> OkunmamisBildirimSayisiGetirAsync(string email)
+        => await _veriTabani.Bildirimler
+            .Include(b => b.Personel)
+            .Where(b => b.Personel.Email == email && !b.Okundu)
+            .CountAsync();
+
+    public async Task<Sonuc<BildirimListeleVM>> BildirimListeleVMGetirAsync(
+        BildirimListeleVM vm,
+        string email)
+    {
+        var q = _veriTabani.Bildirimler
+            .Include(b => b.Personel)
+            .Where(b => b.Personel.Email == email)
+            .OrderByDescending(b => b.Okundu)
+            .ThenByDescending(b => b.Tarih)
+            .Select(b => new BildirimVM
+            {
+                Id = b.Id,
+                Tarih = b.Tarih,
+                Okundu = b.Okundu,
+                Mesaj = b.Mesaj,
+                Url = b.Url
+            });
+
+        if (!await q.SayfaGecerliMiAsync(vm.Sayfa, vm.SayfaBoyutu))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Sayfa",
+                HataMesaji = $"Sayfa: {vm.Sayfa}, sayfa boyutu: {vm.SayfaBoyutu}"
+            };
+
+        vm.Ogeler = await q.SayfaUygula(vm.Sayfa, vm.SayfaBoyutu).ToListAsync();
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
+        await BildirimleriOkunduIsaretle(vm.Ogeler.Select(o => o.Id).ToList());
+
+        return new() { Deger = vm };
+    }
+
+    public async Task BildirimleriOkunduIsaretle(IEnumerable<int> ids)
+    {
+        var modeller = await _veriTabani.Bildirimler
+            .Where(b => ids.Contains(b.Id))
+            .ToListAsync();
+
+        foreach (var model in modeller)
+            model.Okundu = true;
+
+        _veriTabani.Bildirimler.UpdateRange(modeller);
+        await _veriTabani.SaveChangesAsync();
+    }
+
+    public async Task BildirimleriTemizleAsync(string email)
+    {
+        var modeller = await _veriTabani.Bildirimler
+            .Include(b => b.Personel)
+            .Where(b => b.Personel.Email == email)
+            .ToListAsync();
+
+        _veriTabani.Bildirimler.RemoveRange(modeller);
+        await _veriTabani.SaveChangesAsync();
     }
     #endregion
 }
