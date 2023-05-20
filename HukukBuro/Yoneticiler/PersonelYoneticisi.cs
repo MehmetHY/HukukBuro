@@ -7,6 +7,7 @@ using HukukBuro.ViewModels.Personeller;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
 
@@ -37,6 +38,7 @@ public class PersonelYoneticisi
     public List<SelectListItem> AnaRolleriGetir()
         => new()
         {
+            new() { Value = Sabit.AnaRol.Onaylanmamis, Text = Sabit.AnaRol.Onaylanmamis },
             new() { Value = Sabit.AnaRol.Yonetici, Text = Sabit.AnaRol.Yonetici },
             new() { Value = Sabit.AnaRol.Avukat, Text = Sabit.AnaRol.Avukat },
             new() { Value = Sabit.AnaRol.Calisan, Text = Sabit.AnaRol.Calisan }
@@ -54,6 +56,21 @@ public class PersonelYoneticisi
             new() {Value = Sabit.Yetki.Randevu, Text = Sabit.Yetki.RandevuText},
             new() {Value = Sabit.Yetki.Finans, Text = Sabit.Yetki.FinansText}
         };
+
+    public async Task<List<CheckboxItem<string>>> YetkileriGetirAsync(string userId)
+    {
+        var yetkiler = YetkileriGetir();
+
+        var kullaniciYetkileri = await _veriTabani.UserRoles
+            .Where(ur => ur.UserId == userId)
+            .Select(ur => ur.RoleId)
+            .ToListAsync();
+
+        foreach (var yetki in yetkiler)
+            yetki.Checked = kullaniciYetkileri.Contains(yetki.Value);
+
+        return yetkiler;
+    }
 
     public async Task<bool> EmailMevcutMuAsync(string email)
         => await _veriTabani.Users.AnyAsync(u => u.Email == email);
@@ -452,6 +469,80 @@ public class PersonelYoneticisi
         model.FotoUrl = Sabit.Belge.VarsayilanFotoUrl;
         _veriTabani.Users.Update(model);
         await _veriTabani.SaveChangesAsync();
+    }
+
+    public async Task<Sonuc<YetkiDuzenleVM>> YetkiDuzenleVMGetirAsync(string id)
+    {
+        var vm = await _veriTabani.Users
+            .Where(u => u.Id == id)
+            .Select(u => new YetkiDuzenleVM
+            {
+                Id = u.Id,
+                TamIsim = u.TamIsim,
+
+                Anarol = _veriTabani.UserClaims
+                    .Where(uc => uc.UserId == id && uc.ClaimType == Sabit.AnaRol.Type)
+                    .Select(uc => uc.ClaimValue)
+                    .First()!
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        vm.Anaroller = AnaRolleriGetir();
+        vm.Yetkiler = await YetkileriGetirAsync(id);
+
+        return new() { Deger = vm };
+    }
+
+    public async Task<Sonuc> YetkiDuzenleAsync(YetkiDuzenleVM vm)
+    {
+        if (!await _veriTabani.Users.AnyAsync(u => u.Id == vm.Id))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = $"id: {vm.Id} bulunamadı."
+            };
+
+        var anarolClaim = await _veriTabani.UserClaims
+            .FirstAsync(uc => uc.UserId == vm.Id && uc.ClaimType == Sabit.AnaRol.Type);
+
+        anarolClaim.ClaimValue = vm.Anarol;
+        _veriTabani.UserClaims.Update(anarolClaim);
+
+        var yetkiModelleri = await _veriTabani.UserRoles
+            .Where(ur => ur.UserId == vm.Id)
+            .ToListAsync();
+
+        var eklenecekYetkiler = new List<IdentityUserRole<string>>();
+
+        foreach (var yetki in vm.Yetkiler)
+        {
+            var yetkiModeli = yetkiModelleri
+                .FirstOrDefault(ym => ym.RoleId == yetki.Value);
+
+            if (yetkiModeli == null && yetki.Checked)
+                eklenecekYetkiler.Add(new()
+                {
+                    UserId = vm.Id,
+                    RoleId = yetki.Value
+                });
+
+            else if (yetkiModeli != null && !yetki.Checked)
+                _veriTabani.UserRoles.Remove(yetkiModeli);
+        }
+
+        await _veriTabani.UserRoles.AddRangeAsync(eklenecekYetkiler);
+        await _veriTabani.SaveChangesAsync();
+
+        return new();
     }
     #endregion
 }

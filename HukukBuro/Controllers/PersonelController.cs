@@ -84,7 +84,7 @@ public class PersonelController : Controller
         {
             var sonuc = await _yonetici.GirisAsync(vm);
 
-            if (sonuc.BasariliMi)  
+            if (sonuc.BasariliMi)
                 return LocalRedirect(returnUrl ?? "/");
 
             if (!sonuc.Onayli)
@@ -178,6 +178,37 @@ public class PersonelController : Controller
         await _yonetici.FotoSilAsync(User.Identity!.Name!);
 
         return RedirectToAction(nameof(Profil));
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> YetkiDuzenle(string id)
+    {
+        var sonuc = await _yonetici.YetkiDuzenleVMGetirAsync(id);
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> YetkiDuzenle(YetkiDuzenleVM vm)
+    {
+        if (ModelState.IsValid)
+        {
+            var sonuc = await _yonetici.YetkiDuzenleAsync(vm);
+
+            if (sonuc.BasariliMi)
+                return RedirectToAction(nameof(Listele));
+
+            ModelState.HataEkle(sonuc);
+        }
+
+        vm.Anaroller = _yonetici.AnaRolleriGetir();
+
+        return View(vm);
     }
     #endregion
 }

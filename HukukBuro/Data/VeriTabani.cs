@@ -245,49 +245,49 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
             .HasData(
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Kisi,
                     Name = Sabit.Yetki.Kisi,
                     NormalizedName = Sabit.Yetki.Kisi.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Dosya,
                     Name = Sabit.Yetki.Dosya,
                     NormalizedName = Sabit.Yetki.Dosya.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Personel,
                     Name = Sabit.Yetki.Personel,
                     NormalizedName = Sabit.Yetki.Personel.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Gorev,
                     Name = Sabit.Yetki.Gorev,
                     NormalizedName = Sabit.Yetki.Gorev.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Duyuru,
                     Name = Sabit.Yetki.Duyuru,
                     NormalizedName = Sabit.Yetki.Duyuru.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Rol,
                     Name = Sabit.Yetki.Rol,
                     NormalizedName = Sabit.Yetki.Rol.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Finans,
                     Name = Sabit.Yetki.Finans,
                     NormalizedName = Sabit.Yetki.Finans.ToUpper()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString("D"),
+                    Id = Sabit.Yetki.Randevu,
                     Name = Sabit.Yetki.Randevu,
                     NormalizedName = Sabit.Yetki.Randevu.ToUpper()
                 }

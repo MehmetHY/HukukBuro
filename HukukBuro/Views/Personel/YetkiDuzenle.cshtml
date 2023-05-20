@@ -1,0 +1,38 @@
+﻿@model YetkiDuzenleVM
+
+<a asp-action="listele">Geri</a>
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <h3>@Model.TamIsim</h3>
+
+    <input asp-for="Id" hidden />
+    <input asp-for="TamIsim" hidden />
+
+    <div>
+        <label asp-for="Anarol"></label>
+        <select asp-for="Anarol" asp-items="@Model.Anaroller"></select>
+        <span asp-validation-for="Anarol"></span>
+    </div>
+
+    <hr />
+
+    <h5>Yetkiler</h5>
+
+    @for (int i = 0; i < Model.Yetkiler.Count; ++i)
+    {
+        <div>
+            <label>
+                <input asp-for="@Model.Yetkiler[i].Checked" />
+                <input asp-for="@Model.Yetkiler[i].Value" hidden />
+                @Model.Yetkiler[i].Text
+            </label>
+        </div>
+    }
+
+    <hr />
+
+    <button type="submit">Tamam</button>
+</form>
