@@ -155,6 +155,8 @@
         &nbsp;
         @durusma.Tarih
         &nbsp;
+        (@(durusma.Tamamlandi ? "Tamamlandı" : "Tamamlanmadı"))
+        &nbsp;
         <a asp-action="durusmaduzenle" asp-route-id="@durusma.Id">Düzenle</a>
         &nbsp;
         <a asp-action="durusmasil" asp-route-id="@durusma.Id">Sil</a>

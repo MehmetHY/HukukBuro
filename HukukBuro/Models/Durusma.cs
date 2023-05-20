@@ -18,4 +18,6 @@ public sealed class Durusma
     public string? Aciklama { get; set; }
 
     public DateTime Tarih { get; set; }
+
+    public bool Tamamlandi { get; set; }
 }

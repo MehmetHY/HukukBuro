@@ -1,6 +1,7 @@
 ﻿using HukukBuro.Araclar;
 using HukukBuro.Data;
 using HukukBuro.Eklentiler;
+using HukukBuro.Karsilastiricilar;
 using HukukBuro.Models;
 using HukukBuro.ViewModels;
 using HukukBuro.ViewModels.Dosyalar;
@@ -12,12 +13,12 @@ namespace HukukBuro.Yoneticiler;
 public class DosyaYoneticisi
 {
     #region Fields
-    private readonly VeriTabani _vt;
+    private readonly VeriTabani _veritabani;
     private readonly IWebHostEnvironment _env;
 
     public DosyaYoneticisi(VeriTabani vt, IWebHostEnvironment env)
     {
-        _vt = vt;
+        _veritabani = vt;
         _env = env;
     }
     #endregion
@@ -25,7 +26,7 @@ public class DosyaYoneticisi
     #region Dosya
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
-        var q = _vt.Dosyalar
+        var q = _veritabani.Dosyalar
             .AsNoTracking()
             .Include(d => d.DosyaTuru)
             .Include(d => d.DosyaKategorisi)
@@ -77,7 +78,7 @@ public class DosyaYoneticisi
     }
 
     public async Task<List<SelectListItem>> DosyaTurleriGetirAsync()
-        => await _vt.DosyaTurleri
+        => await _veritabani.DosyaTurleri
             .AsNoTracking()
             .Select(dt => new SelectListItem
             {
@@ -87,7 +88,7 @@ public class DosyaYoneticisi
             .ToListAsync();
 
     public async Task<List<SelectListItem>> DosyaKategorileriGetirAsync()
-        => await _vt.DosyaKategorileri
+        => await _veritabani.DosyaKategorileri
             .AsNoTracking()
             .Select(dk => new SelectListItem
             {
@@ -97,7 +98,7 @@ public class DosyaYoneticisi
             .ToListAsync();
 
     public async Task<List<SelectListItem>> DosyaDurumlariGetirAsync()
-        => await _vt.DosyaDurumu
+        => await _veritabani.DosyaDurumu
             .AsNoTracking()
             .Select(dd => new SelectListItem
             {
@@ -136,13 +137,13 @@ public class DosyaYoneticisi
         model.KesinlesmeBilgileri = new() { Dosya = model };
         model.OlusturmaTarihi = DateTime.Now;
 
-        await _vt.Dosyalar.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veritabani.Dosyalar.AddAsync(model);
+        await _veritabani.SaveChangesAsync();
     }
 
     public async Task<Sonuc<OzetVM>> OzetVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+        if (id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -150,7 +151,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        var vm = await _vt.Dosyalar
+        var vm = await _veritabani.Dosyalar
             .AsNoTracking()
             .Where(d => d.Id == id)
             .Select(d => new OzetVM
@@ -179,7 +180,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+        if (id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -187,7 +188,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        var vm = await _vt.Dosyalar
+        var vm = await _veritabani.Dosyalar
             .AsNoTracking()
             .Where(d => d.Id == id)
             .Select(d => new DuzenleVM
@@ -214,7 +215,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
     {
-        var model = await _vt.Dosyalar.FirstOrDefaultAsync(d => d.Id == vm.Id);
+        var model = await _veritabani.Dosyalar.FirstOrDefaultAsync(d => d.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -235,15 +236,15 @@ public class DosyaYoneticisi
         model.Mahkeme = vm.Mahkeme;
         model.AcilisTarihi = vm.AcilisTarihi;
 
-        _vt.Dosyalar.Update(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.Dosyalar.Update(model);
+        await _veritabani.SaveChangesAsync();
 
         return new();
     }
     
     public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
     {
-        var vm = await _vt.Dosyalar
+        var vm = await _veritabani.Dosyalar
             .Where(d => d.Id == id)
             .Include(d => d.DosyaTuru)
             .Include(d => d.DosyaKategorisi)
@@ -274,7 +275,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc> SilAsync(int id)
     {
-        var model = await _vt.Dosyalar.FirstOrDefaultAsync(d => d.Id == id);
+        var model = await _veritabani.Dosyalar.FirstOrDefaultAsync(d => d.Id == id);
 
         if (model == null)
             return new()
@@ -291,8 +292,8 @@ public class DosyaYoneticisi
         await FinansBaglantilariniTemizleAsync(id);
         await KararBilgileriniTemizleAsync(id);
 
-        _vt.Dosyalar.Remove(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.Dosyalar.Remove(model);
+        await _veritabani.SaveChangesAsync();
 
         return new();
     }
@@ -301,7 +302,7 @@ public class DosyaYoneticisi
     #region Taraf
     public async Task<Sonuc<TarafEkleVM>> TarafEkleVMGetirAsync(int dosyaId)
     {
-        if (dosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == dosyaId))
+        if (dosyaId < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == dosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -321,7 +322,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc> TarafEkleAsync(TarafEkleVM vm)
     {
-        if (vm.DosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+        if (vm.DosyaId < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -337,14 +338,14 @@ public class DosyaYoneticisi
             TarafTuruId = vm.TarafTuruId
         };
 
-        await _vt.TarafKisiler.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veritabani.TarafKisiler.AddAsync(model);
+        await _veritabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<List<SelectListItem>> TarafTurleriGetirAsync()
-        => await _vt.TarafTurleri
+        => await _veritabani.TarafTurleri
         .AsNoTracking()
         .Select(t => new SelectListItem
         {
@@ -354,7 +355,7 @@ public class DosyaYoneticisi
         .ToListAsync();
 
     public async Task<List<SelectListItem>> KisileriGetirAsync()
-        => await _vt.Kisiler
+        => await _veritabani.Kisiler
         .AsNoTracking()
         .Select(k => new SelectListItem
         {
@@ -365,7 +366,7 @@ public class DosyaYoneticisi
 
     public async Task<List<OzetVM.Taraf>> TarafGetirAsync(
         int dosyaId, bool karsiTaraf)
-        => await _vt.TarafKisiler
+        => await _veritabani.TarafKisiler
             .AsNoTracking()
             .Where(t => t.DosyaId == dosyaId && t.KarsiTaraf == karsiTaraf)
             .Include(t => t.Kisi)
@@ -384,7 +385,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<TarafDuzenleVM>> TarafDuzenleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.TarafKisiler.AnyAsync(t => t.Id == id))
+        if (id < 1 || !await _veritabani.TarafKisiler.AnyAsync(t => t.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -392,7 +393,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        var vm = await _vt.TarafKisiler
+        var vm = await _veritabani.TarafKisiler
             .Where(t => t.Id == id)
             .Select(t => new TarafDuzenleVM
             {
@@ -412,7 +413,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> TarafDuzenleAsync(TarafDuzenleVM vm)
     {
-        var model = await _vt.TarafKisiler.FirstOrDefaultAsync(t => t.Id == vm.Id);
+        var model = await _veritabani.TarafKisiler.FirstOrDefaultAsync(t => t.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -426,15 +427,15 @@ public class DosyaYoneticisi
         model.TarafTuruId = vm.TarafTuruId;
         model.KarsiTaraf = vm.KarsiTarafMi;
 
-        _vt.TarafKisiler.Update(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.TarafKisiler.Update(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = model.DosyaId };
     }
 
     public async Task<Sonuc<TarafSilVM>> TarafSilVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.TarafKisiler.AnyAsync(t => t.Id == id))
+        if (id < 1 || !await _veritabani.TarafKisiler.AnyAsync(t => t.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -442,7 +443,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        var vm = await _vt.TarafKisiler
+        var vm = await _veritabani.TarafKisiler
             .Where(t => t.Id == id)
             .Include(t => t.Kisi)
             .Include(t => t.TarafTuru)
@@ -465,7 +466,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> TarafSilAsync(int id)
     {
-        var model = await _vt.TarafKisiler.FirstOrDefaultAsync(t => t.Id == id);
+        var model = await _veritabani.TarafKisiler.FirstOrDefaultAsync(t => t.Id == id);
 
         if (model == null)
             return new()
@@ -476,8 +477,8 @@ public class DosyaYoneticisi
             };
 
         var dosyaId = model.DosyaId;
-        _vt.TarafKisiler.Remove(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.TarafKisiler.Remove(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = dosyaId };
     }
@@ -486,7 +487,7 @@ public class DosyaYoneticisi
     #region Personel
     public async Task<Sonuc<PersonelDuzenleVM>> PersonelDuzenleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+        if (id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -496,7 +497,7 @@ public class DosyaYoneticisi
 
         var vm = new PersonelDuzenleVM { Id = id };
 
-        vm.PersonelListe = await _vt.Users
+        vm.PersonelListe = await _veritabani.Users
             .Include(p => p.SorumluDosyalar)
             .Select(p => new CheckboxItem<string>
             {
@@ -511,7 +512,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> PersonelDuzenleAsync(PersonelDuzenleVM vm)
     {
-        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.Id))
+        if (vm.Id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.Id))
             return new()
             {
                 BasariliMi = false,
@@ -519,7 +520,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"Id: {vm.Id} bulunamadı."
             };
 
-        var personeller = await _vt.Users
+        var personeller = await _veritabani.Users
             .Include(p => p.SorumluDosyalar)
             .ToListAsync();
 
@@ -530,35 +531,35 @@ public class DosyaYoneticisi
             if (item == null)
                 continue;
 
-            var dosyaPersonel = await _vt.DosyaPersonel
+            var dosyaPersonel = await _veritabani.DosyaPersonel
                 .FirstOrDefaultAsync(dp =>
                     dp.DosyaId == vm.Id &&
                     dp.PersonelId == item.Value);
 
             if (dosyaPersonel != null && !item.Checked)
-                _vt.DosyaPersonel.Remove(dosyaPersonel);
+                _veritabani.DosyaPersonel.Remove(dosyaPersonel);
             else if (dosyaPersonel == null && item.Checked)
-                await _vt.DosyaPersonel.AddAsync(new()
+                await _veritabani.DosyaPersonel.AddAsync(new()
                 {
                     DosyaId = vm.Id,
                     PersonelId = item.Value
                 });
         }
 
-        await _vt.SaveChangesAsync();
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.Id };
     }
 
     public async Task<List<OzetVM.Personel>> OzetPersonelGetirAsync(int id)
     {
-        var personel = await _vt.DosyaPersonel
+        var personel = await _veritabani.DosyaPersonel
             .Where(dp => dp.DosyaId == id)
             .Select(dp => new OzetVM.Personel
             {
                 TamIsim = $"{dp.Personel.Isim} {dp.Personel.Soyisim}",
 
-                AnaRol = _vt.UserClaims
+                AnaRol = _veritabani.UserClaims
                     .Where(uc =>
                         uc.UserId == dp.PersonelId &&
                         uc.ClaimType == Sabit.AnaRol.Type)
@@ -576,7 +577,7 @@ public class DosyaYoneticisi
         int dosyaId)
     {
         if (dosyaId < 1 ||
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == dosyaId))
+            !await _veritabani.Dosyalar.AnyAsync(d => d.Id == dosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -596,7 +597,7 @@ public class DosyaYoneticisi
     public async Task<Sonuc<int>> DosyaBaglantisiEkleAsync(DosyaBaglantisiEkleVM vm)
     {
         if (vm.DosyaId < 1 ||
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -605,7 +606,7 @@ public class DosyaYoneticisi
             };
 
         if (vm.IlgiliDosyaId < 1 ||
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.IlgiliDosyaId))
+            !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.IlgiliDosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -620,14 +621,14 @@ public class DosyaYoneticisi
             Aciklama = vm.Aciklama
         };
 
-        await _vt.DosyaBaglantilari.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veritabani.DosyaBaglantilari.AddAsync(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.DosyaId };
     }
 
     public async Task<List<SelectListItem>> DosyalariGetirAsync()
-        => await _vt.Dosyalar
+        => await _veritabani.Dosyalar
             .Select(d => new SelectListItem
             {
                 Value = d.Id.ToString(),
@@ -636,7 +637,7 @@ public class DosyaYoneticisi
             .ToListAsync();
 
     public async Task<List<OzetVM.Baglanti>> OzetDosyaBaglantilariGetirAsync(int id)
-        => await _vt.DosyaBaglantilari
+        => await _veritabani.DosyaBaglantilari
         .Include(db => db.IlgiliDosya)
         .Where(db => db.DosyaId == id)
         .Select(db => new OzetVM.Baglanti
@@ -653,7 +654,7 @@ public class DosyaYoneticisi
         DosyaBaglantisiDuzenleVMGetirAsync(int id)
     {
         if (id < 1 ||
-            !await _vt.DosyaBaglantilari.AnyAsync(db => db.Id == id))
+            !await _veritabani.DosyaBaglantilari.AnyAsync(db => db.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -661,7 +662,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        var vm = await _vt.DosyaBaglantilari
+        var vm = await _veritabani.DosyaBaglantilari
             .Select(db => new DosyaBaglantisiDuzenleVM
             {
                 Id = id,
@@ -679,7 +680,7 @@ public class DosyaYoneticisi
     public async Task<Sonuc<int>> DosyaBaglantisiDuzenleAsync(
         DosyaBaglantisiDuzenleVM vm)
     {
-        var model = await _vt.DosyaBaglantilari
+        var model = await _veritabani.DosyaBaglantilari
             .FirstOrDefaultAsync(db => db.Id == vm.Id);
 
         if (model == null)
@@ -691,7 +692,7 @@ public class DosyaYoneticisi
             };
 
         if (vm.DosyaId < 1 ||
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -700,7 +701,7 @@ public class DosyaYoneticisi
             };
 
         if (vm.IlgiliDosyaId < 1 ||
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.IlgiliDosyaId))
+            !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.IlgiliDosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -711,8 +712,8 @@ public class DosyaYoneticisi
         model.Aciklama = vm.Aciklama;
         model.DosyaId = vm.DosyaId;
         model.IlgiliDosyaId = vm.IlgiliDosyaId;
-        _vt.DosyaBaglantilari.Update(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaBaglantilari.Update(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.DosyaId };
     }
@@ -721,7 +722,7 @@ public class DosyaYoneticisi
         int id)
     {
         if (id < 1 ||
-            !await _vt.DosyaBaglantilari.AnyAsync(db => db.Id == id))
+            !await _veritabani.DosyaBaglantilari.AnyAsync(db => db.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -729,7 +730,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        var vm = await _vt.DosyaBaglantilari
+        var vm = await _veritabani.DosyaBaglantilari
             .Include(db => db.IlgiliDosya)
             .Select(db => new DosyaBaglantisiSilVM
             {
@@ -745,7 +746,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> DosyaBaglantisiSilAsync(int id)
     {
-        var model = await _vt.DosyaBaglantilari
+        var model = await _veritabani.DosyaBaglantilari
             .FirstOrDefaultAsync(db => db.Id == id);
 
         if (model == null)
@@ -757,8 +758,8 @@ public class DosyaYoneticisi
             };
 
         var dosyaId = model.DosyaId;
-        _vt.DosyaBaglantilari.Remove(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaBaglantilari.Remove(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = dosyaId };
     }
@@ -767,7 +768,7 @@ public class DosyaYoneticisi
     #region Karar
     public async Task<Sonuc<KararVM>> KararVMGetirAsync(int dosyaId)
     {
-        if (dosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == dosyaId))
+        if (dosyaId < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == dosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -775,7 +776,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"Id: {dosyaId} bulunamadı."
             };
 
-        var vm = await _vt.Dosyalar
+        var vm = await _veritabani.Dosyalar
             .Include(d => d.KararBilgileri)
             .Include(d => d.BolgeAdliyeMahkemesiBilgileri)
             .Include(d => d.TemyizBilgileri)
@@ -842,7 +843,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> KararDuzenleAsync(KararVM vm)
     {
-        var dosya = await _vt.Dosyalar
+        var dosya = await _veritabani.Dosyalar
             .Include(d => d.KararBilgileri)
             .Include(d => d.BolgeAdliyeMahkemesiBilgileri)
             .Include(d => d.TemyizBilgileri)
@@ -893,12 +894,12 @@ public class DosyaYoneticisi
         dosya.KesinlesmeBilgileri!.KararOzeti = vm.KesinlesmeBilgileri!.KararOzeti;
         dosya.KesinlesmeBilgileri.KesinlesmeTarihi = vm.KesinlesmeBilgileri.KesinlesmeTarihi;
 
-        _vt.KararBilgileri.Update(dosya.KararBilgileri);
-        _vt.BolgeAdliyeMahkemesiBilgileri.Update(dosya.BolgeAdliyeMahkemesiBilgileri);
-        _vt.TemyizBilgileri.Update(dosya.TemyizBilgileri);
-        _vt.KararDuzeltmeBilgileri.Update(dosya.KararDuzeltmeBilgileri);
-        _vt.KesinlesmeBilgileri.Update(dosya.KesinlesmeBilgileri);
-        await _vt.SaveChangesAsync();
+        _veritabani.KararBilgileri.Update(dosya.KararBilgileri);
+        _veritabani.BolgeAdliyeMahkemesiBilgileri.Update(dosya.BolgeAdliyeMahkemesiBilgileri);
+        _veritabani.TemyizBilgileri.Update(dosya.TemyizBilgileri);
+        _veritabani.KararDuzeltmeBilgileri.Update(dosya.KararDuzeltmeBilgileri);
+        _veritabani.KesinlesmeBilgileri.Update(dosya.KesinlesmeBilgileri);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.DosyaId };
     }
@@ -906,7 +907,7 @@ public class DosyaYoneticisi
 
     #region Durusma
     public async Task<List<OzetVM.Durusma>> OzetDurusmalariGetirAsync(int id)
-        => await _vt.Durusmalar
+        => await _veritabani.Durusmalar
         .Where(d => d.DosyaId == id)
         .Include(d => d.AktiviteTuru)
         .Select(d => new OzetVM.Durusma
@@ -914,13 +915,14 @@ public class DosyaYoneticisi
             Id = d.Id,
             AktiviteTuru = d.AktiviteTuru.Isim,
             Tarih = d.Tarih,
-            Aciklama = d.Aciklama
+            Aciklama = d.Aciklama,
+            Tamamlandi = d.Tamamlandi
         })
         .ToListAsync();
 
     public async Task<Sonuc<DurusmaEkleVM>> DurusmaEkleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == id))
+        if (id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -939,7 +941,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> DurusmaEkleAsync(DurusmaEkleVM vm)
     {
-        if (vm.DosyaId < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+        if (vm.DosyaId < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -952,17 +954,18 @@ public class DosyaYoneticisi
             DosyaId = vm.DosyaId,
             Aciklama = vm.Aciklama,
             AktiviteTuruId = vm.AktiviteTuruId,
-            Tarih = vm.Tarih
+            Tarih = vm.Tarih,
+            Tamamlandi = vm.Tamamlandi
         };
 
-        await _vt.Durusmalar.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veritabani.Durusmalar.AddAsync(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.DosyaId };
     }
     public async Task<Sonuc<DurusmaDuzenleVM>> DurusmaDuzenleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Durusmalar.AnyAsync(d => d.Id == id))
+        if (id < 1 || !await _veritabani.Durusmalar.AnyAsync(d => d.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -970,7 +973,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"Id: {id} bulunamadı."
             };
 
-        var vm = await _vt.Durusmalar
+        var vm = await _veritabani.Durusmalar
             .Where(d => d.Id == id)
             .Select(d => new DurusmaDuzenleVM
             {
@@ -978,7 +981,8 @@ public class DosyaYoneticisi
                 DosyaId = d.DosyaId,
                 Aciklama = d.Aciklama,
                 AktiviteTuruId = d.AktiviteTuruId,
-                Tarih = d.Tarih
+                Tarih = d.Tarih,
+                Tamamlandi = d.Tamamlandi
             })
             .FirstAsync();
 
@@ -989,7 +993,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> DurusmaDuzenleAsync(DurusmaDuzenleVM vm)
     {
-        var model = await _vt.Durusmalar.FirstOrDefaultAsync(d => d.Id == vm.Id);
+        var model = await _veritabani.Durusmalar.FirstOrDefaultAsync(d => d.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -1002,16 +1006,17 @@ public class DosyaYoneticisi
         model.Aciklama = vm.Aciklama;
         model.AktiviteTuruId = vm.AktiviteTuruId;
         model.Tarih = vm.Tarih;
+        model.Tamamlandi = vm.Tamamlandi;
 
-        _vt.Durusmalar.Update(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.Durusmalar.Update(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = model.DosyaId };
     }
 
     public async Task<Sonuc<DurusmaSilVM>> DurusmaSilVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Durusmalar.AnyAsync(d => d.Id == id))
+        if (id < 1 || !await _veritabani.Durusmalar.AnyAsync(d => d.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -1019,7 +1024,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"Id: {id} bulunamadı."
             };
 
-        var vm = await _vt.Durusmalar
+        var vm = await _veritabani.Durusmalar
             .Where(d => d.Id == id)
             .Include(d => d.AktiviteTuru)
             .Select(d => new DurusmaSilVM
@@ -1028,7 +1033,8 @@ public class DosyaYoneticisi
                 DosyaId = d.DosyaId,
                 Aciklama = d.Aciklama,
                 AktiviteTuru = d.AktiviteTuru.Isim,
-                Tarih = d.Tarih
+                Tarih = d.Tarih,
+                Tamamlandi = d.Tamamlandi
             })
             .FirstAsync();
 
@@ -1037,7 +1043,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> DurusmaSilAsync(int id)
     {
-        var model = await _vt.Durusmalar.FirstOrDefaultAsync(d => d.Id == id);
+        var model = await _veritabani.Durusmalar.FirstOrDefaultAsync(d => d.Id == id);
 
         if (model == null)
             return new()
@@ -1049,27 +1055,67 @@ public class DosyaYoneticisi
 
         var dosyaId = model.DosyaId;
 
-        _vt.Durusmalar.Remove(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.Durusmalar.Remove(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = dosyaId };
     }
 
     public async Task<List<SelectListItem>> DurusmaAktiviteTurleriGetirAsync()
-        => await _vt.DurusmaAktiviteTurleri
+        => await _veritabani.DurusmaAktiviteTurleri
         .Select(d => new SelectListItem
         {
             Value = d.Id.ToString(),
             Text = d.Isim
         })
         .ToListAsync();
+    
+    public async Task<Sonuc<DurusmalarVM>> DurusmalarVMGetirAsync(DurusmalarVM vm)
+    {
+        var q = _veritabani.Durusmalar
+            .Include(d => d.Dosya)
+            .Include(d => d.AktiviteTuru)
+            .Where(d =>
+                string.IsNullOrWhiteSpace(vm.Arama) ||
+                (d.Aciklama != null && d.Aciklama.Contains(vm.Arama)) ||
+                d.Dosya.Konu.Contains(vm.Arama) ||
+                d.Dosya.BuroNo.Contains(vm.Arama) ||
+                d.Dosya.DosyaNo.Contains(vm.Arama) ||
+                d.AktiviteTuru.Isim.Contains(vm.Arama) ||
+                d.Tarih.ToString().Contains(vm.Arama))
+            .OrderBy(d => d.Tamamlandi)
+            .ThenBy(d => d.Tarih)
+            .Select(d => new DurusmaVM
+            {
+                Id = d.Id,
+                DosyaId = d.DosyaId,
+                Aciklama = d.Aciklama,
+                AktiviteTuru = d.AktiviteTuru.Isim,
+                DosyaTamisim = d.Dosya.TamIsim,
+                Tarih = d.Tarih,
+                Tamamlandi = d.Tamamlandi
+            });
+
+        if (!await q.SayfaGecerliMiAsync(vm.Sayfa, vm.SayfaBoyutu))
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz sayfa",
+                HataMesaji = $"Sayfa: {vm.Sayfa}, sayfa boyutu: {vm.SayfaBoyutu}"
+            };
+
+        vm.Ogeler = await q.SayfaUygula(vm.Sayfa, vm.SayfaBoyutu).ToListAsync();
+        vm.ToplamSayfa = await q.ToplamSayfaAsync(vm.SayfaBoyutu);
+
+        return new() { Deger = vm };
+    }
     #endregion
 
     #region DosyaBelgesi
     public async Task<Sonuc<DosyaBelgeleriVM>> DosyaBelgeleriVMGetirAsync(
         DosyaBelgeleriVM vm)
     {
-        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.Id))
+        if (vm.Id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.Id))
             return new()
             {
                 BasariliMi = false,
@@ -1077,7 +1123,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"Id: {vm.Id} bulunamadı."
             };
 
-        var q = _vt.DosyaBelgeleri
+        var q = _veritabani.DosyaBelgeleri
             .Where(db => db.DosyaId == vm.Id)
             .Select(db => new DosyaBelgeleriVM.Oge
             {
@@ -1113,7 +1159,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<DosyaBelgesiEkleVM>> BelgeEkleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.Dosyalar.AnyAsync(k => k.Id == id))
+        if (id < 1 || !await _veritabani.Dosyalar.AnyAsync(k => k.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -1129,7 +1175,7 @@ public class DosyaYoneticisi
     public async Task<Sonuc<int>> BelgeEkleAsync(
         DosyaBelgesiEkleVM vm, IFormFile? belge)
     {
-        if (vm.Id < 1 || !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.Id))
+        if (vm.Id < 1 || !await _veritabani.Dosyalar.AnyAsync(d => d.Id == vm.Id))
             return new()
             {
                 BasariliMi = false,
@@ -1175,15 +1221,15 @@ public class DosyaYoneticisi
             Boyut = belgeAraci.Boyut
         };
 
-        await _vt.DosyaBelgeleri.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veritabani.DosyaBelgeleri.AddAsync(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.Id };
     }
 
     public async Task<Sonuc<DosyaBelgesiDuzenleVM>> BelgeDuzenleVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.DosyaBelgeleri.AnyAsync(db => db.Id == id))
+        if (id < 1 || !await _veritabani.DosyaBelgeleri.AnyAsync(db => db.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -1191,7 +1237,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-        var vm = await _vt.DosyaBelgeleri
+        var vm = await _veritabani.DosyaBelgeleri
             .Where(db => db.Id == id)
             .Select(db => new DosyaBelgesiDuzenleVM
             {
@@ -1208,7 +1254,7 @@ public class DosyaYoneticisi
     public async Task<Sonuc<int>> BelgeDuzenleAsync(
         DosyaBelgesiDuzenleVM vm, IFormFile? belge)
     {
-        var model = await _vt.DosyaBelgeleri.FirstOrDefaultAsync(db => db.Id == vm.Id);
+        var model = await _veritabani.DosyaBelgeleri.FirstOrDefaultAsync(db => db.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -1271,15 +1317,15 @@ public class DosyaYoneticisi
         model.Baslik = vm.Baslik;
         model.Aciklama = vm.Aciklama;
 
-        _vt.DosyaBelgeleri.Update(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaBelgeleri.Update(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = model.DosyaId };
     }
 
     public async Task<Sonuc<DosyaBelgesiSilVM>> BelgeSilVMGetirAsync(int id)
     {
-        if (id < 1 || !await _vt.DosyaBelgeleri.AnyAsync(db => db.Id == id))
+        if (id < 1 || !await _veritabani.DosyaBelgeleri.AnyAsync(db => db.Id == id))
             return new()
             {
                 BasariliMi = false,
@@ -1287,7 +1333,7 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-        var vm = await _vt.DosyaBelgeleri
+        var vm = await _veritabani.DosyaBelgeleri
             .Where(db => db.Id == id)
             .Select(db => new DosyaBelgesiSilVM
             {
@@ -1307,7 +1353,7 @@ public class DosyaYoneticisi
 
     public async Task<Sonuc<int>> BelgeSilAsync(int id)
     {
-        var model = await _vt.DosyaBelgeleri.FirstOrDefaultAsync(db => db.Id == id);
+        var model = await _veritabani.DosyaBelgeleri.FirstOrDefaultAsync(db => db.Id == id);
 
         if (model == null)
             return new()
@@ -1334,8 +1380,8 @@ public class DosyaYoneticisi
 
         var dosyaId = model.DosyaId;
 
-        _vt.DosyaBelgeleri.Remove(model);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaBelgeleri.Remove(model);
+        await _veritabani.SaveChangesAsync();
 
         return new() { Deger = dosyaId };
     }
@@ -1344,37 +1390,37 @@ public class DosyaYoneticisi
     #region Temizle
     public async Task PersonelBaglantlariniTemizleAsync(int id)
     {
-        var modeller = await _vt.DosyaPersonel
+        var modeller = await _veritabani.DosyaPersonel
             .Where(dp => dp.DosyaId == id)
             .ToListAsync();
 
-        _vt.DosyaPersonel.RemoveRange(modeller);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaPersonel.RemoveRange(modeller);
+        await _veritabani.SaveChangesAsync();
     }
     
     public async Task DosyaBaglantilariniTemizleAsync(int id)
     {
-        var modeller = await _vt.DosyaBaglantilari
+        var modeller = await _veritabani.DosyaBaglantilari
             .Where(db => db.IlgiliDosyaId == id)
             .ToListAsync();
 
-        _vt.DosyaBaglantilari.RemoveRange(modeller);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaBaglantilari.RemoveRange(modeller);
+        await _veritabani.SaveChangesAsync();
     }
     
     public async Task GorevBaglantilariniTemizleAsync(int id)
     {
-        var modeller = await _vt.Gorevler
+        var modeller = await _veritabani.Gorevler
             .Where(db => db.DosyaId == id)
             .ToListAsync();
 
-        _vt.Gorevler.RemoveRange(modeller);
-        await _vt.SaveChangesAsync();
+        _veritabani.Gorevler.RemoveRange(modeller);
+        await _veritabani.SaveChangesAsync();
     }
     
     public async Task BelgeleriTemizleAsync(int id)
     {
-        var modeller = await _vt.DosyaBelgeleri
+        var modeller = await _veritabani.DosyaBelgeleri
             .Where(db => db.DosyaId == id)
             .ToListAsync();
 
@@ -1386,13 +1432,13 @@ public class DosyaYoneticisi
                 File.Delete(belgeYolu);
         }
 
-        _vt.DosyaBelgeleri.RemoveRange(modeller);
-        await _vt.SaveChangesAsync();
+        _veritabani.DosyaBelgeleri.RemoveRange(modeller);
+        await _veritabani.SaveChangesAsync();
     }
 
     public async Task FinansBaglantilariniTemizleAsync(int id)
     {
-        var modeller = await _vt.FinansIslemleri
+        var modeller = await _veritabani.FinansIslemleri
             .Where(f => f.DosyaId == id)
             .ToListAsync();
 
@@ -1402,25 +1448,25 @@ public class DosyaYoneticisi
             model.DosyaId = null;
         }
 
-        _vt.FinansIslemleri.UpdateRange(modeller);
-        await _vt.SaveChangesAsync();
+        _veritabani.FinansIslemleri.UpdateRange(modeller);
+        await _veritabani.SaveChangesAsync();
     }
 
     public async Task KararBilgileriniTemizleAsync(int id)
     {
-        var kararModel = await _vt.KararBilgileri.FirstAsync(k => k.DosyaId == id);
-        var bolgeAdliyeModel = await _vt.BolgeAdliyeMahkemesiBilgileri.FirstAsync(k => k.DosyaId == id);
-        var temyizModel = await _vt.TemyizBilgileri.FirstAsync(k => k.DosyaId == id);
-        var duzeltmeModel = await _vt.KararDuzeltmeBilgileri.FirstAsync(k => k.DosyaId == id);
-        var kesinlesmeModel = await _vt.KesinlesmeBilgileri.FirstAsync(k => k.DosyaId == id);
+        var kararModel = await _veritabani.KararBilgileri.FirstAsync(k => k.DosyaId == id);
+        var bolgeAdliyeModel = await _veritabani.BolgeAdliyeMahkemesiBilgileri.FirstAsync(k => k.DosyaId == id);
+        var temyizModel = await _veritabani.TemyizBilgileri.FirstAsync(k => k.DosyaId == id);
+        var duzeltmeModel = await _veritabani.KararDuzeltmeBilgileri.FirstAsync(k => k.DosyaId == id);
+        var kesinlesmeModel = await _veritabani.KesinlesmeBilgileri.FirstAsync(k => k.DosyaId == id);
 
-        _vt.KararBilgileri.Remove(kararModel);
-        _vt.BolgeAdliyeMahkemesiBilgileri.Remove(bolgeAdliyeModel);
-        _vt.TemyizBilgileri.Remove(temyizModel);
-        _vt.KararDuzeltmeBilgileri.Remove(duzeltmeModel);
-        _vt.KesinlesmeBilgileri.Remove(kesinlesmeModel);
+        _veritabani.KararBilgileri.Remove(kararModel);
+        _veritabani.BolgeAdliyeMahkemesiBilgileri.Remove(bolgeAdliyeModel);
+        _veritabani.TemyizBilgileri.Remove(temyizModel);
+        _veritabani.KararDuzeltmeBilgileri.Remove(duzeltmeModel);
+        _veritabani.KesinlesmeBilgileri.Remove(kesinlesmeModel);
 
-        await _vt.SaveChangesAsync();
+        await _veritabani.SaveChangesAsync();
     }
     #endregion
 }

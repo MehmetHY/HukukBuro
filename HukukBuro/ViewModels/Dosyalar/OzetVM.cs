@@ -42,6 +42,8 @@ public class OzetVM
         public DateTime Tarih { get; set; }
 
         public string? Aciklama { get; set; }
+
+        public bool Tamamlandi { get; set; }
     }
 
     public int Id { get; set; }

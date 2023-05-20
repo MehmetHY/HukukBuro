@@ -397,6 +397,18 @@ public class DosyaController : Controller
     #endregion
 
     #region Durusma
+    [HttpGet]
+    [Route("[controller]/[action]")]
+    public async Task<IActionResult> Durusmalar(DurusmalarVM? vm)
+    {
+        var sonuc = await _dy.DurusmalarVMGetirAsync(vm ?? new());
+
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
+    }
+
     [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]

@@ -13,5 +13,7 @@ public class DurusmaDuzenleVM
 
     public DateTime Tarih { get; set; }
 
+    public bool Tamamlandi { get; set; }
+
     public string? Aciklama { get; set; }
 }

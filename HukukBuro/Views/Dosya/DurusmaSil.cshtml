@@ -22,6 +22,10 @@
     @Model.Aciklama
 </div>
 
+<div>
+    <strong>@(Model.Tamamlandi ? "Tamamlandı" : "Tamamlanmadı")</strong>
+</div>
+
 <form method="post">
     <input asp-for="Id" hidden />
     <button type="submit">Sil</button>

@@ -1,0 +1,29 @@
+﻿@model DurusmalarVM
+
+<a asp-controller="dosya" asp-action="listele">Dosyalar</a>
+&nbsp;
+<partial name="_Arama" model="@Model" />
+<hr />
+
+@foreach (var oge in Model.Ogeler)
+{
+    <div>
+        <strong>@oge.AktiviteTuru</strong>
+        &nbsp;
+        Dosya: @oge.DosyaTamisim
+        &nbsp;
+        Tarih: @oge.Tarih
+        &nbsp;
+        (@(oge.Tamamlandi ? "Tamamlandı" : "Tamamlanmadı"))
+        &nbsp;
+        <a asp-action="Ozet" asp-route-id="@oge.DosyaId">Dosyaya Git</a>
+
+        @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
+        {
+            <p>@oge.Aciklama</p>
+        }
+    </div>
+}
+
+<hr />
+<partial name="_Sayfa" model="@Model" />
