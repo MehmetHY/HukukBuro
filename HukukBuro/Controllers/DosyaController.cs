@@ -1,9 +1,12 @@
 ﻿using HukukBuro.Eklentiler;
 using HukukBuro.ViewModels.Dosyalar;
 using HukukBuro.Yoneticiler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
+
+[Authorize]
 public class DosyaController : Controller
 {
     #region Fields
@@ -27,6 +30,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     public async Task<IActionResult> Ekle()
     {
@@ -35,6 +39,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     public async Task<IActionResult> Ekle(EkleVM vm)
     {
@@ -64,6 +69,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> Duzenle(int id)
@@ -76,6 +82,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> Duzenle(DuzenleVM vm)
@@ -97,6 +104,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     public async Task<IActionResult> Sil(int id)
     {
@@ -108,6 +116,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [ActionName(nameof(Sil))]
     public async Task<IActionResult> SilPOST(int id)
@@ -122,6 +131,7 @@ public class DosyaController : Controller
     #endregion
 
     #region Taraf
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{dosyaId}/[action]")]
     public async Task<IActionResult> TarafEkle(int dosyaId)
@@ -134,6 +144,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{dosyaId}/[action]")]
     public async Task<IActionResult> TarafEkle(TarafEkleVM vm)
@@ -154,6 +165,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> TarafDuzenle(int id)
@@ -166,6 +178,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> TarafDuzenle(TarafDuzenleVM vm)
@@ -186,6 +199,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> TarafSil(int id)
@@ -198,6 +212,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [ActionName(nameof(TarafSil))]
     [Route("[controller]/[action]/{id}")]
@@ -213,6 +228,7 @@ public class DosyaController : Controller
     #endregion
 
     #region Personel
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> PersonelDuzenle(int id)
@@ -225,6 +241,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> PersonelDuzenle(PersonelDuzenleVM vm)
@@ -239,6 +256,7 @@ public class DosyaController : Controller
     #endregion
 
     #region DosyaBaglantisi
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{dosyaId}/[action]")]
     public async Task<IActionResult> DosyaBaglantisiEkle(int dosyaId)
@@ -251,6 +269,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{dosyaId}/[action]")]
     public async Task<IActionResult> DosyaBaglantisiEkle(DosyaBaglantisiEkleVM vm)
@@ -270,6 +289,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> DosyaBaglantisiDuzenle(int id)
@@ -282,6 +302,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> DosyaBaglantisiDuzenle(DosyaBaglantisiDuzenleVM vm)
@@ -301,6 +322,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> DosyaBaglantisiSil(int id)
@@ -313,6 +335,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [ActionName(nameof(DosyaBaglantisiSil))]
     [Route("[controller]/[action]/{id}")]
@@ -328,6 +351,7 @@ public class DosyaController : Controller
     #endregion
 
     #region Karar
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> Karar(int id)
@@ -340,6 +364,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> KararDuzenle(int id)
@@ -352,6 +377,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> KararDuzenle(KararVM vm)
@@ -371,6 +397,7 @@ public class DosyaController : Controller
     #endregion
 
     #region Durusma
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> DurusmaEkle(int id)
@@ -383,6 +410,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> DurusmaEkle(DurusmaEkleVM vm)
@@ -402,6 +430,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> DurusmaDuzenle(int id)
@@ -414,6 +443,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> DurusmaDuzenle(DurusmaDuzenleVM vm)
@@ -433,6 +463,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> DurusmaSil(int id)
@@ -443,6 +474,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [ActionName(nameof(DurusmaSil))]
     [Route("[controller]/[action]/{id}")]
@@ -470,6 +502,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> BelgeEkle(int id)
@@ -482,6 +515,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> BelgeEkle(DosyaBelgesiEkleVM vm, IFormFile? belge)
@@ -499,6 +533,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeDuzenle(int id)
@@ -511,6 +546,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeDuzenle(
@@ -529,6 +565,7 @@ public class DosyaController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeSil(int id)
@@ -541,6 +578,7 @@ public class DosyaController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpPost]
     [ActionName(nameof(BelgeSil))]
     [Route("[controller]/[action]/{id}")]

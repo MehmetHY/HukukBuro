@@ -1,9 +1,12 @@
 ﻿using HukukBuro.Eklentiler;
 using HukukBuro.ViewModels.Duyurular;
 using HukukBuro.Yoneticiler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
+
+[Authorize]
 public class DuyurularController : Controller
 {
     private readonly DuyuruYoneticisi _yonetici;
@@ -21,9 +24,11 @@ public class DuyurularController : Controller
         return sonuc.BasariliMi ? View(sonuc.Deger) : View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Duyuru)]
     [HttpGet]
     public IActionResult Ekle() => View(_yonetici.EkleVMGetir());
 
+    [Authorize(Policy = Sabit.Policy.Duyuru)]
     [HttpPost]
     public async Task<IActionResult> Ekle(EkleVM vm)
     {
@@ -35,6 +40,7 @@ public class DuyurularController : Controller
         return RedirectToAction(nameof(Listele));
     }
 
+    [Authorize(Policy = Sabit.Policy.Duyuru)]
     [HttpGet]
     public async Task<IActionResult> Duzenle(int id)
     {
@@ -43,6 +49,7 @@ public class DuyurularController : Controller
         return sonuc.BasariliMi ? View(sonuc.Deger) : View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Duyuru)]
     [HttpPost]
     public async Task<IActionResult> Duzenle(DuzenleVM vm)
     {
@@ -59,6 +66,7 @@ public class DuyurularController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Duyuru)]
     [HttpGet]
     public async Task<IActionResult> Sil(int id)
     {
@@ -67,6 +75,7 @@ public class DuyurularController : Controller
         return sonuc.BasariliMi ? View(sonuc.Deger) : View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Duyuru)]
     [HttpPost]
     [ActionName(nameof(Sil))]
     public async Task<IActionResult> SilPOST(int id)

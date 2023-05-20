@@ -1,9 +1,12 @@
 ﻿using HukukBuro.Eklentiler;
 using HukukBuro.ViewModels.Kisiler;
 using HukukBuro.Yoneticiler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
+
+[Authorize]
 public class KisilerController : Controller
 {
     #region Fields
@@ -16,9 +19,11 @@ public class KisilerController : Controller
     #endregion
 
     #region Kisi
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     public IActionResult Ekle() => View();
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     public async Task<IActionResult> Ekle(KisilerEkleVM vm)
     {
@@ -64,6 +69,7 @@ public class KisilerController : Controller
         return View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> Sil(int id)
@@ -76,6 +82,7 @@ public class KisilerController : Controller
         return View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [ActionName("Sil")]
     [Route("[controller]/{id}/[action]")]
@@ -89,6 +96,7 @@ public class KisilerController : Controller
         return View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> OzetDuzenle(int id)
@@ -101,6 +109,7 @@ public class KisilerController : Controller
         return View(Sabit.View.Hata, sonuc);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> OzetDuzenle(KisiOzetDuzenleVM vm)
@@ -140,6 +149,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiEkle(int id)
@@ -152,6 +162,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiEkle(IlgiliKisiEkleVM vm)
@@ -171,6 +182,7 @@ public class KisilerController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiDuzenle(int id)
@@ -183,6 +195,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiDuzenle(IlgiliKisiDuzenleVM vm)
@@ -202,6 +215,7 @@ public class KisilerController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiSil(int id)
@@ -214,6 +228,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> IlgiliKisiSil(IlgiliKisiSilVM vm)
@@ -244,6 +259,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> BelgeEkle(int id)
@@ -256,6 +272,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> BelgeEkle(KisiBelgesiEkleVM vm, IFormFile? belge)
@@ -273,6 +290,7 @@ public class KisilerController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeSil(int id)
@@ -285,6 +303,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [ActionName(nameof(BelgeSil))]
     [Route("[controller]/[action]/{id}")]
@@ -298,6 +317,7 @@ public class KisilerController : Controller
         return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpGet]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeDuzenle(int id)
@@ -310,6 +330,7 @@ public class KisilerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Kisi)]
     [HttpPost]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> BelgeDuzenle(

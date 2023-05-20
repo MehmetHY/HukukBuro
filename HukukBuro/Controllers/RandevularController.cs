@@ -1,9 +1,12 @@
 ﻿using HukukBuro.Eklentiler;
 using HukukBuro.ViewModels.Randevular;
 using HukukBuro.Yoneticiler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
+
+[Authorize]
 public class RandevularController : Controller
 {
     #region Fields
@@ -27,6 +30,7 @@ public class RandevularController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Randevu)]
     [HttpGet]
     public async Task<IActionResult> Ekle()
     {
@@ -35,6 +39,7 @@ public class RandevularController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Randevu)]
     [HttpPost]
     public async Task<IActionResult> Ekle(EkleVM vm)
     {
@@ -54,6 +59,7 @@ public class RandevularController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Randevu)]
     [HttpGet]
     public async Task<IActionResult> Duzenle(int id)
     {
@@ -65,6 +71,7 @@ public class RandevularController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Randevu)]
     [HttpPost]
     public async Task<IActionResult> Duzenle(DuzenleVM vm)
     {
@@ -84,6 +91,7 @@ public class RandevularController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Randevu)]
     [HttpGet]
     public async Task<IActionResult> Sil(int id)
     {
@@ -95,6 +103,7 @@ public class RandevularController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Randevu)]
     [HttpPost]
     [ActionName(nameof(Sil))]
     public async Task<IActionResult> SilPOST(int id)

@@ -1,9 +1,12 @@
 ﻿using HukukBuro.Eklentiler;
 using HukukBuro.ViewModels.Gorevler;
 using HukukBuro.Yoneticiler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
+
+[Authorize]
 public class GorevlerController : Controller
 {
     #region Fields
@@ -26,6 +29,7 @@ public class GorevlerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Gorev)]
     [HttpGet]
     public async Task<IActionResult> Ekle()
     {
@@ -34,6 +38,7 @@ public class GorevlerController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Gorev)]
     [HttpPost]
     public async Task<IActionResult> Ekle(EkleVM vm)
     {
@@ -55,6 +60,7 @@ public class GorevlerController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Gorev)]
     [HttpGet]
     public async Task<IActionResult> Duzenle(int id)
     {
@@ -66,6 +72,7 @@ public class GorevlerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Gorev)]
     [HttpPost]
     public async Task<IActionResult> Duzenle(DuzenleVM vm)
     {
@@ -87,6 +94,7 @@ public class GorevlerController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Gorev)]
     [HttpGet]
     public async Task<IActionResult> Sil(int id)
     {
@@ -98,6 +106,7 @@ public class GorevlerController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Gorev)]
     [HttpPost]
     [ActionName(nameof(Sil))]
     public async Task<IActionResult> SilPOST(int id)

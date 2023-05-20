@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
+
+[Authorize]
 public class PersonelController : Controller
 {
     #region Fields
@@ -36,6 +38,7 @@ public class PersonelController : Controller
         return View(sonuc.Deger);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult Kaydol()
     {
@@ -47,6 +50,7 @@ public class PersonelController : Controller
         return View(vm);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Kaydol(KaydolVM vm)
     {
@@ -66,6 +70,7 @@ public class PersonelController : Controller
         return View(vm);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult Giris(string? returnUrl)
     {
@@ -75,6 +80,7 @@ public class PersonelController : Controller
         return View(_yonetici.GirisVMGetir());
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Giris(GirisVM vm, string? returnUrl)
     {
@@ -97,7 +103,6 @@ public class PersonelController : Controller
         return View(vm);
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Cikis(string? returnUrl)
     {
@@ -109,7 +114,6 @@ public class PersonelController : Controller
     #endregion
 
     #region personel
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Profil()
     {
@@ -118,7 +122,6 @@ public class PersonelController : Controller
         return View(vm);
     }
 
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Duzenle()
     {
@@ -127,7 +130,6 @@ public class PersonelController : Controller
         return View(vm);
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Duzenle(DuzenleVM vm)
     {
@@ -144,11 +146,9 @@ public class PersonelController : Controller
         return View(vm);
     }
 
-    [Authorize]
     [HttpGet]
     public IActionResult FotoDuzenle() => View();
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> FotoDuzenle(IFormFile? foto)
     {
@@ -162,7 +162,6 @@ public class PersonelController : Controller
         return View();
     }
 
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> FotoKaldir()
     {
@@ -171,7 +170,6 @@ public class PersonelController : Controller
         return View(vm);
     }
 
-    [Authorize]
     [HttpPost]
     [ActionName(nameof(FotoKaldir))]
     public async Task<IActionResult> FotoKaldirPOST()
@@ -181,7 +179,7 @@ public class PersonelController : Controller
         return RedirectToAction(nameof(Profil));
     }
 
-    [Authorize]
+    [Authorize(Policy = Sabit.Policy.Personel)]
     [HttpGet]
     public async Task<IActionResult> YetkiDuzenle(string id)
     {
@@ -193,7 +191,7 @@ public class PersonelController : Controller
         return View(sonuc.Deger);
     }
 
-    [Authorize]
+    [Authorize(Policy = Sabit.Policy.Personel)]
     [HttpPost]
     public async Task<IActionResult> YetkiDuzenle(YetkiDuzenleVM vm)
     {
@@ -212,7 +210,7 @@ public class PersonelController : Controller
         return View(vm);
     }
 
-    [Authorize]
+    [Authorize(Policy = Sabit.Policy.Personel)]
     [HttpGet]
     public async Task<IActionResult> Sil(string id)
     {
@@ -224,7 +222,7 @@ public class PersonelController : Controller
         return View(sonuc.Deger);
     }
 
-    [Authorize]
+    [Authorize(Policy = Sabit.Policy.Personel)]
     [HttpPost]
     [ActionName(nameof(Sil))]
     public async Task<IActionResult> SilPOST(string id)
@@ -237,7 +235,6 @@ public class PersonelController : Controller
         return RedirectToAction(nameof(Listele));
     }
 
-    [Authorize]
     [HttpGet]
     public IActionResult ErisimEngellendi()
     {
@@ -252,7 +249,6 @@ public class PersonelController : Controller
     #endregion
 
     #region Bildirim
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Bildirimler(BildirimListeleVM? vm)
     {
@@ -266,7 +262,6 @@ public class PersonelController : Controller
         return View(sonuc.Deger);
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> BildirimleriTemizle()
     {
