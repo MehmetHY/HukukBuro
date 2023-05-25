@@ -5,58 +5,92 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HukukBuro</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HukukBuro.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <a class="navbar-brand" asp-controller="Genel" asp-action="Anasayfa">HukukBuro</a>
-        &nbsp;
+<body class="df fdc h100vh">
+    <header class="df jcsb panel1 max400-fdc max400-gap05em">
+        <a asp-controller="genel" asp-action="anasayfa" class="fbtn xl color-active color-hover-primary activator-hover" title="Anasayfa">
+            <span class="bold color-inherit">Hukuk</span>
+            <span class="bold color-primary">Büro</span>
+            <span class="fa fa-scale-balanced marl04em xxl color-primary"></span>
+        </a>
+        <div class="df xxl max400-jce">
 
-        @if (girisYoneticisi.IsSignedIn(User))
-        {
-            var bildirimSayisi = await personelYoneticisi
-                .OkunmamisBildirimSayisiGetirAsync(User.Identity!.Name!);
+            @if (girisYoneticisi.IsSignedIn(User))
+            {
+                <a asp-controller="personel" asp-action="bildirimler" title="Bildirimler" class="df jcc aic ftbn padv08em padh08em color-hover-alternative">
+                    <span class="fa fa-bell color-inherit"></span>
+                    <span class="pos-a">
+                        <span class="pos-r left1em top1em s bold tag-circle danger w1-5em h1-5em">
+                            @(await personelYoneticisi.OkunmamisBildirimSayisiGetirAsync(User.Identity!.Name!))
+                        </span>
+                    </span>
+                </a>
+                <a asp-controller="personel" asp-action="profil" title="Profil" class="fa fa-user ftbn padv08em padh08em color-hover-primary"></a>
+                <form class="df" method="post" asp-controller="personel" asp-action="cikis">
+                    <button type="submit" title="Çıkış" class="fa fa-power-off fbtn xxl padv08em padh08em color-hover-danger"></button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="personel" asp-action="giris" title="Giriş" class="fa fa-arrow-right-to-bracket fbtn padv08em padh08em color-hover-primary"></a>
+                <a asp-controller="personel" asp-action="kaydol" title="Kaydol" class="fa fa-user-plus fbtn padv08em padh08em color-hover-success"></a>
+            }
 
-            <a asp-controller="personel" asp-action="bildirimler">
-                Bildirimler
-
-                @if (bildirimSayisi > 0)
-                {
-                    <span> (@bildirimSayisi)</span>
-                }
-            </a>
-            <span>&nbsp;</span>
-            <a asp-controller="personel" asp-action="profil">
-                @User.Identity!.Name (@User.AnaRolGetir())
-            </a>
-            <span>&nbsp;</span>
-            <form method="post" asp-controller="personel" asp-action="cikis">
-                <button type="submit">Çıkış</button>
-            </form>
-        }
-        else
-        {
-            <a asp-controller="personel" asp-action="giris">Giriş</a>
-            <span>&nbsp;</span>
-            <a asp-controller="personel" asp-action="kaydol">Kaydol</a>
-        }
-
+        </div>
     </header>
 
-    <main>
+    <nav class="df jcse fwrap panel2">
+        <a href="dosyalar.html" class="navbtn">
+            <span class="fa fa-folder xl w1-5em color-inherit"></span>
+            Dosyalar
+        </a>
+        <a href="kisiler.html" class="navbtn">
+            <span class="fa fa-users xl w1-5em color-inherit"></span>
+            Kişiler
+        </a>
+        <a href="gorevler.html" class="navbtn">
+            <span class="fa fa-clipboard-check xl w1-5em color-inherit"></span>
+            Görevler
+        </a>
+        <a href="duyurular.html" class="navbtn">
+            <span class="fa fa-bullhorn xl w1-5em color-inherit"></span>
+            Duyurular
+        </a>
+        <a href="randevular.html" class="navbtn">
+            <span class="fa fa-calendar xl w1-5em color-inherit"></span>
+            Randevular
+        </a>
+        <a href="durusmalar.html" class="navbtn">
+            <span class="fa fa-gavel xl w1-5em color-inherit"></span>
+            Duruşmalar
+        </a>
+        <a href="personel.html" class="navbtn">
+            <span class="fa fa-user-tie xl w1-5em color-inherit"></span>
+            Personel
+        </a>
+        <a href="finansislemleri.html" class="navbtn">
+            <span class="fa fa-turkish-lira xl w1-5em color-inherit"></span>
+            Finans İşlemleri
+        </a>
+    </nav>
+
+    <main class="df fg pad0 minhfit jcc mar5vmin">
         @RenderBody()
     </main>
 
-    <footer>
+    <footer class="panel1 df fdc aic padv1em padh4em gap05em">
+        <div class="s text-wrap">Copyright 2023 by Mehmet Hakkı YILDIZ. All Rights Reserved.</div>
+        <a href="https://github.com/MehmetHY/HukukBuro" target="_blank" class="bold color-hover-primary df jcc aic gap05em">
+            <span class="fab fa-github xl color-inherit"></span>
+            MehmetHY
+        </a>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
