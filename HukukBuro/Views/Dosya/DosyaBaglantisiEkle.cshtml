@@ -1,24 +1,32 @@
 ﻿@model DosyaBaglantisiEkleVM
 
-<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Dosya Bağlantısı Ekle</h1>
 
-<hr />
-
-<form method="post">
-    <input asp-for="DosyaId" hidden />
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <div>
-        <label asp-for="IlgiliDosyaId"></label>
-        <select asp-for="IlgiliDosyaId" asp-items="@Model.Dosyalar"></select>
-        <span asp-validation-for="IlgiliDosyaId"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.DosyaId"></a>
     </div>
 
-    <div>
-        <label asp-for="Aciklama"></label>
-        <input asp-for="Aciklama" />
-        <span asp-validation-for="Aciklama"></span>
-    </div>
+    <form method="post" class="df fdc jcsb gap1em fg">
+        <input asp-for="DosyaId" hidden />
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
 
-    <button type="submit">Tamam</button>
-</form>
+        <div class="df fdc gap1em">
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="IlgiliDosyaId"></label>
+                <select class="input l" asp-for="IlgiliDosyaId" asp-items="@Model.Dosyalar"></select>
+                <span asp-validation-for="IlgiliDosyaId" class="color-danger text-right"></span>
+            </div>
+
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="Aciklama"></label>
+                <textarea class="input l" rows="2" asp-for="Aciklama"></textarea>
+                <span class="color-danger text-right" asp-validation-for="Aciklama"></span>
+            </div>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+</div>
+
