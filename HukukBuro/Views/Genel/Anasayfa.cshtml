@@ -1,16 +1,351 @@
-﻿<h1>Anasayfa</h1>
-<a asp-controller="kisiler" asp-action="listele">Kişiler</a>
-&nbsp;
-<a asp-controller="dosya" asp-action="listele">Dosyalar</a>
-&nbsp;
-<a asp-controller="personel" asp-action="listele">Personel</a>
-&nbsp;
-<a asp-controller="randevular" asp-action="listele">Randevular</a>
-&nbsp;
-<a asp-controller="gorevler" asp-action="listele">Görevler</a>
-&nbsp;
-<a asp-controller="finansislemleri" asp-action="listele">Finans İşlemleri</a>
-&nbsp;
-<a asp-controller="duyurular" asp-action="listele">Duyurular</a>
-&nbsp;
-<a asp-controller="dosya" asp-action="durusmalar">Duruşmalar</a>
+﻿@model AnasayfaVM
+
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Anasayfa</h1>
+
+    <div class="df fdc panel4 pad1em radius1em mart2em">
+        <div class="df jcsb aic fwrap">
+            <h3>Duyurular</h3>
+            <a class="btn2 primary" asp-controller="duyurular" asp-action="listele">Tümünü göster</a>
+        </div>
+        <div class="list-container">
+
+            @foreach (var duyuru in Model.Duyurular)
+            {
+                <div class="list-item activator-hover df fdc gap1em">
+
+                    <div class="df jcsb max500-fdcr max500-gap05rem">
+                        <div class="df fwrap gap1em aic">
+                            <span class="color-active bold l">@duyuru.Konu</span>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(duyuru.Url))
+                        {
+                            <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                                <a title="Bağlantıya git" href="@duyuru.Url" class="ibtn1 primary fa fa-link"></a>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="df aic gap05em">
+                        <span class="bold">Tarih:</span>
+                        <span>@duyuru.Tarih</span>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(duyuru.Mesaj))
+                    {
+                        <div class="df aic fwrap gap05em">
+                            <span class="bold">Mesaj:</span>
+                            <span class="text-wrap">@duyuru.Mesaj</span>
+                        </div>
+                    }
+
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="df fdc panel4 pad1em radius1em mart2em">
+        <div class="df jcsb aic fwrap">
+            <h3>Görevler</h3>
+            <a class="btn2 primary" asp-controller="gorevler" asp-action="listele">Tümünü göster</a>
+        </div>
+        <div class="list-container">
+            @foreach (var gorev in Model.Gorevler)
+            {
+                <div class="list-item activator-hover df fdc gap1em">
+
+                    <div class="df jcsb max500-fdcr max500-gap05rem">
+                        <div class="df fwrap gap1em aic">
+                            <span class="color-active bold l">@gorev.Konu</span>
+                            <span class="tag alternative">@gorev.BaglantiTuru</span>
+
+                            @{
+                                var durumClass = gorev.Durum switch
+                                {
+                                    Sabit.GorevDurumu.Iptal => "danger",
+                                    Sabit.GorevDurumu.DevamEdiyor => "warning",
+                                    Sabit.GorevDurumu.Tamamlandi => "success",
+                                    _ => string.Empty
+                                };
+                            }
+
+                            @if (durumClass != string.Empty)
+                            {
+                                <span class="tag @durumClass">@gorev.Durum</span>
+                            }
+
+                        </div>
+                    </div>
+
+                    <div class="df aic fwrap gap1em">
+                        @if (gorev.KisiId != null)
+                        {
+                            <div>
+                                <span class="bold">Kişi:</span>
+                                <a class="color-hover-primary" asp-controller="kisiler" asp-action="ozet" asp-route-id="@gorev.KisiId">@gorev.Kisi</a>
+                            </div>
+                        }
+
+                        @if (gorev.DosyaId != null)
+                        {
+                            <div>
+                                <span class="bold">Dosya:</span>
+                                <a class="color-hover-primary" asp-controller="dosya" asp-action="ozet" asp-route-id="@gorev.DosyaId">@gorev.Dosya</a>
+                            </div>
+                        }
+
+
+                        @if (gorev.SorumluId != null)
+                        {
+                            <div>
+                                <span class="bold">Sorumlu:</span>
+                                <a class="color-hover-primary" asp-controller="personel" asp-action="profil" asp-route-id="@gorev.SorumluId">@gorev.Sorumlu</a>
+                            </div>
+                        }
+                        <div>
+                            <span class="bold">Bitiş Tarihi: </span>
+                            <span>@gorev.BitisTarihi</span>
+                        </div>
+                        <div>
+                            <span class="bold">Oluşturma Tarihi: </span>
+                            <span>@gorev.OlusturmaTarihi</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(gorev.Aciklama))
+                    {
+                        <div class="df fdc">
+                            <span class="bold">Açıklama</span>
+                            <span class="text-wrap">@gorev.Aciklama</span>
+                        </div>
+                    }
+
+
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="df fdc panel4 pad1em radius1em mart2em">
+        <div class="df jcsb aic fwrap">
+            <h3>Randevular</h3>
+            <a class="btn2 primary" asp-controller="randevular" asp-action="listele">Tümünü göster</a>
+        </div>
+        <div class="list-container">
+
+            @foreach (var randevu in Model.Randevular)
+            {
+                <div class="list-item activator-hover df fdc gap1em">
+
+                    <div class="df jcsb max500-fdcr max500-gap05rem">
+                        <div class="df fwrap gap1em aic">
+                            <span class="color-active bold l">@randevu.Konu</span>
+
+                            @if (randevu.TamamlandiMi)
+                            {
+                                <span class="tag success">Tamamlandı</span>
+                            }
+
+                        </div>
+
+                        <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                            <a title="Kişiye git" asp-controller="kisiler" asp-action="ozet" asp-route="@randevu.KisiId" class="ibtn1 primary fa fa-user"></a>
+                        </div>
+                    </div>
+
+                    <div class="df aic fwrap gap1em">
+                        <div class="df aic gap05em">
+                            <span class="bold">Kişi:</span>
+                            <a asp-controller="kisiler" asp-action="ozet" asp-route="@randevu.KisiId" class="color-hover-primary">@randevu.Kisi</a>
+                        </div>
+
+                        @if (randevu.SorumluId != null)
+                        {
+                            <div class="df aic gap05em">
+                                <span class="bold">Sorumlu:</span>
+                                <a asp-controller="personel" asp-action="profil" asp-route-id="@randevu.SorumluId" class="color-hover-primary">@randevu.Sorumlu</a>
+                            </div>
+                        }
+
+                        <div class="df aic gap05em">
+                            <span class="bold">Tarih:</span>
+                            <span>@randevu.Tarih</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(randevu.Aciklama))
+                    {
+                        <div class="df aic fwrap gap05em">
+                            <span class="bold">Açıklama:</span>
+                            <span class="text-wrap">@randevu.Aciklama</span>
+                        </div>
+                    }
+
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="df fdc panel4 pad1em radius1em mart2em">
+        <div class="df jcsb aic fwrap">
+            <h3>Duruşmalar</h3>
+            <a class="btn2 primary" asp-controller="dosya" asp-action="listele">Dosyaları göster</a>
+        </div>
+        <div class="list-container">
+
+            @foreach (var durusma in Model.Durusmalar)
+            {
+                <div class="list-item activator-hover df fdc gap1em">
+
+                    <div class="df jcsb max500-fdcr max500-gap05rem">
+                        <div class="df fwrap gap1em aic">
+                            <a asp-controller="dosya" asp-action="ozet" asp-route-id="@durusma.DosyaId" class="color-active bold l color-hover-primary">25 56/B Yolsuzluk</a>
+                            <span class="tag alternative">@durusma.AktiviteTuru</span>
+
+                            @if (durusma.Tamamlandi)
+                            {
+                                <span class="tag success">Tamamlandı</span>
+                            }
+                        </div>
+
+                        <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                            <a title="Dosyaya git" asp-controller="dosya" asp-action="ozet" asp-route-id="@durusma.DosyaId" class="ibtn1 primary fa fa-folder normal"></a>
+                        </div>
+                    </div>
+
+                    <div class="df aic gap05em">
+                        <span class="bold">Tarih:</span>
+                        <span>@durusma.Tarih</span>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(durusma.Aciklama))
+                    {
+                        <div class="df aic fwrap gap05em">
+                            <span class="bold">Açıklama:</span>
+                            <span class="text-wrap">@durusma.Aciklama</span>
+                        </div>
+                    }
+
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="df fdc panel4 pad1em radius1em mart2em">
+        <div class="df jcsb aic fwrap">
+            <h3>Finans İşlemleri</h3>
+            <a class="btn2 primary" asp-controller="finansislemleri" asp-action="listele">Tümünü göster</a>
+        </div>
+        <div class="list-container">
+
+            @foreach (var islem in Model.FinansIslemleri)
+            {
+                <div class="list-item activator-hover df fdc gap1em">
+                    <div class="df aic gap1em fwrap">
+                        <span class="l bold">@islem.Miktar</span>
+                        <span class="tag alternative">@islem.IslemTuru</span>
+
+                        @if (islem.Odendi)
+                        {
+                            <span class="tag success">Ödendi</span>
+
+                            @if (islem.MakbuzKesildiMi)
+                            {
+                                <span class="tag success">Makbuz Kesildi</span>
+                            }
+                            else
+                            {
+                                <span class="tag danger">Makbuz Kesilmedi</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="tag danger">Ödenmedi</span>
+                        }
+                    </div>
+                    <div class="df aic gap1em fwrap">
+                        @if (islem.OdemeTarhi != null)
+                        {
+                            <div>
+                                <span class="bold">Ödeme Tarihi:</span>
+                                <span>@islem.OdemeTarhi</span>
+                            </div>
+                        }
+
+                        @if (islem.SonOdemeTarhi != null)
+                        {
+                            <div>
+                                <span class="bold">Son Ödeme Tarihi:</span>
+                                <span>@islem.SonOdemeTarhi</span>
+                            </div>
+                        }
+
+                        @if (islem.MakbuzNo != null)
+                        {
+                            <div>
+                                <span class="bold">Makbuz No:</span>
+                                <span>@islem.MakbuzNo</span>
+                            </div>
+                        }
+
+                        @if (islem.MakbuzTarihi != null)
+                        {
+                            <div>
+                                <span class="bold">Makbuz Tarihi:</span>
+                                <span>@islem.MakbuzTarihi</span>
+                            </div>
+                        }
+
+                        @if (islem.DosyaId != null && !string.IsNullOrWhiteSpace(islem.Dosya))
+                        {
+                            <div>
+                                <span class="bold">Dosya:</span>
+                                <a asp-controller="dosya" asp-action="ozet" asp-route-id="@islem.DosyaId" class="color-hover-primary">@islem.Dosya</a>
+                            </div>
+                        }
+
+                        @if (islem.KisiId != null && !string.IsNullOrWhiteSpace(islem.Kisi))
+                        {
+                            <div>
+                                <span class="bold">Kişi:</span>
+                                <a asp-controller="kisiler" asp-action="ozet" asp-route-id="@islem.KisiId" class="color-hover-primary">@islem.Kisi</a>
+                            </div>
+                        }
+
+                        @if (islem.PersonelId != null && !string.IsNullOrWhiteSpace(islem.Personel))
+                        {
+                            <div>
+                                <span class="bold">Personel:</span>
+                                <a asp-controller="personel" asp-action="profil" asp-route-id="@islem.PersonelId" class="color-hover-primary">@islem.Personel</a>
+                            </div>
+                        }
+
+                        @if (islem.IslemYapanId != null && !string.IsNullOrWhiteSpace(islem.IslemYapan))
+                        {
+                            <div>
+                                <span class="bold">İşlem Yapan:</span>
+                                <a asp-controller="personel" asp-action="profil" asp-route-id="@islem.IslemYapanId" class="color-hover-primary">@islem.IslemYapan</a>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(islem.Aciklama))
+                        {
+                            <div class="max600-hidden">
+                                <span class="bold">Açıklama:</span>
+                                <span class="text-wrap">@islem.Aciklama</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

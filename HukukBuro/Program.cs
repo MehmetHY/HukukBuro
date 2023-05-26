@@ -50,6 +50,7 @@ builder.Services.AddScoped<GorevYoneticisi>();
 builder.Services.AddScoped<FinansIslemiYoneticisi>();
 builder.Services.AddScoped<DuyuruYoneticisi>();
 builder.Services.AddScoped<VeriBaslatici>();
+builder.Services.AddScoped<GenelYonetici>();
 
 builder.Services.AddSingleton<IAuthorizationHandler, DosyaYonetimIslemcisi>();
 builder.Services.AddSingleton<IAuthorizationHandler, DuyuruYonetimIslemcisi>();
