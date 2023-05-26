@@ -21,6 +21,7 @@ public static class Sabit
         public static readonly string[] GecerliBelgeUzantilari = { ".jpg",
                                                                    ".jpeg",
                                                                    ".png",
+                                                                   ".gif",
                                                                    ".pdf",
                                                                    ".webp",
                                                                    ".docx",

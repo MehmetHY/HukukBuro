@@ -4,7 +4,7 @@
     <h1 class="marb1em mart0">Belge Ekle</h1>
 
     <div class="df gap1em marb1rem">
-        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" href="dosyaozet.html"></a>
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.Id"></a>
     </div>
 
     <form method="post" enctype="multipart/form-data" class="df fdc jcsb gap1em fg">
@@ -15,7 +15,7 @@
         <div class="df fdc gap1em">
             <div class="input-box df fdc">
                 <label class="s color-inactive">Belge</label>
-                <input class="input l" type="file" name="belge" accept="image/jpeg, image/png, image/gif, .pdf, .docx, .svg" />
+                <input class="input l" type="file" name="belge" accept="image/jpeg, image/png, image/gif, .pdf, .docx, .webp, .svg, .txt" />
                 <span class="color-danger text-right"></span>
             </div>
 
