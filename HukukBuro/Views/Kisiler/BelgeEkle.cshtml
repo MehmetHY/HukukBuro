@@ -1,35 +1,50 @@
 ﻿@model KisiBelgesiEkleVM
 
-<a asp-action="Belgeler" asp-route-id="@Model.KisiId">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Belge Ekle</h1>
 
-<hr />
-
-<form method="post" enctype="multipart/form-data">
-    <input asp-for="KisiId" hidden />
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <div>
-        <label asp-for="Baslik"></label>
-        <input asp-for="Baslik" />
-        <span asp-validation-for="Baslik"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.KisiId"></a>
     </div>
 
-    <div>
-        <label asp-for="Aciklama"></label>
-        <input asp-for="Aciklama" />
-        <span asp-validation-for="Aciklama"></span>
-    </div>
+    <form method="post" enctype="multipart/form-data" class="df fdc jcsb gap1em fg">
+        <input asp-for="KisiId" hidden />
 
-    <div>
-        <label asp-for="OzelMi"></label>
-        <input asp-for="OzelMi" />
-        <span asp-validation-for="OzelMi"></span>
-    </div>
+        <div class="color-danger color-inherit-children text-wrap" asp-validation-summary="ModelOnly"></div>
 
-    <div>
-        <label>Belge</label>
-        <input type="file" name="belge" accept="image/png, image/jpeg, .webp, .pdf" required />
-    </div>
+        <div class="df fdc gap1em">
+            <div class="input-box df fdc">
+                <label class="s color-inactive">Belge</label>
+                <input class="input l" type="file" name="belge" accept="image/jpeg, image/png, image/gif, .pdf, .docx, .webp, .svg, .txt" />
+                <span class="color-danger text-right"></span>
+            </div>
 
-    <button type="submit">Tamam</button>
-</form>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="Baslik"></label>
+                <input class="input l" asp-for="Baslik" />
+                <span class="color-danger text-right" asp-validation-for="Baslik"></span>
+            </div>
+
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="Aciklama"></label>
+                <textarea class="input l" rows="2" asp-for="Aciklama"></textarea>
+                <span class="color-danger text-right" asp-validation-for="Aciklama"></span>
+            </div>
+
+            <div class="input-box pad1rem df fdc">
+                <label class="checkbox l">
+                    <input asp-for="OzelMi" type="checkbox" />
+                    <span class="checkbox-box">
+                        <span class="checkbox-mark"></span>
+                    </span>
+                    Özel mi?
+                </label>
+                <span class="color-danger text-right"></span>
+            </div>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+</div>
+
