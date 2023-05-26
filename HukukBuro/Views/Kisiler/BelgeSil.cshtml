@@ -1,38 +1,46 @@
 ﻿@model KisiBelgesiSilVM
 
-<a asp-action="Belgeler" asp-route-id="@Model.KisiId">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Belge Sil</h1>
 
-<hr />
-
-<div>
-    <a href="@Model.Url" target="_blank">@Model.Uzanti</a>
-</div>
-
-<div>
-    <strong>@Model.Baslik</strong>
-</div>
-
-@if (!string.IsNullOrWhiteSpace(Model.Aciklama))
-{
-    <div>
-        @Model.Aciklama
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.KisiId"></a>
     </div>
-}
 
-<div>
-    Boyut: @Model.Boyut
-</div>
-
-@if (Model.OzelMi)
-{
-    <div>
-        <strong>Özel Belge</strong>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Uzantı</span>
+                <span class="tag primary l">@Model.Uzanti</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Boyut</span>
+                <span class="color-active l text-wrap">@Model.Boyut</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Başlık</span>
+                <span class="color-active l text-wrap">@Model.Baslik</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.Aciklama</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Oluşturma Tarih</span>
+                <span class="color-active l text-wrap">@Model.OlusturmaTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Özel mi?</span>
+                <span class="tag alternative">@(Model.OzelMi ? "Evet" : "Hayır")</span>
+            </div>
+        </div>
     </div>
-}
 
-<hr />
+    <form class="w100p df fdc jce fg" method="post">
+        <input asp-for="Id" hidden />
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Sil</button>
+    </form>
 
-<form method="post">
-    <input asp-for="Id" hidden />
-    <button type="submit">Sil</button>
-</form>
+</div>
