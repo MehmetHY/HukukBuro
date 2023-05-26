@@ -1522,6 +1522,9 @@ input[type=file].input::file-selector-button:hover {
 .color-inherit {
     color: inherit;
 }
+.color-inherit-children * {
+    color: inherit;
+}
 
 .color-hover-alternative:hover {
     color: var(--alternative);

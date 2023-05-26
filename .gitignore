@@ -1,6 +1,8 @@
 dev/
 */appsettings.json
 **/wwwroot/lib/
+**/wwwroot/belge/
+**/wwwroot/foto/
 **/[Mm]igrations/
 
 

@@ -110,4 +110,9 @@ public static class Sabit
     {
         public const string YeniDuyuru = "Yeni bir duyuru eklendi.";
     }
+
+    public static class Hata
+    {
+        public const string Gerekli = nameof(Gerekli);
+    }
 }
