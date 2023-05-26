@@ -27,7 +27,5 @@ public class ListeleVM : SayfaListe<ListeleVM.Oge>
         public int DurusmaSayisi { get; set; }
 
         public int BelgeSayisi { get; set; }
-
-        public int FinansSayisi { get; set; }
     }
 }

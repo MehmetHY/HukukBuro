@@ -34,7 +34,14 @@ public class DosyaYoneticisi
             .Include(d => d.IlgiliGorevler)
             .Include(d => d.Durusmalar)
             .Include(d => d.Belgeler)
-            .Include(d => d.IlgiliFinansIslemleri)
+            .Where(d =>
+                string.IsNullOrWhiteSpace(vm.Arama) ||
+                d.DosyaNo.Contains(vm.Arama) ||
+                d.BuroNo.Contains(vm.Arama) ||
+                d.Konu.Contains(vm.Arama) ||
+                d.DosyaTuru.Isim.Contains(vm.Arama) ||
+                d.DosyaKategorisi.Isim.Contains(vm.Arama) ||
+                d.DosyaDurumu.Isim.Contains(vm.Arama))
             .Select(d => new ListeleVM.Oge
             {
                 Id = d.Id,
@@ -47,18 +54,8 @@ public class DosyaYoneticisi
                 AcilisTarihi = d.AcilisTarihi,
                 GorevSayisi = d.IlgiliGorevler.Count,
                 DurusmaSayisi = d.Durusmalar.Count,
-                BelgeSayisi = d.Belgeler.Count,
-                FinansSayisi = d.IlgiliFinansIslemleri.Count
+                BelgeSayisi = d.Belgeler.Count
             });
-
-        if (!string.IsNullOrWhiteSpace(vm.Arama))
-            q = q.Where(d =>
-                d.DosyaNo.ToString().Contains(vm.Arama) ||
-                d.BuroNo.Contains(vm.Arama) ||
-                d.Konu.Contains(vm.Arama) ||
-                d.DosyaTuru.Contains(vm.Arama) ||
-                d.DosyaKategorisi.Contains(vm.Arama) ||
-                d.DosyaDurumu.Contains(vm.Arama));
 
         if (!await q.SayfaGecerliMiAsync(vm.Sayfa, vm.SayfaBoyutu))
             return new()

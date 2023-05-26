@@ -5,14 +5,14 @@
     <div class="df aic jcc mart2em gap1em">
         @if (Model.OncekiSayfaVarMi)
         {
-            <a class="fa fa-angle-right xxxl color-hover-primary" asp-route-sayfa="@(Model.Sayfa - 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Önceki</a>
+            <a class="fa fa-angle-left xxxl color-hover-primary" asp-route-sayfa="@(Model.Sayfa - 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama"></a>
         }
 
         <span class="xl bold">@Model.Sayfa</span>
 
         @if (Model.SonrakiSayfaVarMi)
         {
-            <a class="fa fa-angle-right xxxl color-hover-primary" asp-route-sayfa="@(Model.Sayfa + 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Sonraki</a>
+            <a class="fa fa-angle-right xxxl color-hover-primary" asp-route-sayfa="@(Model.Sayfa + 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama"></a>
         }
     </div>
 }

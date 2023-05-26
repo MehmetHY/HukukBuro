@@ -1,44 +1,76 @@
 ﻿@model ListeleVM
 
-<a asp-action="ekle">Yeni dosya ekle</a>
-&nbsp;
-<partial name="_Arama" model="Model" />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Dosyalar</h1>
 
-@foreach (var oge in Model.Ogeler)
-{
-    <hr />
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <a asp-action="ekle" class="btn2 success gap05em">
+            <span class="fa fa-plus color-inherit"></span>
+            <span class="color-inherit max400-hidden">Yeni dosya ekle</span>
+        </a>
 
-    <div>
-        <div>
-            <a asp-action="Ozet" asp-route-id="@oge.Id"><strong>@oge.DosyaNo</strong></a>
-            &nbsp;
-            <span>Büro No: @oge.BuroNo</span>
-            &nbsp;
-            <span>Konu: @oge.Konu</span>
-        </div>
-        <div>
-            Tür: @oge.DosyaTuru
-            &nbsp;
-            Kategori: @oge.DosyaKategorisi
-            &nbsp;
-            Durum: @oge.DosyaDurumu
-            &nbsp;
-            Açılış Tarihi: @oge.AcilisTarihi
-        </div>
-        <div>
-            Görev @oge.GorevSayisi
-            &nbsp;
-            Duruşma @oge.DurusmaSayisi
-            &nbsp;
-            Belge @oge.BelgeSayisi
-            &nbsp;
-            Finans @oge.FinansSayisi
-        </div>
-        <div>
-            <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
-            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
-        </div>
+        <partial name="_Arama" model="Model" />
     </div>
-}
 
-<partial name="_Sayfa" model="Model" />
+    <div class="list-container mart1em">
+
+        @foreach (var dosya in Model.Ogeler)
+        {
+
+            <div class="list-item activator-hover">
+
+                <div class="df jcsb max500-fdcr max500-gap05rem">
+                    <div>
+                        <div class="df gap2em s max400-fdc max400-gap0">
+                            <span>Dosya No:<span class="marl05em color-active bold">@dosya.DosyaNo</span></span>
+                            <span>Büro No:<span class="marl05em color-active bold">@dosya.BuroNo</span></span>
+                            <span class="max700-hidden">Açılış Tarihi:<span class="marl05em color-active bold">@dosya.AcilisTarihi</span></span>
+                        </div>
+
+                        <a asp-action="ozet" asp-route-id="@dosya.Id" class="color-active color-hover-primary bold xl">@dosya.Konu</a>
+                    </div>
+
+                    <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                        <a asp-action="ozet" asp-route-id="@dosya.Id" class="ibtn1 primary fa fa-folder normal"></a>
+                        <a asp-action="duzenle" asp-route-id="@dosya.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                        <a asp-action="sil" asp-route-id="@dosya.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                    </div>
+                </div>
+
+                <div class="df jcs aic gap2rem mart08rem max600-hidden">
+                    <div class="df gap1em">
+                        <span class="tag alternative">@dosya.DosyaTuru</span>
+                        <span class="tag alternative">@dosya.DosyaKategorisi</span>
+                        <span class="tag alternative">@dosya.DosyaDurumu</span>
+                    </div>
+
+                    <div class="df gap1em max800-hidden">
+                        <div title="Gorev" class="cursordefault">
+                            <span class="fa-regular fa-clipboard"></span>
+                            <span class="">@dosya.GorevSayisi</span>
+                        </div>
+                        <div title="Duruşma" class="cursordefault">
+                            <span class="fa fa-gavel"></span>
+                            <span class="">6</span>
+                        </div>
+                        <div title="Belge" class="cursordefault">
+                            <span class="fa-regular fa-file"></span>
+                            <span class="">@dosya.DurusmaSayisi</span>
+                        </div>
+                        <div title="Belge" class="cursordefault">
+                            <span class="fa fa-file"></span>
+                            <span class="">@dosya.BelgeSayisi</span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        }
+
+    </div>
+
+    <partial name="_Sayfa" model="Model" />
+</div>
+
+
