@@ -162,15 +162,16 @@ public class DosyaYoneticisi
                 DosyaKategorisi = d.DosyaKategorisi.Isim,
                 DosyaDurumu = d.DosyaDurumu.Isim,
                 Mahkeme = d.Mahkeme ?? string.Empty,
-                AcilisTarihi = d.AcilisTarihi
+                AcilisTarihi = d.AcilisTarihi,
+                OlusturmaTarihi = d.OlusturmaTarihi
             })
             .FirstAsync();
 
-        vm.KarsiTaraf = await TarafGetirAsync(id, true);
-        vm.MuvekkilTaraf = await TarafGetirAsync(id, false);
+        vm.Taraflar = await TarafGetirAsync(id);
         vm.SorumluPersonel = await OzetPersonelGetirAsync(id);
         vm.DosyaBaglantilari = await OzetDosyaBaglantilariGetirAsync(id);
         vm.Durusmalar = await OzetDurusmalariGetirAsync(id);
+        vm.Belgeler = await OzetBelgeleriGetirAsync(id);
 
         return new() { Deger = vm };
     }
@@ -362,10 +363,10 @@ public class DosyaYoneticisi
         .ToListAsync();
 
     public async Task<List<OzetVM.Taraf>> TarafGetirAsync(
-        int dosyaId, bool karsiTaraf)
+        int dosyaId)
         => await _veritabani.TarafKisiler
             .AsNoTracking()
-            .Where(t => t.DosyaId == dosyaId && t.KarsiTaraf == karsiTaraf)
+            .Where(t => t.DosyaId == dosyaId)
             .Include(t => t.Kisi)
             .Include(t => t.TarafTuru)
             .Select(t => new OzetVM.Taraf
@@ -376,7 +377,9 @@ public class DosyaYoneticisi
                     t.Kisi.SirketIsmi! :
                     $"{t.Kisi.Isim} {t.Kisi.Soyisim}",
 
-                TarafTuru = t.TarafTuru.Isim
+                TarafTuru = t.TarafTuru.Isim,
+                KarsiTaraf = t.KarsiTaraf,
+                KisiId = t.KisiId
             })
             .ToListAsync();
 
@@ -554,6 +557,7 @@ public class DosyaYoneticisi
             .Where(dp => dp.DosyaId == id)
             .Select(dp => new OzetVM.Personel
             {
+                Id = dp.PersonelId,
                 TamIsim = $"{dp.Personel.Isim} {dp.Personel.Soyisim}",
 
                 AnaRol = _veritabani.UserClaims
@@ -636,14 +640,21 @@ public class DosyaYoneticisi
     public async Task<List<OzetVM.Baglanti>> OzetDosyaBaglantilariGetirAsync(int id)
         => await _veritabani.DosyaBaglantilari
         .Include(db => db.IlgiliDosya)
+        .ThenInclude(d => d.DosyaTuru)
+        .Include(db => db.IlgiliDosya)
+        .ThenInclude(d => d.DosyaKategorisi)
+        .Include(db => db.IlgiliDosya)
+        .ThenInclude(d => d.DosyaDurumu)
         .Where(db => db.DosyaId == id)
         .Select(db => new OzetVM.Baglanti
         {
             Id = db.Id,
             IlgiliDosyaId = db.IlgiliDosyaId,
-            DosyaNo = db.IlgiliDosya.DosyaNo,
-            BuroNo = db.IlgiliDosya.BuroNo,
-            Konu = db.IlgiliDosya.Konu
+            Dosya = db.IlgiliDosya.TamIsim,
+            Tur = db.IlgiliDosya.DosyaTuru.Isim,
+            Kategori = db.IlgiliDosya.DosyaKategorisi.Isim,
+            Durum = db.IlgiliDosya.DosyaDurumu.Isim,
+            Aciklama = db.Aciklama
         })
         .ToListAsync();
 
@@ -660,6 +671,7 @@ public class DosyaYoneticisi
             };
 
         var vm = await _veritabani.DosyaBaglantilari
+            .Where(db => db.Id == id)
             .Select(db => new DosyaBaglantisiDuzenleVM
             {
                 Id = id,
@@ -729,6 +741,7 @@ public class DosyaYoneticisi
 
         var vm = await _veritabani.DosyaBaglantilari
             .Include(db => db.IlgiliDosya)
+            .Where(db => db.Id == id)
             .Select(db => new DosyaBaglantisiSilVM
             {
                 Id = id,
@@ -1382,6 +1395,21 @@ public class DosyaYoneticisi
 
         return new() { Deger = dosyaId };
     }
+
+    public async Task<List<OzetVM.Belge>> OzetBelgeleriGetirAsync(int id)
+        => await _veritabani.DosyaBelgeleri
+        .Where(db => db.DosyaId == id)
+        .Select(db => new OzetVM.Belge
+        {
+            Id = db.Id,
+            Baslik = db.Baslik,
+            Aciklama = db.Aciklama,
+            Boyut = Yardimci.OkunabilirDosyaBoyutu(db.Boyut),
+            Tarih = db.OlusturmaTarihi,
+            Url = db.Url,
+            Uzanti = db.Uzanti
+        })
+        .ToListAsync();
     #endregion
 
     #region Temizle
