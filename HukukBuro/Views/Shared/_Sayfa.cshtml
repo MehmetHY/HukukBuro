@@ -1,18 +1,18 @@
 ﻿@model SayfaListe
 
-<hr />
-
-@if (Model.OncekiSayfaVarMi)
-{
-    <a asp-route-sayfa="@(Model.Sayfa - 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Önceki</a>
-}
-
 @if (Model.ToplamSayfa > 1)
 {
-    <span>@Model.Sayfa</span>
-}
+    <div class="df aic jcc mart2em gap1em">
+        @if (Model.OncekiSayfaVarMi)
+        {
+            <a class="fa fa-angle-right xxxl color-hover-primary" asp-route-sayfa="@(Model.Sayfa - 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Önceki</a>
+        }
 
-@if (Model.SonrakiSayfaVarMi)
-{
-    <a asp-route-sayfa="@(Model.Sayfa + 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Sonraki</a>
+        <span class="xl bold">@Model.Sayfa</span>
+
+        @if (Model.SonrakiSayfaVarMi)
+        {
+            <a class="fa fa-angle-right xxxl color-hover-primary" asp-route-sayfa="@(Model.Sayfa + 1)" asp-route-sayfaBoyutu="@Model.SayfaBoyutu" asp-route-arama="@Model.Arama">Sonraki</a>
+        }
+    </div>
 }

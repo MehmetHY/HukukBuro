@@ -687,7 +687,7 @@ public class PersonelYoneticisi
         var q = _veriTabani.Bildirimler
             .Include(b => b.Personel)
             .Where(b => b.Personel.Email == email)
-            .OrderByDescending(b => b.Okundu)
+            .OrderBy(b => b.Okundu)
             .ThenByDescending(b => b.Tarih)
             .Select(b => new BildirimVM
             {

@@ -1,40 +1,44 @@
 ﻿@model BildirimListeleVM
 
-<form method="post" asp-action="bildirimleritemizle">
-    <button type="submit">Temizle</button>
-</form>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Bildirimler</h1>
 
-@foreach (var bildirim in Model.Ogeler)
-{
-    <div>
+    <form method="post" asp-action="bildirimleritemizle">
+        <button class="xl btn2 danger" type="submit">Temizle</button>
+    </form>
 
-        @if (bildirim.Url != null)
-        {
-            <a href="@bildirim.Url">
-                @if (!bildirim.Okundu)
-                {
-                    <strong>Yeni&nbsp;</strong>
-                }
+    <div class="list-container mart1em">
 
-                @bildirim.Mesaj
-                &nbsp;
-                @bildirim.Tarih
-            </a>
-        }
-        else
+        @foreach (var bildirim in Model.Ogeler)
         {
             @if (!bildirim.Okundu)
             {
-                <strong>Yeni&nbsp;</strong>
-            }
+                <div class="list-item activator-hover df border2-alternative fwrap gap1em aic">
+                    <span class="fa fa-bell xl color-alternative"></span>
+                    <span title="@bildirim.Tarih" class="l fg text-wrap">@bildirim.Mesaj</span>
 
-            @bildirim.Mesaj
-            <span>&nbsp;</span>
-            @bildirim.Tarih
+                    @if (!string.IsNullOrWhiteSpace(bildirim.Url))
+                    {
+                        <a title="Bağlantıya git" href="@bildirim.Url" class="ibtn1 primary fa fa-link"></a>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="list-item activator-hover df fwrap gap1em aic">
+                    <span title="@bildirim.Tarih" class="l fg text-wrap">@bildirim.Mesaj</span>
+
+                    @if (!string.IsNullOrWhiteSpace(bildirim.Url))
+                    {
+                        <a title="Bağlantıya git" href="@bildirim.Url" class="ibtn1 primary fa fa-link"></a>
+                    }
+
+                </div>
+            }
         }
 
     </div>
-}
 
-<hr />
-<partial name="_Sayfa" model="@Model" />
+    <partial name="_Sayfa" model="@Model" />
+</div>

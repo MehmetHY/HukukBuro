@@ -24,11 +24,19 @@
             {
                 <a asp-controller="personel" asp-action="bildirimler" title="Bildirimler" class="df jcc aic ftbn padv08em padh08em color-hover-alternative">
                     <span class="fa fa-bell color-inherit"></span>
-                    <span class="pos-a">
-                        <span class="pos-r left1em top1em s bold tag-circle danger w1-5em h1-5em">
-                            @(await personelYoneticisi.OkunmamisBildirimSayisiGetirAsync(User.Identity!.Name!))
+
+                    @{
+                        var bildirimSayisi = await personelYoneticisi.OkunmamisBildirimSayisiGetirAsync(User.Identity!.Name!);
+                    }
+
+                    @if (bildirimSayisi > 0)
+                    {
+                        <span class="pos-a">
+                            <span class="pos-r left1em top1em s bold tag-circle danger w1-5em h1-5em">
+                                @bildirimSayisi
+                            </span>
                         </span>
-                    </span>
+                    }
                 </a>
                 <a asp-controller="personel" asp-action="profil" title="Profil" class="fa fa-user ftbn padv08em padh08em color-hover-primary"></a>
                 <form class="df" method="post" asp-controller="personel" asp-action="cikis">
