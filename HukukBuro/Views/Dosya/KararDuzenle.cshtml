@@ -1,182 +1,187 @@
 ﻿@model KararVM
 
-<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Karar Düzenle</h1>
 
-<hr />
-
-<form method="post">
-    <input asp-for="DosyaId" hidden />
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <h3>Karar Bilgileri</h3>
-    <div>
-        <label asp-for="KararBilgileri.KararNo"></label>
-        <input asp-for="KararBilgileri.KararNo" />
-        <span asp-validation-for="KararBilgileri.KararNo"></span>
-    </div>
-    <div>
-        <label asp-for="KararBilgileri.KararTarihi"></label>
-        <input asp-for="KararBilgileri.KararTarihi" />
-        <span asp-validation-for="KararBilgileri.KararTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="KararBilgileri.TebligTarihi"></label>
-        <input asp-for="KararBilgileri.TebligTarihi" />
-        <span asp-validation-for="KararBilgileri.TebligTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="KararBilgileri.KararOzeti"></label>
-        <input asp-for="KararBilgileri.KararOzeti" />
-        <span asp-validation-for="KararBilgileri.KararOzeti"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" href="karar.html"></a>
     </div>
 
-    <hr />
+    <form method="post" class="df fdc gap2em">
+        <input asp-for="DosyaId" hidden />
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
 
-    <h3>Bölge Adliye Mahkemesi Bilgileri</h3>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.KararNo"></label>
-        <input asp-for="BolgeAdliyeMahkemesiBilgileri.KararNo" />
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararNo"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi"></label>
-        <input asp-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi" />
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi"></label>
-        <input asp-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi" />
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></label>
-        <textarea asp-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></textarea>
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme"></label>
-        <input asp-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme" />
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi"></label>
-        <input asp-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi" />
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></label>
-        <textarea asp-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></textarea>
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></span>
-    </div>
-    <div>
-        <label asp-for="BolgeAdliyeMahkemesiBilgileri.EsasNo"></label>
-        <input asp-for="BolgeAdliyeMahkemesiBilgileri.EsasNo" />
-        <span asp-validation-for="BolgeAdliyeMahkemesiBilgileri.EsasNo"></span>
-    </div>
+        <div class="df fdc gap1em">
+            <h3 class="marb0">Karar Bilgileri</h3>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararBilgileri.KararNo"></label>
+                <input class="input l" asp-for="KararBilgileri.KararNo" />
+                <span class="color-danger text-right" asp-validation-for="KararBilgileri.KararNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararBilgileri.KararOzeti"></label>
+                <textarea class="input l" asp-for="KararBilgileri.KararOzeti"></textarea>
+                <span class="color-danger text-right" asp-validation-for="KararBilgileri.KararOzeti"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararBilgileri.KararTarihi"></label>
+                <input class="input l" asp-for="KararBilgileri.KararTarihi" />
+                <span class="color-danger text-right" asp-validation-for="KararBilgileri.KararTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararBilgileri.TebligTarihi"></label>
+                <input class="input l" asp-for="KararBilgileri.TebligTarihi" />
+                <span class="color-danger text-right" asp-validation-for="KararBilgileri.TebligTarihi"></span>
+            </div>
+        </div>
 
-    <hr />
+        <div class="df fdc gap1em">
+            <h3 class="marb0">Bölge Adliye Mahkemesi Bilgileri</h3>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.KararNo"></label>
+                <input class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.KararNo" />
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></label>
+                <textarea class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></textarea>
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararOzeti"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme"></label>
+                <input class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme" />
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.Mahkeme"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.EsasNo"></label>
+                <input class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.EsasNo" />
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.EsasNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></label>
+                <textarea class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></textarea>
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.Aciklama"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi"></label>
+                <input class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi" />
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.KararTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi"></label>
+                <input class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi" />
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.TebligTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi"></label>
+                <input class="input l" asp-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi" />
+                <span class="color-danger text-right" asp-validation-for="BolgeAdliyeMahkemesiBilgileri.GondermeTarihi"></span>
+            </div>
+        </div>
 
-    <h3>Temyiz Bilgileri</h3>
-    <div>
-        <label asp-for="TemyizBilgileri.KararNo"></label>
-        <input asp-for="TemyizBilgileri.KararNo" />
-        <span asp-validation-for="TemyizBilgileri.KararNo"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.KararTarihi"></label>
-        <input asp-for="TemyizBilgileri.KararTarihi" />
-        <span asp-validation-for="TemyizBilgileri.KararTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.TebligTarihi"></label>
-        <input asp-for="TemyizBilgileri.TebligTarihi" />
-        <span asp-validation-for="TemyizBilgileri.TebligTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.KararOzeti"></label>
-        <textarea asp-for="TemyizBilgileri.KararOzeti"></textarea>
-        <span asp-validation-for="TemyizBilgileri.KararOzeti"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.Mahkeme"></label>
-        <input asp-for="TemyizBilgileri.Mahkeme" />
-        <span asp-validation-for="TemyizBilgileri.Mahkeme"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.GondermeTarihi"></label>
-        <input asp-for="TemyizBilgileri.GondermeTarihi" />
-        <span asp-validation-for="TemyizBilgileri.GondermeTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.Aciklama"></label>
-        <textarea asp-for="TemyizBilgileri.Aciklama"></textarea>
-        <span asp-validation-for="TemyizBilgileri.Aciklama"></span>
-    </div>
-    <div>
-        <label asp-for="TemyizBilgileri.EsasNo"></label>
-        <input asp-for="TemyizBilgileri.EsasNo" />
-        <span asp-validation-for="TemyizBilgileri.EsasNo"></span>
-    </div>
+        <div class="df fdc gap1em">
+            <h3 class="marb0">Temyiz Bilgileri</h3>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.KararNo"></label>
+                <input class="input l" asp-for="TemyizBilgileri.KararNo" />
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.KararNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.KararOzeti"></label>
+                <textarea class="input l" asp-for="TemyizBilgileri.KararOzeti"></textarea>
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.KararOzeti"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.Mahkeme"></label>
+                <input class="input l" asp-for="TemyizBilgileri.Mahkeme" />
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.Mahkeme"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.EsasNo"></label>
+                <input class="input l" asp-for="TemyizBilgileri.EsasNo" />
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.EsasNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.Aciklama"></label>
+                <textarea class="input l" asp-for="TemyizBilgileri.Aciklama"></textarea>
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.Aciklama"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.KararTarihi"></label>
+                <input class="input l" asp-for="TemyizBilgileri.KararTarihi" />
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.KararTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.TebligTarihi"></label>
+                <input class="input l" asp-for="TemyizBilgileri.TebligTarihi" />
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.TebligTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="TemyizBilgileri.GondermeTarihi"></label>
+                <input class="input l" asp-for="TemyizBilgileri.GondermeTarihi" />
+                <span class="color-danger text-right" asp-validation-for="TemyizBilgileri.GondermeTarihi"></span>
+            </div>
+        </div>
 
-    <hr />
+        <div class="df fdc gap1em">
+            <h3 class="marb0">Karar Düzeltme Bilgileri</h3>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.KararNo"></label>
+                <input class="input l" asp-for="KararDuzeltmeBilgileri.KararNo" />
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.KararNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.KararOzeti"></label>
+                <textarea class="input l" asp-for="KararDuzeltmeBilgileri.KararOzeti"></textarea>
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.KararOzeti"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.Mahkeme"></label>
+                <input class="input l" asp-for="KararDuzeltmeBilgileri.Mahkeme" />
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.Mahkeme"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.EsasNo"></label>
+                <input class="input l" asp-for="KararDuzeltmeBilgileri.EsasNo" />
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.EsasNo"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.Aciklama"></label>
+                <textarea class="input l" asp-for="KararDuzeltmeBilgileri.Aciklama"></textarea>
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.Aciklama"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.KararTarihi"></label>
+                <input class="input l" asp-for="KararDuzeltmeBilgileri.KararTarihi" />
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.KararTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.TebligTarihi"></label>
+                <input class="input l" asp-for="KararDuzeltmeBilgileri.TebligTarihi" />
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.TebligTarihi"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KararDuzeltmeBilgileri.GondermeTarihi"></label>
+                <input class="input l" asp-for="KararDuzeltmeBilgileri.GondermeTarihi" />
+                <span class="color-danger text-right" asp-validation-for="KararDuzeltmeBilgileri.GondermeTarihi"></span>
+            </div>
+        </div>
 
-    <h3>Karar Düzeltme Bilgileri</h3>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.KararNo"></label>
-        <input asp-for="KararDuzeltmeBilgileri.KararNo" />
-        <span asp-validation-for="KararDuzeltmeBilgileri.KararNo"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.KararTarihi"></label>
-        <input asp-for="KararDuzeltmeBilgileri.KararTarihi" />
-        <span asp-validation-for="KararDuzeltmeBilgileri.KararTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.TebligTarihi"></label>
-        <input asp-for="KararDuzeltmeBilgileri.TebligTarihi" />
-        <span asp-validation-for="KararDuzeltmeBilgileri.TebligTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.KararOzeti"></label>
-        <textarea asp-for="KararDuzeltmeBilgileri.KararOzeti"></textarea>
-        <span asp-validation-for="KararDuzeltmeBilgileri.KararOzeti"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.Mahkeme"></label>
-        <input asp-for="KararDuzeltmeBilgileri.Mahkeme" />
-        <span asp-validation-for="KararDuzeltmeBilgileri.Mahkeme"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.GondermeTarihi"></label>
-        <input asp-for="KararDuzeltmeBilgileri.GondermeTarihi" />
-        <span asp-validation-for="KararDuzeltmeBilgileri.GondermeTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.Aciklama"></label>
-        <textarea asp-for="KararDuzeltmeBilgileri.Aciklama"></textarea>
-        <span asp-validation-for="KararDuzeltmeBilgileri.Aciklama"></span>
-    </div>
-    <div>
-        <label asp-for="KararDuzeltmeBilgileri.EsasNo"></label>
-        <input asp-for="KararDuzeltmeBilgileri.EsasNo" />
-        <span asp-validation-for="KararDuzeltmeBilgileri.EsasNo"></span>
-    </div>
+        <div class="df fdc gap1em">
+            <h3 class="marb0">Kesinleşme Bilgileri</h3>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KesinlesmeBilgileri.KararOzeti"></label>
+                <textarea class="input l" asp-for="KesinlesmeBilgileri.KararOzeti"></textarea>
+                <span class="color-danger text-right" asp-validation-for="KesinlesmeBilgileri.KararOzeti"></span>
+            </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="KesinlesmeBilgileri.KesinlesmeTarihi"></label>
+                <input class="input l" asp-for="KesinlesmeBilgileri.KesinlesmeTarihi" />
+                <span class="color-danger text-right" asp-validation-for="KesinlesmeBilgileri.KesinlesmeTarihi"></span>
+            </div>
+        </div>
+        <button class="btn1 primary xl padv05em mart2em" type="submit">Tamam</button>
+    </form>
 
-    <hr />
+</div>
 
-    <h3>Kesinleşme Bilgileri</h3>
-    <div>
-        <label asp-for="KesinlesmeBilgileri.KesinlesmeTarihi"></label>
-        <input asp-for="KesinlesmeBilgileri.KesinlesmeTarihi" />
-        <span asp-validation-for="KesinlesmeBilgileri.KesinlesmeTarihi"></span>
-    </div>
-    <div>
-        <label asp-for="KesinlesmeBilgileri.KararOzeti"></label>
-        <textarea asp-for="KesinlesmeBilgileri.KararOzeti"></textarea>
-        <span asp-validation-for="KesinlesmeBilgileri.KararOzeti"></span>
-    </div>
-
-    <hr />
-
-    <button type="submit">Tamam</button>
-</form>
