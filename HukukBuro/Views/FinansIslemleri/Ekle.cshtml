@@ -1,107 +1,139 @@
 ﻿@model EkleVM
 
-<a asp-action="listele">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Finans İşlemi Ekle</h1>
 
-<hr />
-
-<form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <div>
-        <label asp-for="Miktar"></label>
-        <input asp-for="Miktar" />
-        <span asp-validation-for="Miktar"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="listele"></a>
     </div>
 
-    <div>
-        <label asp-for="IslemTuru"></label>
-        <select asp-for="IslemTuru" asp-items="@Html.GetEnumSelectList<IslemTuru>()"></select>
-        <span asp-validation-for="IslemTuru"></span>
-    </div>
+    <form method="post" class="df fdc gap1em">
+        <div asp-validation-summary="ModelOnly" class="color-danger color-inherit-children"></div>
 
-    <div>
-        <label asp-for="Odendi"></label>
-        <input asp-for="Odendi" />
-        <span asp-validation-for="Odendi"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Miktar"></label>
+            <input class="input l" asp-for="Miktar" />
+            <span class="color-danger text-right" asp-validation-for="Miktar"></span>
+        </div>
 
-    <div>
-        <label asp-for="SonOdemeTarhi"></label>
-        <input asp-for="SonOdemeTarhi" />
-        <span asp-validation-for="SonOdemeTarhi"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="IslemTuru"></label>
+            <select class="input l" asp-for="IslemTuru" asp-items="@Html.GetEnumSelectList<IslemTuru>()"></select>
+            <span class="color-danger text-right" asp-validation-for="IslemTuru"></span>
+        </div>
 
-    <div>
-        <label asp-for="OdemeTarhi"></label>
-        <input asp-for="OdemeTarhi" />
-        <span asp-validation-for="OdemeTarhi"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="IslemYapanId"></label>
+            <select class="input l" asp-for="IslemYapanId" asp-items="@Model.Personel"></select>
+            <span class="color-danger text-right" asp-validation-for="IslemYapanId"></span>
+        </div>
 
-    <div>
-        <label asp-for="MakbuzKesildiMi"></label>
-        <input asp-for="MakbuzKesildiMi" />
-        <span asp-validation-for="MakbuzKesildiMi"></span>
-    </div>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" id="dosya-baglantisi" asp-for="DosyaBaglantisiVar" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Dosya bağlantısı var
+            </label>
+            <span class="color-danger text-right" asp-validation-for="DosyaBaglantisiVar"></span>
+        </div>
 
-    <div>
-        <label asp-for="MakbuzNo"></label>
-        <input asp-for="MakbuzNo" />
-        <span asp-validation-for="MakbuzNo"></span>
-    </div>
+        <div class="input-box df fdc" id="dosya-input">
+            <label class="s color-inactive" asp-for="DosyaId"></label>
+            <select class="input l" asp-for="DosyaId" asp-items="@Model.Dosyalar"></select>
+            <span class="color-danger text-right" asp-validation-for="DosyaId"></span>
+        </div>
 
-    <div>
-        <label asp-for="MakbuzTarihi"></label>
-        <input asp-for="MakbuzTarihi" />
-        <span asp-validation-for="MakbuzTarihi"></span>
-    </div>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" id="kisi-baglantisi" asp-for="KisiBaglantisiVar" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Kişi bağlantısı var
+            </label>
+            <span class="color-danger text-right" asp-validation-for="KisiBaglantisiVar"></span>
+        </div>
 
-    <div>
-        <label asp-for="IslemYapanId"></label>
-        <select asp-for="IslemYapanId" asp-items="@Model.Personel"></select>
-        <span asp-validation-for="IslemYapanId"></span>
-    </div>
+        <div class="input-box df fdc" id="kisi-input">
+            <label class="s color-inactive" asp-for="KisiId"></label>
+            <select class="input l" asp-for="KisiId" asp-items="@Model.Kisiler"></select>
+            <span class="color-danger text-right" asp-validation-for="KisiId"></span>
+        </div>
 
-    <div>
-        <label asp-for="KisiBaglantisiVar"></label>
-        <input asp-for="KisiBaglantisiVar" />
-        <span asp-validation-for="KisiBaglantisiVar"></span>
-    </div>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" id="personel-baglantisi" asp-for="PersonelBaglantisiVar" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Personel bağlantısı var
+            </label>
+            <span class="color-danger text-right" asp-validation-for="PersonelBaglantisiVar"></span>
+        </div>
 
-    <div>
-        <label asp-for="KisiId"></label>
-        <select asp-for="KisiId" asp-items="@Model.Kisiler"></select>
-        <span asp-validation-for="KisiId"></span>
-    </div>
+        <div class="input-box df fdc" id="personel-input">
+            <label class="s color-inactive" asp-for="PersonelId">Personel</label>
+            <select class="input l" asp-for="PersonelId" asp-items="@Model.Personel"></select>
+            <span class="color-danger text-right" asp-validation-for="PersonelId"></span>
+        </div>
 
-    <div>
-        <label asp-for="DosyaBaglantisiVar"></label>
-        <input asp-for="DosyaBaglantisiVar" />
-        <span asp-validation-for="DosyaBaglantisiVar"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Aciklama"></label>
+            <textarea class="input l" rows="2" asp-for="Aciklama"></textarea>
+            <span class="color-danger text-right" asp-validation-for="Aciklama"></span>
+        </div>
 
-    <div>
-        <label asp-for="DosyaId"></label>
-        <select asp-for="DosyaId" asp-items="@Model.Dosyalar"></select>
-        <span asp-validation-for="DosyaId"></span>
-    </div>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" id="odendi" asp-for="Odendi" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Ödendi
+            </label>
+            <span class="color-danger text-right" asp-validation-for="Odendi"></span>
+        </div>
 
-    <div>
-        <label asp-for="PersonelBaglantisiVar"></label>
-        <input asp-for="PersonelBaglantisiVar" />
-        <span asp-validation-for="PersonelBaglantisiVar"></span>
-    </div>
+        <div class="input-box df fdc" id="odeme-tarihi-input">
+            <label class="s color-inactive" asp-for="OdemeTarhi"></label>
+            <input class="input l" asp-for="OdemeTarhi" />
+            <span class="color-danger text-right" asp-validation-for="OdemeTarhi"></span>
+        </div>
 
-    <div>
-        <label asp-for="PersonelId"></label>
-        <select asp-for="PersonelId" asp-items="@Model.Personel"></select>
-        <span asp-validation-for="PersonelId"></span>
-    </div>
+        <div class="input-box df fdc" id="son-odeme-tarihi-input">
+            <label class="s color-inactive" asp-for="SonOdemeTarhi"></label>
+            <input class="input l" asp-for="SonOdemeTarhi" />
+            <span class="color-danger text-right" asp-validation-for="SonOdemeTarhi"></span>
+        </div>
 
-    <div>
-        <label asp-for="Aciklama"></label>
-        <input asp-for="Aciklama" />
-        <span asp-validation-for="Aciklama"></span>
-    </div>
+        <div class="input-box pad1rem df fdc" id="makbuz-kesildi-input">
+            <label class="checkbox l">
+                <input type="checkbox" id="makbuz-kesildi" asp-for="MakbuzKesildiMi" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Makbuz kesildi
+            </label>
+            <span class="color-danger text-right" asp-validation-for="MakbuzKesildiMi"></span>
+        </div>
 
-    <button type="submit">Tamam</button>
-</form>
+        <div class="input-box df fdc" id="makbuz-no-input">
+            <label class="s color-inactive" asp-for="MakbuzNo"></label>
+            <input class="input l" asp-for="MakbuzNo" />
+            <span class="color-danger text-right" asp-validation-for="MakbuzNo"></span>
+        </div>
+
+        <div class="input-box df fdc" id="makbuz-tarihi-input">
+            <label class="s color-inactive" asp-for="MakbuzTarihi"></label>
+            <input class="input l" asp-for="MakbuzTarihi" />
+            <span class="color-danger text-right" asp-validation-for="MakbuzTarihi"></span>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+    <script src="~/js/finansislemiform.js"></script>
+</div>
+

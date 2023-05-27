@@ -115,5 +115,6 @@ public static class Sabit
     public static class Hata
     {
         public const string Gerekli = nameof(Gerekli);
+        public const string Para = "Örnek format: 5000,99";
     }
 }
