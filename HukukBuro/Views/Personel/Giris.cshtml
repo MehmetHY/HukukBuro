@@ -1,27 +1,39 @@
 ﻿@model GirisVM
 
-<form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw800">
+    <h1 class="marb1em mart0">Giriş</h1>
 
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
-    </div>
+    <form method="post" class="df fdc fg gap1em">
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
 
-    <div>
-        <label asp-for="Sifre"></label>
-        <input asp-for="Sifre" />
-        <span asp-validation-for="Sifre"></span>
-    </div>
+        <div class="input-box df fdc birey">
+            <label class="s color-inactive" asp-for="Email"></label>
+            <input class="input l" asp-for="Email" />
+            <span class="color-danger text-right" asp-validation-for="Email"></span>
+        </div>
 
-    <div>
-        <label asp-for="Hatirla"></label>
-        <input asp-for="Hatirla" />
-    </div>
+        <div class="input-box df fdc birey">
+            <label class="s color-inactive" asp-for="Sifre"></label>
+            <input class="input l" asp-for="Sifre" />
+            <span class="color-danger text-right" asp-validation-for="Sifre"></span>
+        </div>
 
-    <button type="submit">Tamam</button>
-</form>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" asp-for="Hatirla" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Beni hatırla
+            </label>
+            <span class="color-danger text-right"></span>
+        </div>
 
-<hr />
-<a asp-action="kaydol">Kaydol</a>
+        <div class="df fg fdc jce aic gap1em">
+            <button class="btn1 primary xl padv05em mart05em asse" type="submit">Giriş</button>
+            <span class="bold">ya da</span>
+            <a class="btn2 secondary l" asp-action="kaydol">Kaydol</a>
+        </div>
+    </form>
+</div>
+
