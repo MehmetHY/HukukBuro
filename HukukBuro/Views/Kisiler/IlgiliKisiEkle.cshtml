@@ -1,24 +1,32 @@
 ﻿@model IlgiliKisiEkleVM
 
-<form method="post">
-    <input asp-for="KisiId" hidden />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Kişi Bağlantısı Ekle</h1>
 
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <div>
-        <label asp-for="IlgiliKisiId"></label>
-        <select asp-for="IlgiliKisiId" asp-items="@Model.Kisiler"></select>
-        <span asp-validation-for="IlgiliKisiId"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.KisiId"></a>
     </div>
 
-    <div>
-        <label asp-for="Pozisyon"></label>
-        <input asp-for="Pozisyon" />
-        <span asp-validation-for="Pozisyon"></span>
-    </div>
+    <form method="post" class="df fg fdc gap1em ">
+        <input asp-for="KisiId" hidden />
 
-    <div>
-        <a asp-action="IlgiliKisiler" asp-route-id="@Model.KisiId">Geri</a>
-        <button type="submit">Tamam</button>
-    </div>
-</form>
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
+
+        <div class="df fdc gap1em">
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="IlgiliKisiId"></label>
+                <select class="input l" asp-for="IlgiliKisiId" asp-items="@Model.Kisiler"></select>
+                <span class="color-danger text-right" asp-validation-for="IlgiliKisiId"></span>
+            </div>
+
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="Pozisyon"></label>
+                <input class="input l" asp-for="Pozisyon" />
+                <span class="color-danger text-right" asp-validation-for="Pozisyon"></span>
+            </div>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart2em" type="submit">Tamam</button>
+    </form>
+</div>
+
