@@ -111,7 +111,8 @@ public class PersonelYoneticisi
             UserName = vm.Email,
             Isim = vm.Isim,
             Soyisim = vm.Soyisim,
-            FotoUrl = Sabit.Belge.VarsayilanFotoUrl
+            FotoUrl = Sabit.Belge.VarsayilanFotoUrl,
+            PhoneNumber = vm.Telefon
         };
 
         var result = await _kullaniciYoneticisi.CreateAsync(model, vm.Sifre);
