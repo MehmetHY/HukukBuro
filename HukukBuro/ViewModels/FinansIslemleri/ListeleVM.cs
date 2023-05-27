@@ -19,9 +19,16 @@ public class ListeleVM : SayfaListe<ListeleVM.Oge>
         public DateTime? MakbuzTarihi { get; set; }
         public string? MakbuzNo { get; set; }
 
+        public string? IslemYapanId { get; set; }
         public string? IslemYapan { get; set; }
+
+        public int? KisiId { get; set; }
         public string? Kisi { get; set; }
+
+        public int? DosyaId { get; set; }
         public string? Dosya { get; set; }
+
+        public string? PersonelId { get; set; }   
         public string? Personel { get; set; }   
 
         public string? Aciklama { get; set; }

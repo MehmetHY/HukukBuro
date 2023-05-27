@@ -1,82 +1,123 @@
 ﻿@model ListeleVM
 
-<a asp-action="ekle">Yeni işlem ekle</a>
-&nbsp;
-<partial name="_Arama" model="@Model" />
 
-@foreach (var oge in Model.Ogeler)
-{
-    <hr />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Finans İşlemleri</h1>
 
-    <div>
-        <strong>@oge.Miktar TL</strong>
-        &nbsp;
-        @oge.IslemTuru.DisplayName()
-        &nbsp;
-        <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
-        &nbsp;
-        <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <a asp-action="ekle" class="btn2 success gap05em">
+            <span class="fa fa-plus color-inherit"></span>
+            <span class="color-inherit max400-hidden">Yeni işlem ekle</span>
+        </a>
+
+        <partial name="_Arama" model="@Model" />
     </div>
 
-    @if (oge.Odendi)
-    {
-        <div>
-            Ödendi
-            &nbsp;
-            Ödeme Tarihi: @oge.OdemeTarihi
-        </div>
+    <div class="list-container mart1em">
 
-        @if (oge.MakbuzKesildi)
+        @foreach (var islem in Model.Ogeler)
         {
-            <div>
-                Makbuz No: @oge.MakbuzNo
-                &nbsp;
-                Makbuz Tarihi: @oge.MakbuzTarihi
+            <div class="list-item activator-hover df fdc gap1em">
+                <div class="df aic gap1em fwrap">
+                    <span class="l bold">@islem.Miktar</span>
+                    <span class="tag alternative">@islem.IslemTuru.DisplayName()</span>
+
+                    @if (islem.Odendi)
+                    {
+                        <span class="tag success">Ödendi</span>
+
+                        @if (islem.MakbuzKesildi)
+                        {
+                            <span class="tag success">Makbuz kesildi</span>
+                        }
+                        else
+                        {
+                            <span class="tag danger">Makbuz kesilmedi</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="tag danger">Ödenmedi</span>
+                    }
+
+                    <div class="df fg gap05em jce ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                        <a asp-action="duzenle" asp-route-id="@islem.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                        <a asp-action="sil" asp-route-id="@islem.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                    </div>
+                </div>
+                <div class="df aic gap1em fwrap">
+
+                    @if (islem.Odendi)
+                    {
+                        <div>
+                            <span class="bold">Ödeme Tarihi:</span>
+                            <span>@islem.OdemeTarihi</span>
+                        </div>
+
+                        @if (islem.MakbuzKesildi)
+                        {
+                            <div>
+                                <span class="bold">Makbuz No:</span>
+                                <span>@islem.MakbuzNo</span>
+                            </div>
+
+                            <div>
+                                <span class="bold">Makbuz Tarihi:</span>
+                                <span>@islem.MakbuzTarihi</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div>
+                            <span class="bold">Son Ödeme Tarihi:</span>
+                            <span>@islem.SonOdemeTarihi</span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(islem.IslemYapan))
+                    {
+                        <div>
+                            <span class="bold">İşlem Yapan:</span>
+                            <a asp-controller="personel" asp-action="profil" asp-route-id="@islem.IslemYapanId" class="color-hover-primary">@islem.IslemYapan</a>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(islem.Dosya))
+                    {
+                        <div>
+                            <span class="bold">Dosya Bağlantısı:</span>
+                            <a asp-controller="dosya" asp-action="ozet" asp-route-id="@islem.DosyaId" class="color-hover-primary">@islem.Dosya</a>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(islem.Kisi))
+                    {
+                        <div>
+                            <span class="bold">Kişi Bağlantısı:</span>
+                            <a asp-controller="kisiler" asp-action="ozet" asp-route-id="@islem.KisiId" class="color-hover-primary">@islem.Kisi</a>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(islem.Personel))
+                    {
+                        <div>
+                            <span class="bold">Personel Bağlantısı:</span>
+                            <a asp-controller="personel" asp-action="profil" asp-route-id="@islem.PersonelId" class="color-hover-primary">@islem.IslemYapan</a>
+                        </div>
+                    }
+
+                    <div class="max600-hidden">
+                        <span class="bold">Açıklama:</span>
+                        <span class="text-wrap">@islem.Aciklama</span>
+                    </div>
+                </div>
             </div>
         }
-    }
-    else
-    {
-        <span>Ödenmedi &nbsp;</span>
-        <span>Son Ödeme Tarihi: @oge.SonOdemeTarihi</span>
-    }
 
-    @if (!string.IsNullOrWhiteSpace(oge.IslemYapan))
-    {
-        <div>
-            İşlem yapan: @oge.IslemYapan
-        </div>
-    }
+    </div>
 
-    @if (!string.IsNullOrWhiteSpace(oge.Kisi))
-    {
-        <div>
-            Kişi: @oge.Kisi
-        </div>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(oge.Dosya))
-    {
-        <div>
-            Dosya: @oge.Dosya
-        </div>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(oge.Personel))
-    {
-        <div>
-            Personel: @oge.Personel
-        </div>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
-    {
-        <div>
-            Açıklama: @oge.Aciklama
-        </div>
-    }
-}
+    <partial name="_Sayfa" model="@Model" />
+</div>
 
 
-<hr />
-<partial name="_Sayfa" model="@Model" />

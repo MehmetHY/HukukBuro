@@ -71,18 +71,22 @@ public class FinansIslemiYoneticisi
             .Select(f => new ListeleVM.Oge
             {
                 Id = f.Id,
-                Miktar = f.Miktar.ToString(),
+                Miktar = $"{f.Miktar.ToString("F2")} TL",
                 SonOdemeTarihi = f.SonOdemeTarhi,
                 Odendi = f.Odendi,
                 OdemeTarihi = f.OdemeTarhi,
                 IslemTuru = (IslemTuru)f.IslemTuru,
+                IslemYapanId = f.IslemYapanId,
                 IslemYapan = f.IslemYapan == null ? null : f.IslemYapan.TamIsim,
                 Aciklama = f.Aciklama,
                 MakbuzKesildi = f.MakbuzKesildiMi,
                 MakbuzTarihi = f.MakbuzTarihi,
                 MakbuzNo = f.MakbuzNo,
+                KisiId = f.KisiId,
                 Kisi = f.Kisi == null ? null : f.Kisi.TamIsim,
+                DosyaId = f.DosyaId,
                 Dosya = f.Dosya == null ? null : f.Dosya.TamIsim,
+                PersonelId = f.PersonelId,
                 Personel = f.Personel == null ? null : f.Personel.TamIsim
             });
 

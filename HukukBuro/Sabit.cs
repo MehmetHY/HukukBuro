@@ -104,7 +104,7 @@ public static class Sabit
 
     public static class Regex
     {
-        public const string Para = @"^\s*\d+[,|\.]?(?:\d{0,2})?\s*$";
+        public const string Para = @"^\-?\s*\d+[,|\.]?(?:\d{0,2})?\s*$";
     }
 
     public static class Mesaj
