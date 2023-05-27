@@ -1,13 +1,33 @@
-﻿<a asp-action="profil">Geri</a>
-<hr />
+﻿@model FotoVM
 
-<form method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Fotoğraf Düzenle</h1>
 
-    <div>
-        <label>Fotoğraf</label>
-        <input type="file" name="foto" accept="image/png, image/jpeg, image/gif, .svg, .webp" required/>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="profil"></a>
     </div>
 
-    <button type="submit">Tamam</button>
-</form>
+    <form method="post" enctype="multipart/form-data" class="df fdc jcsb gap1em fg">
+        <input asp-for="Url" hidden />
+
+        <div asp-validation-summary="ModelOnly" class="color-danger color-inherit-children"></div>
+
+        <div class="df fwrap gap1em">
+            <div class="input-box pad08em df fdc gap1em">
+                <img id="foto" src="@Model.Url" class="square256px max600-w100p max600-hauto" />
+            </div>
+            <div class="df fg fdc gap1em">
+                <div class="input-box df fdc">
+                    <label class="s color-inactive" for="">Fotoğraf</label>
+                    <input id="foto-input" class="input l" type="file" name="foto" accept="image/jpeg, image/png, image/gif, .webp, .svg" required />
+                    <span class="color-danger text-right"></span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+    <script src="~/js/fotoform.js"></script>
+</div>
+

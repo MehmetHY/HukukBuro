@@ -147,10 +147,15 @@ public class PersonelController : Controller
     }
 
     [HttpGet]
-    public IActionResult FotoDuzenle() => View();
+    public async Task<IActionResult> FotoDuzenle()
+    {
+        var vm = await _yonetici.FotoVMGetirAsync(User.Identity!.Name!);
+
+        return View(vm);
+    }
 
     [HttpPost]
-    public async Task<IActionResult> FotoDuzenle(IFormFile? foto)
+    public async Task<IActionResult> FotoDuzenle(FotoVM vm, IFormFile? foto)
     {
         var sonuc = await _yonetici.FotoDuzenleAsync(User.Identity!.Name!, foto);
 
@@ -159,7 +164,7 @@ public class PersonelController : Controller
 
         ModelState.HataEkle(sonuc);
 
-        return View();
+        return View(vm);
     }
 
     [HttpGet]
