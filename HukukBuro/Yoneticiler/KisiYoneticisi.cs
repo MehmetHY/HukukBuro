@@ -146,12 +146,12 @@ public class KisiYoneticisi
             .Include(k => k.IlgiliDosyalar)
             .Include(k => k.Randevular)
             .Include(k => k.IlgiliGorevler).ThenInclude(g => g.Durum)
-            .Include(k => k.IlgiliFinansIslemleri)
+            .Include(k => k.Belgeler)
             .OrderBy(k => k.Kisaltma)
             .Select(k => new KisilerListeleVM.Oge
             {
                 Id = k.Id,
-                Kisaltma = k.Kisaltma,
+                Kisaltma = k.Kisaltma.ToUpper(),
                 TuzelMi = k.TuzelMi,
 
                 Isim = k.Isim != null && k.Soyisim != null ?
@@ -167,7 +167,7 @@ public class KisiYoneticisi
                 GorevSayisi = k.IlgiliGorevler.Where(
                     g => g.Durum.Isim == Sabit.GorevDurumu.DevamEdiyor).Count(),
 
-                FinansSayisi = k.IlgiliFinansIslemleri.Where(f => !f.Odendi).Count()
+                BelgeSayisi = k.Belgeler.Count()
             })
             .ToListAsync();
 

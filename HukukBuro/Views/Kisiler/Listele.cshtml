@@ -1,56 +1,69 @@
 ﻿@model KisilerListeleVM
 
-<a asp-action="ekle">Yeni Kişi Ekle</a>
 
-&nbsp;
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Kişiler</h1>
 
-<partial name="_Arama" model="Model" />
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <a asp-action="ekle" class="btn2 success gap05em">
+            <span class="fa fa-plus color-inherit"></span>
+            <span class="color-inherit max400-hidden">Yeni kişi ekle</span>
+        </a>
 
-@foreach (var oge in Model.Ogeler)
-{
-    <div>
-        <hr />
+        <partial name="_Arama" model="Model" />
+    </div>
 
-        <strong>@oge.Kisaltma</strong>
+    <div class="list-container mart1em">
 
-        &nbsp;
+        @foreach (var kisi in Model.Ogeler)
+        {
+            <div class="list-item activator-hover">
 
-        <a asp-action="Ozet" asp-route-id="@oge.Id">@oge.Isim</a>
+                <div class="df jcsb max500-fdcr max500-gap05rem">
+                    <div class="df fwrap gap1em aic">
+                        <span class="tag xl primary">@kisi.Kisaltma</span>
+                        <a asp-action="ozet" asp-route-id="@kisi.Id" class="color-active color-hover-primary bold l">@kisi.Isim</a>
 
-        <div>
-            @if (!string.IsNullOrWhiteSpace(oge.KimlikVergiNo))
-            {
-                <small>&nbsp; @(oge.TuzelMi ? "Vergi No" : "TC Kimli No"): @oge.KimlikVergiNo</small>
-            }
+                        @if (kisi.TuzelMi)
+                        {
+                            <span class="tag s alternative">Tüzel</span>
+                        }
+                    </div>
 
-            @if (!string.IsNullOrWhiteSpace(oge.Telefon))
-            {
-                <small>&nbsp; Telefon: @oge.Telefon</small>
-            }
+                    <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                        <a title="Kişiye Git" asp-action="ozet" asp-route-id="@kisi.Id" class="ibtn1 primary fa fa-user normal"></a>
+                        <a title="Düzenle" asp-action="ozetduzenle" asp-route-id="@kisi.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                        <a title="Sil" asp-action="sil" asp-route-id="@kisi.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                    </div>
+                </div>
 
-            @if (!string.IsNullOrWhiteSpace(oge.Email))
-            {
-                <small>&nbsp; Email: @oge.Email</small>
-            }
-        </div>
+                <div class="df jcs aic gap1em mart08rem max600-hidden">
+                    <div title="Dosya Bağlantısı" class="cursordefault">
+                        <span class="fa fa-folder normal"></span>
+                        <span class="">@kisi.DosyaSayisi</span>
+                    </div>
+                    <div title="Görev" class="cursordefault">
+                        <span class="fa-regular fa-clipboard"></span>
+                        <span class="">@kisi.GorevSayisi</span>
+                    </div>
+                    <div title="Randevu" class="cursordefault">
+                        <span class="fa fa-calendar normal"></span>
+                        <span class="">@kisi.RandevuSayisi</span>
+                    </div>
+                    <div title="Belge" class="cursordefault">
+                        <span class="fa-regular fa-file"></span>
+                        <span class="">@kisi.BelgeSayisi</span>
+                    </div>
+                </div>
 
-        <div>
-            <small>Dosya @oge.DosyaSayisi</small>
-            &nbsp;
-            <small>Randevu @oge.RandevuSayisi</small>
-            &nbsp;
-            <small>Görev @oge.GorevSayisi</small>
-            &nbsp;
-            <small>Finans @oge.FinansSayisi</small>
-        </div>
 
-        <div>
-            <a asp-action="ozet" asp-route-id="@oge.Id">Kişiye git</a>
-            &nbsp;
-            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
-        </div>
+            </div>
+        }
 
     </div>
-}
 
-<partial name="_Sayfa" model="Model" />
+    <partial name="_Sayfa" model="Model" />
+</div>
+
+
+

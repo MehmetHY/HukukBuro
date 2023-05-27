@@ -23,6 +23,6 @@ public class KisilerListeleVM : SayfaListe<KisilerListeleVM.Oge>
         public int DosyaSayisi { get; set; }
         public int RandevuSayisi { get; set; }
         public int GorevSayisi { get; set; }
-        public int FinansSayisi { get; set; }
+        public int BelgeSayisi { get; set; }
     }
 }
