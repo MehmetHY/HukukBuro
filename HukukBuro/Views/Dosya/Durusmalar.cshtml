@@ -1,29 +1,57 @@
 ﻿@model DurusmalarVM
 
-<a asp-controller="dosya" asp-action="listele">Dosyalar</a>
-&nbsp;
-<partial name="_Arama" model="@Model" />
-<hr />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Duruşmalar</h1>
 
-@foreach (var oge in Model.Ogeler)
-{
-    <div>
-        <strong>@oge.AktiviteTuru</strong>
-        &nbsp;
-        Dosya: @oge.DosyaTamisim
-        &nbsp;
-        Tarih: @oge.Tarih
-        &nbsp;
-        (@(oge.Tamamlandi ? "Tamamlandı" : "Tamamlanmadı"))
-        &nbsp;
-        <a asp-action="Ozet" asp-route-id="@oge.DosyaId">Dosyaya Git</a>
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <a asp-action="listele" class="btn2 primary gap05em">
+            <span class="fa fa-folder color-inherit"></span>
+            <span class="color-inherit max400-hidden">Dosyalara git</span>
+        </a>
 
-        @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
-        {
-            <p>@oge.Aciklama</p>
-        }
+        <partial name="_Arama" model="@Model" />
     </div>
-}
 
-<hr />
-<partial name="_Sayfa" model="@Model" />
+    <div class="list-container mart1em">
+
+        @foreach (var durusma in Model.Ogeler)
+        {
+            <div class="list-item activator-hover df fdc gap1em">
+
+                <div class="df jcsb max500-fdcr max500-gap05rem">
+                    <div class="df fwrap gap1em aic">
+                        <a asp-action="ozet" asp-route-id="@durusma.DosyaId" class="color-active bold l color-hover-primary">@durusma.DosyaTamisim</a>
+                        <span class="tag alternative">@durusma.AktiviteTuru</span>
+
+                        @if (durusma.Tamamlandi)
+                        {
+                            <span class="tag success">Tamamlandı</span>
+                        }
+
+                    </div>
+
+                    <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                        <a title="Dosyaya git" asp-action="ozet" asp-route-id="@durusma.DosyaId" class="ibtn1 primary fa fa-folder normal"></a>
+                    </div>
+                </div>
+
+                <div class="df aic gap05em">
+                    <span class="bold">Tarih:</span>
+                    <span>@durusma.Tarih</span>
+                </div>
+
+                <div class="df aic fwrap gap05em">
+                    <span class="bold">Açıklama:</span>
+                    <span class="text-wrap">@durusma.Aciklama</span>
+                </div>
+
+
+            </div>
+        }
+
+    </div>
+
+    <partial name="_Sayfa" model="@Model" />
+</div>
+
+
