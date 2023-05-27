@@ -1,97 +1,172 @@
 ﻿@model KisiOzetVM
 
-<div>
-    <a asp-action="listele">Geri</a>
-    <a asp-action="ozetduzenle" asp-route-id="@Model.Id">Düzenle</a>
-</div>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Kişi</h1>
 
-@if (!Model.TuzelMi)
-{
-    <div>
-        <span>İsim</span>
-        <span>@Model.Isim</span>
+    <div class="df gap1em marb1rem">
+        <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="ozetduzenle" asp-route-id="@Model.Id"></a>
+        <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
     </div>
 
-    <div>
-        <span>Soyisim</span>
-        <span>@Model.Soyisim</span>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+
+            @if (Model.TuzelMi)
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Şirket İsmi</span>
+                    <span class="color-active l text-wrap">@Model.SirketIsmi</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Vergi Dairesi</span>
+                    <span class="color-active l text-wrap">@Model.VergiDairesi</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Vergi No</span>
+                    <span class="color-active l text-wrap">@Model.VergiNo</span>
+                </div>
+            }
+            else
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">İsim</span>
+                    <span class="color-active l text-wrap">@Model.Isim</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Soyisim</span>
+                    <span class="color-active l text-wrap">@Model.Soyisim</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">T.C Kimlik No</span>
+                    <span class="color-active l text-wrap">@Model.TcKimlikNo</span>
+                </div>
+            }
+
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Telefon</span>
+                <span class="color-active l text-wrap">@Model.Telefon</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Email</span>
+                <span class="color-active l text-wrap">@Model.Email</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Adres Bilgisi</span>
+                <span class="color-active l text-wrap">@Model.Adres</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Banka Hesap Bilgileri</span>
+                <span class="color-active l text-wrap">@Model.BankaHesapBilgisi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Ek Bilgiler</span>
+                <span class="color-active l text-wrap">@Model.EkBilgi</span>
+            </div>
+        </div>
     </div>
 
-    <div>
-        <span>TC Kimlik No</span>
-        <span>@Model.TcKimlikNo</span>
+    <div class="mart2rem">
+        <div class="df jcsb aic">
+            <h3>Bağlantılı Kişiler</h3>
+            <a class="btn2 success gap05em" asp-action="ilgilikisiekle" asp-route-id="@Model.Id">
+                <span class="fa fa-plus color-inherit"></span>
+                Ekle
+            </a>
+        </div>
+        <div class="list-container">
+
+            @foreach (var baglanti in Model.KisiBaglantilari)
+            {
+                <div class="list-item activator-hover df fwrap aic jcsb gap1em">
+                    <div class="df aic gap1em fwrap">
+                        <a class="l color-hover-primary" asp-action="ozet" asp-route-id="@baglanti.KisiId">@baglanti.KisiIsmi</a>
+
+                        @if (baglanti.SirketMi)
+                        {
+                            <span class="tag alternative">Şirket</span>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(baglanti.Pozisyon))
+                        {
+                            <span class="tag primary">@baglanti.Pozisyon</span>
+                        }
+
+                    </div>
+                    <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
+                        <a title="Düzenle" asp-action="ilgilikisiduzenle" asp-route-id="@baglanti.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                        <a title="Sil" asp-action="ilgilikisisil" asp-route-id="@baglanti.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-}
-else
-{
-    <div>
-        <span>Şirket</span>
-        <span>@Model.SirketIsmi</span>
+
+    <div class="mart2rem">
+        <div class="df jcsb aic">
+            <h3>İlgili Dosyalar</h3>
+        </div>
+        <div class="list-container">
+
+            @foreach (var baglanti in Model.DosyaBaglantilari)
+            {
+                <div class="list-item activator-hover df aic gap1em fwrap">
+                    <a class="l color-hover-primary" asp-controller="dosya" asp-action="ozet" asp-route-id="@baglanti.DosyaId">@baglanti.DosyaIsmi</a>
+                    <span class="tag alternative">@baglanti.TarafTuru</span>
+
+                    @if (baglanti.KarsiTaraf)
+                    {
+                        <span class="tag danger">Karşı Taraf</span>
+                    }
+
+                    <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
+                        <a title="Dosyaya Git" asp-controller="dosya" asp-action="ozet" asp-route-id="@baglanti.DosyaId" class="ibtn1 primary fa fa-folder normal"></a>
+                    </div>
+                </div>
+            }
+
+        </div>
     </div>
 
-    <div>
-        <span>Vergi Dairesi</span>
-        <span>@Model.VergiDairesi</span>
+    <div class="mart2rem">
+        <div class="df jcsb aic">
+            <h3>Belgeler</h3>
+            <a class="btn2 success gap05em" asp-action="belgeekle" asp-route-id="@Model.Id">
+                <span class="fa fa-plus color-inherit"></span>
+                Ekle
+            </a>
+        </div>
+        <div class="list-container">
+
+            @foreach (var belge in Model.Belgeler)
+            {
+                <div class="list-item activator-hover df fdc gap05em">
+                    <div class="df aic gap1em fwrap">
+
+                        @if (belge.Ozel)
+                        {
+                            <span class="tag danger">Özel</span>
+                        }
+
+                        <span class="tag primary">@belge.Uzanti</span>
+                        <span class="tag secondary">@belge.Boyut</span>
+                        <a href="@belge.Url" class="bold l color-hover-primary" target="_blank">@belge.Baslik</a>
+                        <span class="s">@belge.Tarih</span>
+                        <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
+                            <a title="Belge" target="_blank" href="@belge.Url" class="ibtn1 primary fa fa-file normal"></a>
+                            <a title="Düzenle" asp-action="belgeduzenle" asp-route-id="@belge.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                            <a title="Sil" asp-action="belgesil" asp-route-id="@belge.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        </div>
+                    </div>
+                    <div class="df fdc">
+                        <span class="bold">Açıklama</span>
+                        <span class="text-wrap">@belge.Aciklama</span>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 
-    <div>
-        <span>Vergi No</span>
-        <span>@Model.VergiNo</span>
-    </div>
-}
-
-<div>
-    <span>Telefon</span>
-    <span>@Model.Telefon</span>
-</div>
-
-<div>
-    <span>Email</span>
-    <span>@Model.Email</span>
-</div>
-
-<div>
-    <span>Adres Bilgisi</span>
-    <span>@Model.Adres</span>
-</div>
-
-<div>
-    <span>Banka Hesap Bilgisi</span>
-    <span>@Model.BankaHesapBilgisi</span>
-</div>
-
-<div>
-    <span>Ek Bilgi</span>
-    <span>@Model.EkBilgi</span>
-</div>
-
-<div>
-    <a asp-action="IlgiliKisiler" asp-route-id="@Model.Id">İlgili Kişiler</a>
-    <span>@Model.IlgiliKisiSayisi</span>
-</div>
-
-<div>
-    <span>Dosyalar</span>
-    <span>@Model.IlgiliDosyaSayisi</span>
-</div>
-
-<div>
-    <span>Randevular</span>
-    <span>@Model.RandevuSayisi</span>
-</div>
-
-<div>
-    <span>Görevler</span>
-    <span>@Model.GorevSayisi</span>
-</div>
-
-<div>
-    <span>Finans İşlemleri</span>
-    <span>@Model.FinansSayisi</span>
-</div>
-
-<div>
-    <a asp-action="Belgeler" asp-route-id="@Model.Id">Belgeler</a>
-    <span>@Model.BelgeSayisi</span>
 </div>
 

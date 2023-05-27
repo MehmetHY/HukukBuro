@@ -209,12 +209,46 @@ public class KisiYoneticisi
                 BankaHesapBilgisi = k.BankaHesapBilgisi,
                 EkBilgi = k.EkBilgi,
 
-                IlgiliKisiSayisi = k.IlgiliKisiler.Count(),
-                IlgiliDosyaSayisi = k.IlgiliDosyalar.Count(),
-                RandevuSayisi = k.Randevular.Count(),
-                GorevSayisi = k.IlgiliGorevler.Count(),
-                FinansSayisi = k.IlgiliFinansIslemleri.Count(),
-                BelgeSayisi = k.Belgeler.Count()
+                KisiBaglantilari = _vt.KisiBaglantilari
+                    .Where(kb => kb.KisiId == id)
+                    .Include(kb => kb.IlgiliKisi)
+                    .Select(kb => new KisiOzetVM.KisiBaglantisi
+                    {
+                        Id = kb.Id,
+                        KisiId = kb.IlgiliKisiId,
+                        KisiIsmi = kb.IlgiliKisi.TamIsim,
+                        Pozisyon = kb.Pozisyon,
+                        SirketMi = kb.IlgiliKisi.TuzelMi
+                    })
+                    .ToList(),
+
+                DosyaBaglantilari = _vt.TarafKisiler
+                    .Where(tk => tk.KisiId == id)
+                    .Include(tk => tk.Dosya)
+                    .Include(tk => tk.TarafTuru)
+                    .Select(tk => new KisiOzetVM.DosyaBaglantisi
+                    {
+                        DosyaId = tk.DosyaId,
+                        DosyaIsmi = tk.Dosya.TamIsim,
+                        KarsiTaraf = tk.KarsiTaraf,
+                        TarafTuru = tk.TarafTuru.Isim
+                    })
+                    .ToList(),
+
+                Belgeler = _vt.KisiBelgeleri
+                    .Where(b => b.KisiId == id)
+                    .Select(b => new KisiOzetVM.Belge
+                    {
+                        Id = b.Id,
+                        Baslik = b.Baslik,
+                        Aciklama = b.Aciklama,
+                        Boyut = Yardimci.OkunabilirDosyaBoyutu(b.Boyut),
+                        Tarih = b.OlusturmaTarihi,
+                        Url = b.Url,
+                        Uzanti = b.Uzanti.ToUpper(),
+                        Ozel = b.OzelMi
+                    })
+                    .ToList()
             })
             .FirstOrDefaultAsync();
 
@@ -356,7 +390,7 @@ public class KisiYoneticisi
         return new() { Deger = vm };
     }
 
-    public async Task<Sonuc> OzetDuzenleAsync(KisiOzetDuzenleVM vm)
+    public async Task<Sonuc<int>> OzetDuzenleAsync(KisiOzetDuzenleVM vm)
     {
         var model = await _vt.Kisiler.FirstOrDefaultAsync(k => k.Id == vm.Id);
 
@@ -373,7 +407,7 @@ public class KisiYoneticisi
             await KisiOzetDuzenleAsync(vm, model);
     }
 
-    private async Task<Sonuc> KisiOzetDuzenleAsync(KisiOzetDuzenleVM vm, Kisi model)
+    private async Task<Sonuc<int>> KisiOzetDuzenleAsync(KisiOzetDuzenleVM vm, Kisi model)
     {
         if (string.IsNullOrWhiteSpace(vm.Isim))
             return new()
@@ -412,10 +446,10 @@ public class KisiYoneticisi
         _vt.Kisiler.Update(model);
         await _vt.SaveChangesAsync();
 
-        return new();
+        return new() { Deger = vm.Id };
     }
 
-    private async Task<Sonuc> SirketOzetDuzenleAsync(KisiOzetDuzenleVM vm, Kisi model)
+    private async Task<Sonuc<int>> SirketOzetDuzenleAsync(KisiOzetDuzenleVM vm, Kisi model)
     {
         if (string.IsNullOrWhiteSpace(vm.SirketIsmi))
             return new()
@@ -448,7 +482,7 @@ public class KisiYoneticisi
         _vt.Kisiler.Update(model);
         await _vt.SaveChangesAsync();
 
-        return new();
+        return new() { Deger = vm.Id };
     }
     #endregion
 
@@ -858,20 +892,20 @@ public class KisiYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-            var belge = new BelgeAraci
+        var belge = new BelgeAraci
+        {
+            Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+        };
+
+        var sonuc = belge.Sil();
+
+        if (!sonuc.BasariliMi)
+            return new()
             {
-                Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = sonuc.HataMesaji
             };
-
-            var sonuc = belge.Sil();
-
-            if (!sonuc.BasariliMi)
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = sonuc.HataMesaji
-                };
 
         var kisiId = model.KisiId;
 

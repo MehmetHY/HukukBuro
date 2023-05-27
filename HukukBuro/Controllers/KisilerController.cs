@@ -119,7 +119,7 @@ public class KisilerController : Controller
             var sonuc = await _ky.OzetDuzenleAsync(vm);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Listele));
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
 
             ModelState.HataEkle(sonuc);
         }
@@ -172,7 +172,7 @@ public class KisilerController : Controller
             var sonuc = await _ky.IlgiliKisiEkleAsync(vm);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
+                return RedirectToAction(nameof(Ozet), new { id = vm.KisiId });
 
             ModelState.HataEkle(sonuc);
         }
@@ -205,7 +205,7 @@ public class KisilerController : Controller
             var sonuc = await _ky.IlgiliKisiDuzenleAsync(vm);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
+                return RedirectToAction(nameof(Ozet), new { id = vm.KisiId });
 
             ModelState.HataEkle(sonuc);
         }
@@ -238,7 +238,7 @@ public class KisilerController : Controller
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);
 
-        return RedirectToAction(nameof(IlgiliKisiler), new { id = vm.KisiId });
+        return RedirectToAction(nameof(Ozet), new { id = vm.KisiId });
     }
     #endregion
 
@@ -282,7 +282,7 @@ public class KisilerController : Controller
             var sonuc = await _ky.BelgeEkleAsync(vm, belge);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Belgeler), new { id = vm.KisiId });
+                return RedirectToAction(nameof(Ozet), new { id = vm.KisiId });
 
             ModelState.HataEkle(sonuc);
         }
@@ -314,7 +314,7 @@ public class KisilerController : Controller
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);
 
-        return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+        return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
     }
 
     [Authorize(Policy = Sabit.Policy.Kisi)]
@@ -342,10 +342,10 @@ public class KisilerController : Controller
             var sonuc = await _ky.BelgeDuzenleAsync(vm, belge);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
 
             ModelState.HataEkle(sonuc);
-        }    
+        }
 
         return View(vm);
     }
