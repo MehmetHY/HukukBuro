@@ -1,36 +1,47 @@
 ﻿@model DuzenleVM
 
-<a asp-action="listele">Geri</a>
-<hr />
 
-<form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Duyuru Düzenle</h1>
 
-    <input asp-for="Id" hidden />
-
-    <div>
-        <label asp-for="Konu"></label>
-        <input asp-for="Konu" />
-        <span asp-validation-for="Konu"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="listele"></a>
     </div>
 
-    <div>
-        <label asp-for="Mesaj"></label>
-        <input asp-for="Mesaj" />
-        <span asp-validation-for="Mesaj"></span>
-    </div>
+    <form method="post" class="df fdc gap1em">
+        <input asp-for="Id" hidden />
+        <div asp-validation-summary="ModelOnly" class="color-danger color-inherit-children"></div>
 
-    <div>
-        <label asp-for="Url"></label>
-        <input asp-for="Url" />
-        <span asp-validation-for="Url"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Konu"></label>
+            <input class="input l" asp-for="Konu" />
+            <span class="color-danger text-right" asp-validation-for="Konu"></span>
+        </div>
 
-    <div>
-        <label asp-for="BildirimGonder"></label>
-        <input asp-for="BildirimGonder" />
-        <span asp-validation-for="BildirimGonder"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Mesaj"></label>
+            <input class="input l" asp-for="Mesaj" />
+            <span class="color-danger text-right" asp-validation-for="Mesaj"></span>
+        </div>
 
-    <button type="submit">Tamam</button>
-</form>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Url"></label>
+            <input class="input l" asp-for="Url" />
+            <span class="color-danger text-right" asp-validation-for="Url"></span>
+        </div>
+
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" asp-for="BildirimGonder" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Bildirim gönder
+            </label>
+            <span class="color-danger text-right"></span>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+</div>
+
