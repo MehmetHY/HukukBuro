@@ -1,10 +1,18 @@
 ﻿@model FotoVM
 
-<a asp-action="Profil">Geri</a>
-<hr />
- 
-<img src="@Model.Url" width="256" height="256" />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Fotoğraf Kaldır</h1>
 
-<form method="post">
-    <button type="submit">Kaldır</button>
-</form>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="profil"></a>
+    </div>
+
+    <div class="input-box pad08em df jcc asc gap1em">
+        <img id="foto" src="@Model.Url" class="square256px max600-w100p max600-hauto" />
+    </div>
+
+    <form class="w100p df fdc jce fg" method="post">
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Kaldır</button>
+    </form>
+</div>
+
