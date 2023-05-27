@@ -10,8 +10,13 @@ public class ListeleVM : SayfaListe<ListeleVM.Oge>
 
         public BaglantiTuru BaglantiTuru { get; set; }
 
+        public int? KisiId { get; set; }
         public string? KisiIsmi { get; set; }
+
+        public int? DosyaId { get; set; }
         public string? DosyaIsmi { get; set; }
+
+        public string? SorumluId { get; set; }
         public string? SorumluIsmi { get; set; }
 
         public string Konu { get; set; }

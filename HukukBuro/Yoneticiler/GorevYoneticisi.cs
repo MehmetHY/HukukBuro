@@ -57,22 +57,24 @@ public class GorevYoneticisi
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
         var q = _vt.Gorevler
+            .Include(g => g.Durum)
+            .Include(g => g.Kisi)
+            .Include(g => g.Dosya)
+            .Include(g => g.Sorumlu)
             .Where(g =>
                 string.IsNullOrWhiteSpace(vm.Arama) ||
-                (
-                    g.Konu.Contains(vm.Arama) ||
-                    g.BitisTarihi.ToString().Contains(vm.Arama) ||
-                    g.OlusturmaTarihi.ToString().Contains(vm.Arama) ||
-                    g.Durum.Isim.Contains(vm.Arama) ||
-                    (g.Aciklama != null && g.Aciklama.Contains(vm.Arama)) ||
-                    (g.KisiId != null && g.Kisi!.Isim!.Contains(vm.Arama)) ||
-                    (g.KisiId != null && g.Kisi!.Soyisim!.Contains(vm.Arama)) ||
-                    (g.DosyaId != null && g.Dosya!.DosyaNo.ToString().Contains(vm.Arama)) ||
-                    (g.DosyaId != null && g.Dosya!.BuroNo.Contains(vm.Arama)) ||
-                    (g.DosyaId != null && g.Dosya!.Konu.Contains(vm.Arama)) ||
-                    (g.SorumluId != null && g.Sorumlu!.Isim.Contains(vm.Arama)) ||
-                    (g.SorumluId != null && g.Sorumlu!.Soyisim.Contains(vm.Arama)) ||
-                    ((BaglantiTuru)g.BaglantiTuru).ToString().Contains(vm.Arama))
+                g.Konu.Contains(vm.Arama) ||
+                g.BitisTarihi.ToString().Contains(vm.Arama) ||
+                g.OlusturmaTarihi.ToString().Contains(vm.Arama) ||
+                g.Durum.Isim.Contains(vm.Arama) ||
+                (g.Aciklama != null && g.Aciklama.Contains(vm.Arama)) ||
+                (g.KisiId != null && g.Kisi!.Isim!.Contains(vm.Arama)) ||
+                (g.KisiId != null && g.Kisi!.Soyisim!.Contains(vm.Arama)) ||
+                (g.DosyaId != null && g.Dosya!.DosyaNo.Contains(vm.Arama)) ||
+                (g.DosyaId != null && g.Dosya!.BuroNo.Contains(vm.Arama)) ||
+                (g.DosyaId != null && g.Dosya!.Konu.Contains(vm.Arama)) ||
+                (g.SorumluId != null && g.Sorumlu!.Isim.Contains(vm.Arama)) ||
+                (g.SorumluId != null && g.Sorumlu!.Soyisim.Contains(vm.Arama))
                 )
             .OrderBy(g => g.DurumId)
             .ThenBy(g => g.BitisTarihi)
@@ -84,8 +86,11 @@ public class GorevYoneticisi
                 Konu = g.Konu,
                 Aciklama = g.Aciklama,
                 Durum = g.Durum.Isim,
+                KisiId = g.KisiId,
                 KisiIsmi = g.KisiId == null ? null : g.Kisi!.TamIsim,
+                DosyaId = g.DosyaId,
                 DosyaIsmi = g.DosyaId == null ? null : g.Dosya!.TamIsim,
+                SorumluId = g.SorumluId,
                 SorumluIsmi = g.SorumluId == null ? null : g.Sorumlu!.TamIsim,
                 BitisTarihi = g.BitisTarihi,
                 OlusturmaTarihi = g.OlusturmaTarihi
@@ -130,7 +135,7 @@ public class GorevYoneticisi
             };
 
         if (vm.SorumluId != null &&
-            !await _vt.Users.AnyAsync(u => u.Id ==  vm.SorumluId))
+            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
             return new()
             {
                 BasariliMi = false,
@@ -145,7 +150,7 @@ public class GorevYoneticisi
             _ => await GenelGoreviEkleAsync(vm)
         };
     }
-        
+
 
     public async Task<Sonuc> GenelGoreviEkleAsync(EkleVM vm)
     {
@@ -177,7 +182,7 @@ public class GorevYoneticisi
             };
 
         if (vm.DosyaId < 1 &&
-            !await _vt.Dosyalar.AnyAsync(d => d.Id ==  vm.DosyaId))
+            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -214,7 +219,7 @@ public class GorevYoneticisi
             };
 
         if (vm.KisiId < 1 &&
-            !await _vt.Kisiler.AnyAsync(k => k.Id ==  vm.KisiId))
+            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
             return new()
             {
                 BasariliMi = false,
@@ -269,7 +274,7 @@ public class GorevYoneticisi
         vm.Kisiler = await KisilerGetirAsync();
         vm.Dosyalar = await DosyalariGetirAsync();
         vm.Durumlar = await GorevDurumlariGetirAsync();
-        vm.Personel= await PersonelGetirAsync();
+        vm.Personel = await PersonelGetirAsync();
 
         return new() { Deger = vm };
     }
@@ -394,7 +399,7 @@ public class GorevYoneticisi
                 Id = g.Id,
                 BaglantiTuru = (BaglantiTuru)g.BaglantiTuru,
                 KisiIsmi = g.KisiId == null ? null : g.Kisi!.TamIsim,
-                DosyaIsmi=  g.DosyaId == null ? null : g.Dosya!.TamIsim,
+                DosyaIsmi = g.DosyaId == null ? null : g.Dosya!.TamIsim,
                 SorumluIsmi = g.SorumluId == null ? null : g.Sorumlu!.TamIsim,
                 Konu = g.Konu,
                 Aciklama = g.Aciklama,
