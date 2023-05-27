@@ -1,76 +1,124 @@
 ﻿@model SilVM
 
-<a asp-action="listele">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Finans İşlemi Sil</h1>
 
-<hr />
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="listele"></a>
+    </div>
 
-<div>
-    <strong>@Model.Miktar TL</strong>
-    &nbsp;
-    @Model.IslemTuru.DisplayName()
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Miktar</span>
+                <span class="color-active l text-wrap">@Model.Miktar</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">İşlem Türü</span>
+                <span class="tag alternative">@Model.IslemTuru.DisplayName()</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Ödeme durumu</span>
+
+                @if (Model.Odendi)
+                {
+                    <span class="tag success">Ödendi</span>
+                }
+                else
+                {
+                    <span class="tag danger">Ödenmedi</span>
+                }
+
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Makbuz</span>
+
+                @if (Model.MakbuzKesildi)
+                {
+                    <span class="tag success">Kesildi</span>
+                }
+                else
+                {
+                    <span class="tag danger">Kesilmedi</span>
+                }
+            </div>
+
+            @if (Model.MakbuzKesildi)
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Makbuz No</span>
+                    <span class="color-active l text-wrap">@Model.MakbuzNo</span>
+                </div>
+
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Makbuz Tarihi</span>
+                    <span class="color-active l text-wrap">@Model.MakbuzTarihi</span>
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Personel))
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Personel Bağlantısı</span>
+                    <span class="color-active l text-wrap">@Model.Personel</span>
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Dosya))
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Dosya Bağlantısı</span>
+                    <span class="color-active l text-wrap">@Model.Dosya</span>
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Kisi))
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Kişi Bağlantısı</span>
+                    <span class="color-active l text-wrap">@Model.Kisi</span>
+                </div>
+            }
+
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            @if (Model.Odendi)
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Ödeme Tarih</span>
+                    <span class="color-active l text-wrap">@Model.OdemeTarihi</span>
+                </div>
+            }
+            else
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Son Ödeme Tarih</span>
+                    <span class="color-active l text-wrap">@Model.SonOdemeTarihi</span>
+                </div>
+            }
+
+
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.Aciklama</span>
+            </div>
+
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Sorumlu</span>
+                <span class="color-active l text-wrap">@Model.IslemYapan</span>
+            </div>
+
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Oluşturma Tarih</span>
+                <span class="color-active l text-wrap">@Model.OdemeTarihi</span>
+            </div>
+        </div>
+    </div>
+
+    <form class="w100p df fdc jce fg" method="post">
+        <input asp-for="Id" hidden />
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Sil</button>
+    </form>
+
 </div>
 
-@if (Model.Odendi)
-{
-    <div>
-        Ödendi
-        &nbsp;
-        Ödeme Tarihi: @Model.OdemeTarihi
-    </div>
-
-    @if (Model.MakbuzKesildi)
-    {
-        <div>
-            Makbuz No: @Model.MakbuzNo
-            &nbsp;
-            Makbuz Tarihi: @Model.MakbuzTarihi
-        </div>
-    }
-}
-else
-{
-    <span>Ödenmedi &nbsp;</span>
-    <span>Son Ödeme Tarihi: @Model.SonOdemeTarihi</span>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.IslemYapan))
-{
-    <div>
-        İşlem yapan: @Model.IslemYapan
-    </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.Kisi))
-{
-    <div>
-        Kişi: @Model.Kisi
-    </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.Dosya))
-{
-    <div>
-        Dosya: @Model.Dosya
-    </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.Personel))
-{
-    <div>
-        Personel: @Model.Personel
-    </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.Aciklama))
-{
-    <div>
-        Açıklama: @Model.Aciklama
-    </div>
-}
-
-
-<hr />
-<form method="post">
-    <input asp-for="Id" hidden />
-    <button type="submit">Sil</button>
-</form>
