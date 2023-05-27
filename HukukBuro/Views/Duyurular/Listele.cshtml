@@ -1,37 +1,58 @@
 ﻿@model ListeleVM
 
-<a asp-action="ekle">Yeni duyuru ekle</a>
-&nbsp;
-<partial name="_Arama" model="@Model" />
 
-@foreach (var oge in Model.Ogeler)
-{
-    <hr />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Duyuru</h1>
 
-    <div>
-        <div>
-            <strong>@oge.Konu</strong>
-        </div>
-        <div>
-            @oge.Mesaj
-        </div>
-        <div>
-            @oge.Tarih.ToString()
-        </div>
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <a asp-action="ekle" class="btn2 success gap05em">
+            <span class="fa fa-plus color-inherit"></span>
+            <span class="color-inherit max400-hidden">Yeni duyuru ekle</span>
+        </a>
 
-        <div>
-            @if (!string.IsNullOrWhiteSpace(oge.Url))
-            {
-                <a href="@oge.Url">Göster</a>
-                <span>&nbsp;</span>
-            }
-
-            <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
-            &nbsp;
-            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
-        </div>
+        <partial name="_Arama" model="@Model" />
     </div>
-}
 
-<hr />
-<partial name="_Sayfa" model="@Model" />
+    <div class="list-container mart1em">
+
+        @foreach (var duyuru in Model.Ogeler)
+        {
+            <div class="list-item activator-hover df fdc gap1em">
+
+                <div class="df jcsb max500-fdcr max500-gap05rem">
+                    <div class="df fwrap gap1em aic">
+                        <span class="color-active bold l">@duyuru.Konu</span>
+                    </div>
+
+                    <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+
+                        @if (!string.IsNullOrWhiteSpace(duyuru.Url))
+                        {
+                            <a title="Bağlantıya git" href="@duyuru.Url" class="ibtn1 primary fa fa-link"></a>
+                        }
+
+                        <a title="Düzenle" asp-action="duzenle" asp-route-id="@duyuru.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                        <a title="Sil" asp-action="sil" asp-route-id="@duyuru.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                    </div>
+                </div>
+
+                <div class="df aic gap05em">
+                    <span class="bold">Tarih:</span>
+                    <span>@duyuru.Tarih</span>
+                </div>
+
+                <div class="df aic fwrap gap05em">
+                    <span class="bold">Mesaj:</span>
+                    <span class="text-wrap">@duyuru.Mesaj</span>
+                </div>
+
+
+            </div>
+        }
+
+    </div>
+
+    <partial name="_Sayfa" model="@Model" />
+</div>
+
+
