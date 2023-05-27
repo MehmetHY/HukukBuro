@@ -1,81 +1,95 @@
 ﻿@model KisilerEkleVM
 
-<form method="post" asp-action="ekle">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Kişi Ekle</h1>
 
-    <div>
-        <label asp-for="TuzelMi"></label>
-        <input asp-for="TuzelMi" />
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="listele"></a>
     </div>
 
-    <div>
-        <label asp-for="Isim"></label>
-        <input asp-for="Isim" />
-        <span asp-validation-for="Isim"></span>
-    </div>
+    <form method="post" class="df fdc gap1em">
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
 
-    <div>
-        <label asp-for="Soyisim"></label>
-        <input asp-for="Soyisim" />
-        <span asp-validation-for="Soyisim"></span>
-    </div>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" id="tuzel-input" asp-for="TuzelMi" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Tüzel mi?
+            </label>
+            <span class="color-danger text-right" asp-validation-for="TuzelMi"></span>
+        </div>
 
-    <div>
-        <label asp-for="TcKimlikNo"></label>
-        <input asp-for="TcKimlikNo" />
-        <span asp-validation-for="TcKimlikNo"></span>
-    </div>
+        <div class="input-box df fdc birey">
+            <label class="s color-inactive" asp-for="Isim"></label>
+            <input class="input l" asp-for="Isim" />
+            <span class="color-danger text-right" asp-validation-for="Isim"></span>
+        </div>
 
-    <div>
-        <label asp-for="SirketIsmi"></label>
-        <input asp-for="SirketIsmi" />
-        <span asp-validation-for="SirketIsmi"></span>
-    </div>
+        <div class="input-box df fdc birey">
+            <label class="s color-inactive" asp-for="Soyisim"></label>
+            <input class="input l" asp-for="Soyisim" />
+            <span class="color-danger text-right" asp-validation-for="Soyisim"></span>
+        </div>
 
-    <div>
-        <label asp-for="VergiDairesi"></label>
-        <input asp-for="VergiDairesi" />
-        <span asp-validation-for="VergiDairesi"></span>
-    </div>
+        <div class="input-box df fdc birey">
+            <label class="s color-inactive" asp-for="TcKimlikNo"></label>
+            <input class="input l" asp-for="TcKimlikNo" />
+            <span class="color-danger text-right" asp-validation-for="TcKimlikNo"></span>
+        </div>
 
-    <div>
-        <label asp-for="VergiNo"></label>
-        <input asp-for="VergiNo" />
-        <span asp-validation-for="VergiNo"></span>
-    </div>
+        <div class="input-box df fdc sirket">
+            <label class="s color-inactive" asp-for="SirketIsmi"></label>
+            <input class="input l" asp-for="SirketIsmi" />
+            <span class="color-danger text-right" asp-validation-for="SirketIsmi"></span>
+        </div>
 
-    <div>
-        <label asp-for="Telefon"></label>
-        <input asp-for="Telefon" />
-        <span asp-validation-for="Telefon"></span>
-    </div>
+        <div class="input-box df fdc sirket">
+            <label class="s color-inactive" asp-for="VergiNo"></label>
+            <input class="input l" asp-for="VergiNo" />
+            <span class="color-danger text-right" asp-validation-for="VergiNo"></span>
+        </div>
 
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
-    </div>
+        <div class="input-box df fdc sirket">
+            <label class="s color-inactive" asp-for="VergiDairesi"></label>
+            <input class="input l" asp-for="VergiDairesi" />
+            <span class="color-danger text-right" asp-validation-for="VergiDairesi"></span>
+        </div>
 
-    <div>
-        <label asp-for="Adres"></label>
-        <textarea asp-for="Adres"></textarea>
-        <span asp-validation-for="Adres"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Telefon"></label>
+            <input class="input l" asp-for="Telefon" />
+            <span class="color-danger text-right" asp-validation-for="Telefon"></span>
+        </div>
 
-    <div>
-        <label asp-for="BankaHesapBilgisi"></label>
-        <textarea asp-for="BankaHesapBilgisi"></textarea>
-        <span asp-validation-for="BankaHesapBilgisi"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Email"></label>
+            <input class="input l" asp-for="Email" />
+            <span class="color-danger text-right" asp-validation-for="Email"></span>
+        </div>
 
-    <div>
-        <label asp-for="EkBilgi"></label>
-        <textarea asp-for="EkBilgi"></textarea>
-        <span asp-validation-for="EkBilgi"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Adres"></label>
+            <textarea class="input l" rows="2" asp-for="Adres"></textarea>
+            <span class="color-danger text-right" asp-validation-for="Adres"></span>
+        </div>
 
-    <div>
-        <a asp-action="Listele">Geri</a>
-        <button type="submit">Tamam</button>
-    </div>
-</form>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="BankaHesapBilgisi"></label>
+            <textarea class="input l" rows="2" asp-for="BankaHesapBilgisi"></textarea>
+            <span class="color-danger text-right" asp-validation-for="BankaHesapBilgisi"></span>
+        </div>
+
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="EkBilgi"></label>
+            <textarea class="input l" rows="2" asp-for="EkBilgi"></textarea>
+            <span class="color-danger text-right" asp-validation-for="EkBilgi"></span>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+    <script src="~/js/kisiform.js"></script>
+</div>
+
