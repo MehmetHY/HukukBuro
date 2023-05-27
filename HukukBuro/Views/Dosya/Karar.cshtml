@@ -1,175 +1,172 @@
 ﻿@model KararVM
 
-<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
-&nbsp;
-<a asp-action="kararduzenle" asp-route-id="@Model.DosyaId">Düzenle</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Karar</h1>
 
-<hr />
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.DosyaId"></a>
+        <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="kararduzenle" asp-route-id="@Model.DosyaId"></a>
+    </div>
 
-<h3>Karar Bilgileri</h3>
-<div>
-    <strong>Karar No</strong>
-    &nbsp;
-    @Model.KararBilgileri.KararNo
-</div>
-<div>
-    <strong>Karar Tarihi</strong>
-    &nbsp;
-    @Model.KararBilgileri.KararTarihi
-</div>
-<div>
-    <strong>Tebliğ Tarihi</strong>
-    &nbsp;
-    @Model.KararBilgileri.TebligTarihi
-</div>
-<div>
-    <strong>Karar Özeti</strong>
-    &nbsp;
-    @Model.KararBilgileri.KararOzeti
+    <h3>Karar Bilgileri</h3>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar No</span>
+                <span class="color-active l text-wrap">@Model.KararBilgileri.KararNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Özeti</span>
+                <span class="color-active l text-wrap">@Model.KararBilgileri.KararOzeti</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Tarihi</span>
+                <span class="color-active l text-wrap">@Model.KararBilgileri.KararTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Tebliğ Tarihi</span>
+                <span class="color-active l text-wrap">@Model.KararBilgileri.TebligTarihi</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mart2em">Bölge Adliye Mahkemesi Bilgileri</h3>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar No</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.KararNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Özeti</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.KararOzeti</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Mahkeme</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.Mahkeme</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Esas No</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.EsasNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.Aciklama</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Tarihi</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.KararTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Tebliğ Tarihi</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.TebligTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Gönderme Tarihi</span>
+                <span class="color-active l text-wrap">@Model.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mart2em">Temyiz Bilgileri</h3>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar No</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.KararNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Özeti</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.KararOzeti</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Mahkeme</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.Mahkeme</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Esas No</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.EsasNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.Aciklama</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Tarihi</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.KararTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Tebliğ Tarihi</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.TebligTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Gönderme Tarihi</span>
+                <span class="color-active l text-wrap">@Model.TemyizBilgileri.GondermeTarihi</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mart2em">Karar Düzeltme Bilgileri</h3>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar No</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.KararNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Özeti</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.KararOzeti</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Mahkeme</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.Mahkeme</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Esas No</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.EsasNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.Aciklama</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Tarihi</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.KararTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Tebliğ Tarihi</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.TebligTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Gönderme Tarihi</span>
+                <span class="color-active l text-wrap">@Model.KararDuzeltmeBilgileri.GondermeTarihi</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mart2em">Kesinleşme Bilgileri</h3>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karar Özeti</span>
+                <span class="color-active l text-wrap">@Model.KesinlesmeBilgileri.KararOzeti</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Kesinleşme Tarihi</span>
+                <span class="color-active l text-wrap">@Model.KesinlesmeBilgileri.KesinlesmeTarihi</span>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<hr />
-
-<h3>Bölge Adliye Mahkemesi Bilgileri</h3>
-<div>
-    <strong>Karar No</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.KararNo
-</div>
-<div>
-    <strong>Karar Tarihi</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.KararTarihi
-</div>
-<div>
-    <strong>Tebliğ Tarihi</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.TebligTarihi
-</div>
-<div>
-    <strong>Karar Özeti</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.KararOzeti
-</div>
-<div>
-    <strong>Mahkeme</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.Mahkeme
-</div>
-<div>
-    <strong>Gönderme Tarihi</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi
-</div>
-<div>
-    <strong>Açıklama</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.Aciklama
-</div>
-<div>
-    <strong>Esas No</strong>
-    &nbsp;
-    @Model.BolgeAdliyeMahkemesiBilgileri.EsasNo
-</div>
-
-<hr />
-
-<h3>Temyiz Bilgileri</h3>
-<div>
-    <strong>Karar No</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.KararNo
-</div>
-<div>
-    <strong>Karar Tarihi</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.KararTarihi
-</div>
-<div>
-    <strong>Tebliğ Tarihi</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.TebligTarihi
-</div>
-<div>
-    <strong>Karar Özeti</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.KararOzeti
-</div>
-<div>
-    <strong>Mahkeme</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.Mahkeme
-</div>
-<div>
-    <strong>Gönderme Tarihi</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.GondermeTarihi
-</div>
-<div>
-    <strong>Açıklama</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.Aciklama
-</div>
-<div>
-    <strong>Esas No</strong>
-    &nbsp;
-    @Model.TemyizBilgileri.EsasNo
-</div>
-
-<hr />
-
-<h3>Karar Düzeltme Bilgileri</h3>
-<div>
-    <strong>Karar No</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.KararNo
-</div>
-<div>
-    <strong>Karar Tarihi</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.KararTarihi
-</div>
-<div>
-    <strong>Tebliğ Tarihi</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.TebligTarihi
-</div>
-<div>
-    <strong>Karar Özeti</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.KararOzeti
-</div>
-<div>
-    <strong>Mahkeme</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.Mahkeme
-</div>
-<div>
-    <strong>Gönderme Tarihi</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.GondermeTarihi
-</div>
-<div>
-    <strong>Açıklama</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.Aciklama
-</div>
-<div>
-    <strong>Esas No</strong>
-    &nbsp;
-    @Model.KararDuzeltmeBilgileri.EsasNo
-</div>
-
-<hr />
-
-<h3>Kesinleşme Bilgileri</h3>
-<div>
-    <strong>Kesinleşme Tarihi</strong>
-    &nbsp;
-    @Model.KesinlesmeBilgileri.KesinlesmeTarihi
-</div>
-<div>
-    <strong>Karar Özeti</strong>
-    &nbsp;
-    @Model.KesinlesmeBilgileri.KararOzeti
-</div>
