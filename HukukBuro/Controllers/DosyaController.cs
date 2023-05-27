@@ -537,7 +537,7 @@ public class DosyaController : Controller
             var sonuc = await _dy.BelgeEkleAsync(vm, belge);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
 
             ModelState.HataEkle(sonuc);
         }
@@ -569,7 +569,7 @@ public class DosyaController : Controller
             var sonuc = await _dy.BelgeDuzenleAsync(vm, belge);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+                return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
 
             ModelState.HataEkle(sonuc);
         }
@@ -601,7 +601,7 @@ public class DosyaController : Controller
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);
 
-        return RedirectToAction(nameof(Belgeler), new { id = sonuc.Deger });
+        return RedirectToAction(nameof(Ozet), new { id = sonuc.Deger });
     }
     #endregion
 }

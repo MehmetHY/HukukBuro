@@ -256,7 +256,10 @@ public class DosyaYoneticisi
                 DosyaDurumu = d.DosyaDurumu.Isim,
                 DosyaKategorisi = d.DosyaKategorisi.Isim,
                 DosyaNo = d.DosyaNo,
-                DosyaTuru = d.DosyaTuru.Isim
+                DosyaTuru = d.DosyaTuru.Isim,
+                Mahkeme = d.Mahkeme,
+                AcilisTarihi = d.AcilisTarihi,
+                OlusturmaTarihi = d.OlusturmaTarihi
             })
             .FirstOrDefaultAsync();
 

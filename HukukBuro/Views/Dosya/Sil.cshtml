@@ -1,55 +1,62 @@
 ﻿@model SilVM
 
-<a asp-action="listele">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Dosya Sil</h1>
 
-<hr />
-
-<div>
-    <strong>Dosya No:</strong>
-    &nbsp;
-    @Model.DosyaNo
-</div>
-
-<div>
-    <strong>Büro No:</strong>
-    &nbsp;
-    @Model.BuroNo
-</div>
-
-<div>
-    <strong>Konu:</strong>
-    &nbsp;
-    @Model.Konu
-</div>
-
-@if (!string.IsNullOrWhiteSpace(Model.Aciklama))
-{
-    <div>
-        <strong>Açıklama:</strong>
-        &nbsp;
-        @Model.DosyaNo
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.Id"></a>
     </div>
-}
 
-<div>
-    <strong>Dosya Türü:</strong>
-    &nbsp;
-    @Model.DosyaNo
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Dosya No</span>
+                <span class="color-active l text-wrap">@Model.DosyaNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Büro No</span>
+                <span class="color-active l text-wrap">@Model.BuroNo</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Konu</span>
+                <span class="color-active l text-wrap">@Model.Konu</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.Aciklama</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Dosya Türü</span>
+                <span class="color-active l text-wrap tag alternative">@Model.DosyaTuru</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Dosya Kategorisi</span>
+                <span class="color-active l text-wrap tag alternative">@Model.DosyaKategorisi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Dosya Durumu</span>
+                <span class="color-active l text-wrap tag alternative">@Model.DosyaDurumu</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Mahkeme</span>
+                <span class="color-active l text-wrap">@Model.Mahkeme</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açılış Tarihi</span>
+                <span class="color-active l text-wrap">@Model.AcilisTarihi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Oluşturma Tarihi</span>
+                <span class="color-active l text-wrap">@Model.OlusturmaTarihi</span>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="w100p">
+        <input asp-for="Id" hidden />
+        <button type="submit" class="w100p btn1 danger xxl mart1em">Sil</button>
+    </form>
 </div>
 
-<div>
-    <strong>Dosya Kategorisi:</strong>
-    &nbsp;
-    @Model.DosyaNo
-</div>
-
-<div>
-    <strong>Dosya Durumu:</strong>
-    &nbsp;
-    @Model.DosyaNo
-</div>
-
-<form method="post">
-    <input asp-for="Id" hidden />
-    <button type="submit">Sil</button>
-</form>

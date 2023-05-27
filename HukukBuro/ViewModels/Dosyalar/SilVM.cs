@@ -19,4 +19,10 @@ public class SilVM
     public string DosyaKategorisi { get; set; }
 
     public string DosyaDurumu { get; set; }
+
+    public string? Mahkeme { get; set; }
+
+    public DateTime AcilisTarihi { get; set; }
+
+    public DateTime OlusturmaTarihi { get; set; }
 }
