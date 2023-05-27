@@ -923,6 +923,8 @@ public class DosyaYoneticisi
         => await _veritabani.Durusmalar
         .Where(d => d.DosyaId == id)
         .Include(d => d.AktiviteTuru)
+        .OrderBy(d => d.Tamamlandi)
+        .ThenByDescending(d => d.Tarih)
         .Select(d => new OzetVM.Durusma
         {
             Id = d.Id,

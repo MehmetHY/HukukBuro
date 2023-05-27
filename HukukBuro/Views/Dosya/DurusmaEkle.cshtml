@@ -1,37 +1,47 @@
 ﻿@model DurusmaEkleVM
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Duruşma Ekle</h1>
 
-<a asp-action="Ozet" asp-route-id="@Model.DosyaId">Geri</a>
-
-<hr />
-
-<form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <input asp-for="DosyaId" hidden />
-
-    <div>
-        <label asp-for="AktiviteTuruId"></label>
-        <select asp-for="AktiviteTuruId" asp-items="@Model.AktiviteTurleri"></select>
-        <span asp-validation-for="AktiviteTuruId"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.DosyaId"></a>
     </div>
 
-    <div>
-        <label asp-for="Tarih"></label>
-        <input asp-for="Tarih" />
-        <span asp-validation-for="Tarih"></span>
-    </div>
+    <form method="post" class="df fdc jcsb gap1em fg">
+        <input asp-for="DosyaId" hidden />
+        <div asp-validation-summary="ModelOnly" class="color-danger color-inherit-children"></div>
 
-    <div>
-        <label asp-for="Aciklama"></label>
-        <input asp-for="Aciklama" />
-        <span asp-validation-for="Aciklama"></span>
-    </div>
+        <div class="df fdc gap1em">
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="AktiviteTuruId"></label>
+                <select class="input l" asp-for="AktiviteTuruId" asp-items="@Model.AktiviteTurleri"></select>
+                <span asp-validation-for="AktiviteTuruId" class="color-danger text-right"></span>
+            </div>
 
-    <div>
-        <label asp-for="Tamamlandi"></label>
-        <input asp-for="Tamamlandi" />
-        <span asp-validation-for="Tamamlandi"></span>
-    </div>
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="Tarih"></label>
+                <input class="input l" asp-for="Tarih" />
+                <span asp-validation-for="Tarih" class="color-danger text-right"></span>
+            </div>
 
-    <button type="submit">Tamam</button>
-</form>
+            <div class="input-box pad1rem df fdc">
+                <label class="checkbox l">
+                    <input asp-for="Tamamlandi" />
+                    <span class="checkbox-box">
+                        <span class="checkbox-mark"></span>
+                    </span>
+                    Tamamlandı mı?
+                </label>
+                <span class="color-danger text-right" asp-validation-for="Tamamlandi"></span>
+            </div>
+
+            <div class="input-box df fdc">
+                <label class="s color-inactive" asp-for="Aciklama"></label>
+                <textarea class="input l" rows="2" asp-for="Aciklama"></textarea>
+                <span class="color-danger text-right" asp-validation-for="Aciklama"></span>
+            </div>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+</div>
