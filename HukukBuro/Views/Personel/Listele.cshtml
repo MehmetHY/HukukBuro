@@ -1,41 +1,57 @@
 ﻿@model ListeleVM
 
-<partial name="_Arama" model="@Model" />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Personel</h1>
 
-@foreach (var oge in Model.Ogeler)
-{
-    <hr />
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <span></span>
 
-    <div>
-        <div>
-            <img src="@oge.FotoUrl" width="64" height="64" />
-            &nbsp;
-            <strong>@oge.TamIsim</strong>
-            &nbsp;
-            (@oge.Anarol)
-            &nbsp;
-            <a asp-action="yetkiduzenle" asp-route-id="@oge.Id">Yetkiler</a>
-            &nbsp;
-            <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
-        </div>
-        <div>
-            Email:
-            &nbsp;
-            @oge.Email
-        </div>
-        <div>
-            <small>İlgili Finans: @oge.IlgiliFinansIslemiSayisi</small>
-            &nbsp;
-            <small>Sorumlu Finans: @oge.SorumluFinansIslemiSayisi</small>
-            &nbsp;
-            <small>Sorumlu Dosya: @oge.SorumluDosyaSayisi</small>
-            &nbsp;
-            <small>Sorumlu Görev: @oge.SorumluGorevSayisi</small>
-            &nbsp;
-            <small>Sorumlu Randevu: @oge.SorumluRandevuSayisi</small>
-        </div>
+        <partial name="_Arama" model="@Model" />
     </div>
-}
 
-<hr />
-<partial name="_Sayfa" model="@Model" />
+    <div class="list-container mart1em">
+
+        @foreach (var personel in Model.Ogeler)
+        {
+            <div class="list-item activator-hover">
+
+                <div class="df jcsb max500-fdcr max500-gap05rem">
+                    <div class="df fwrap gap1em aic">
+                        <img class="square64px" src="@personel.FotoUrl" />
+                        <a asp-action="profil" asp-route-id="@personel.Id" class="color-active color-hover-primary bold l">@personel.TamIsim</a>
+                        <span class="tag alternative">@personel.Anarol</span>
+                    </div>
+
+                    <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                        <a title="Profile Git" asp-action="profil" asp-route-id="@personel.Id" class="ibtn1 primary fa fa-user normal"></a>
+                    </div>
+                </div>
+
+                <div class="df jcs aic gap1em mart08rem max600-hidden">
+                    <div title="Sorumlu Dosyalar" class="cursordefault">
+                        <span class="fa fa-folder normal"></span>
+                        <span class="">@personel.SorumluDosyaSayisi</span>
+                    </div>
+                    <div title="Sorumlu Görevler" class="cursordefault">
+                        <span class="fa-regular fa-clipboard"></span>
+                        <span class="">@personel.SorumluGorevSayisi</span>
+                    </div>
+                    <div title="Sorumlu Randevular" class="cursordefault">
+                        <span class="fa fa-calendar normal"></span>
+                        <span class="">@personel.SorumluRandevuSayisi</span>
+                    </div>
+                    <div title="Sorumlu Finans İşlemleri" class="cursordefault">
+                        <span class="fa fa-money-bill"></span>
+                        <span class="">@personel.SorumluFinansIslemiSayisi</span>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+    <partial name="_Sayfa" model="@Model" />
+</div>
+
+
