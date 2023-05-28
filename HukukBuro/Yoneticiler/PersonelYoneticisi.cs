@@ -237,8 +237,10 @@ public class PersonelYoneticisi
             .Select(u => new ProfilVM
             {
                 Id = u.Id,
-                TamIsim = u.TamIsim,
+                Isim = u.Isim,
+                Soyisim = u.Soyisim,
                 FotoUrl = u.FotoUrl,
+                Telefon = u.PhoneNumber,
                 Email = email,
 
                 Anarol = _veriTabani.UserClaims
@@ -246,66 +248,91 @@ public class PersonelYoneticisi
                         uc.UserId == u.Id &&
                         uc.ClaimType == Sabit.AnaRol.Type)
                     .Select(uc => uc.ClaimValue)
-                    .First()!
+                    .First()!,
+
+                FinansIslemleri = _veriTabani.FinansIslemleri
+                    .Where(f => f.IslemYapanId == u.Id)
+                    .OrderByDescending(f => f.OlusturmaTarihi)
+                    .Include(f => f.IslemYapan)
+                    .Include(f => f.Kisi)
+                    .Include(f => f.Dosya)
+                    .Include(f => f.Personel)
+                    .Select(f => new ProfilVM.FinansIslemi
+                    {
+                        Id = f.Id,
+                        Aciklama = f.Aciklama,
+                        IslemTuru = ((ViewModels.FinansIslemleri.IslemTuru)f.IslemTuru).DisplayName(),
+                        KisiId = f.KisiId,
+                        Kisi = f.KisiId == null ? null : f.Kisi!.TamIsim,
+                        DosyaId = f.DosyaId,
+                        Dosya = f.DosyaId == null ? null : f.Dosya!.TamIsim,
+                        PersonelId = f.PersonelId,
+                        Personel = f.PersonelId == null ? null : f.Personel!.TamIsim,
+                        MakbuzKesildi = f.MakbuzKesildiMi,
+                        MakbuzNo = f.MakbuzNo,
+                        MakbuzTarihi = f.MakbuzTarihi,
+                        Miktar = $"{f.Miktar:F2} TL",
+                        OdemeTarihi = f.OdemeTarhi,
+                        Odendi = f.Odendi,
+                        SonOdemeTarihi = f.SonOdemeTarhi
+                    })
+                    .ToList(),
+
+                Dosyalar = _veriTabani.Dosyalar
+                    .Where(d => d.SorumluPersonel.Any(sp => sp.PersonelId == u.Id))
+                    .OrderByDescending(d => d.OlusturmaTarihi)
+                    .Include(d => d.DosyaDurumu)
+                    .Include(d => d.DosyaTuru)
+                    .Include(d => d.DosyaKategorisi)
+                    .Select(d => new ProfilVM.Dosya
+                    {
+                        Id = d.Id,
+                        DosyaDurumu = d.DosyaDurumu.Isim,
+                        DosyaKategorisi = d.DosyaKategorisi.Isim,
+                        DosyaTuru = d.DosyaTuru.Isim,
+                        TamIsim = d.TamIsim
+                    })
+                    .ToList(),
+
+                Gorevler = _veriTabani.Gorevler
+                    .Where(g => g.SorumluId == u.Id)
+                    .OrderByDescending(r => r.OlusturmaTarihi)
+                    .Include(g => g.Dosya)
+                    .Include(g => g.Kisi)
+                    .Include(g => g.Durum)
+                    .Select(g => new ProfilVM.Gorev
+                    {
+                        Id = g.Id,
+                        Aciklama = g.Aciklama,
+                        BaglantiTuru = ((ViewModels.Gorevler.BaglantiTuru)g.BaglantiTuru).DisplayName(),
+                        BitisTarihi = g.BitisTarihi,
+                        DosyaId = g.DosyaId,
+                        Dosya = g.DosyaId == null ? null : g.Dosya!.TamIsim,
+                        Durum = g.Durum.Isim,
+                        KisiId = g.KisiId,
+                        Kisi = g.KisiId == null ? null : g.Kisi!.TamIsim,
+                        Konu = g.Konu,
+                        OlusturmaTarihi = g.OlusturmaTarihi
+                    })
+                    .ToList(),
+
+                Randevular = _veriTabani.Randevular
+                    .Where(r => r.SorumluId == u.Id)
+                    .OrderByDescending(r => r.OlusturmaTarihi)
+                    .Include(r => r.Kisi)
+                    .Select(r => new ProfilVM.Randevu
+                    {
+                        Aciklama = r.Aciklama,
+                        Id = r.Id,
+                        Kisi = r.Kisi.TamIsim,
+                        KisiId = r.KisiId,
+                        Konu = r.Konu,
+                        Tamamlandi = r.TamamlandiMi,
+                        Tarih = r.Tarih
+                    })
+                    .ToList()
             })
             .FirstAsync();
-
-        vm.FinansIslemleri = await _veriTabani.FinansIslemleri
-            .Where(f => f.IslemYapanId == vm.Id)
-            .OrderByDescending(f => f.OlusturmaTarihi)
-            .Select(f => new ProfilVM.FinansIslemi
-            {
-                Id = f.Id,
-                Miktar = f.Miktar.ToString("F2"),
-                IslemTuru = ((ViewModels.FinansIslemleri.IslemTuru)f.IslemTuru).DisplayName(),
-                Odendi = f.Odendi,
-                OdemeTarihi = f.Odendi ? f.OdemeTarhi!.Value : f.SonOdemeTarhi!.Value
-            })
-            .ToListAsync();
-
-        vm.Dosyalar = await _veriTabani.Dosyalar
-            .Include(d => d.SorumluPersonel)
-            .Include(d => d.DosyaDurumu)
-            .Include(d => d.DosyaKategorisi)
-            .Include(d => d.DosyaTuru)
-            .Where(d => d.SorumluPersonel.Any(sp => sp.PersonelId == vm.Id))
-            .OrderByDescending(d => d.OlusturmaTarihi)
-            .Select(d => new ProfilVM.Dosya
-            {
-                Id = d.Id,
-                TamIsim = d.TamIsim,
-                DosyaDurumu = d.DosyaDurumu.Isim,
-                DosyaKategorisi = d.DosyaKategorisi.Isim,
-                DosyaTuru = d.DosyaTuru.Isim
-            })
-            .ToListAsync();
-
-        vm.Gorevler = await _veriTabani.Gorevler
-            .Where(g => g.SorumluId == vm.Id)
-            .Include(g => g.Durum)
-            .OrderByDescending(g => g.OlusturmaTarihi)
-            .Select(g => new ProfilVM.Gorev
-            {
-                Id = g.Id,
-                Konu = g.Konu,
-                Durum = g.Durum.Isim,
-                BitisTarihi = g.BitisTarihi
-            })
-            .ToListAsync();
-
-        vm.Randevular = await _veriTabani.Randevular
-            .Where(r => r.SorumluId == vm.Id)
-            .Include(r => r.Kisi)
-            .OrderByDescending(r => r.OlusturmaTarihi)
-            .Select(r => new ProfilVM.Randevu
-            {
-                Id = r.Id,
-                Kisi = r.Kisi.TamIsim,
-                Konu = r.Konu,
-                Tamamlandi = r.TamamlandiMi,
-                Tarih = r.Tarih
-            })
-            .ToListAsync();
 
         return vm;
     }
