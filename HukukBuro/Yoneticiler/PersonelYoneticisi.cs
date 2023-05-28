@@ -616,6 +616,40 @@ public class PersonelYoneticisi
         return new() { Deger = vm };
     }
 
+    public async Task<Sonuc<SilVM>> SilVMGetirAsync(string id)
+    {
+        var vm = await _veriTabani.Users
+            .Where(u => u.Id == id)
+            .Select(u => new SilVM
+            {
+                Email = u.Email!,
+
+                Anarol = _veriTabani.UserClaims
+                    .Where(uc =>
+                        uc.ClaimType == Sabit.AnaRol.Type &&
+                        uc.UserId == u.Id)
+                    .Select(uc => uc.ClaimValue)
+                    .First()!,
+
+                Id = u.Id,
+                Isim = u.Isim,
+                Soyisim = u.Soyisim,
+                Telefon = u.PhoneNumber,
+                FotoUrl = u.FotoUrl
+            })
+            .FirstOrDefaultAsync();
+
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        return new() { Deger = vm };
+    }
+
     public async Task<Sonuc> SilAsync(string id)
     {
         var model = await _veriTabani.Users.FirstOrDefaultAsync(u => u.Id == id);

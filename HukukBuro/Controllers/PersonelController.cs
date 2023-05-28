@@ -219,7 +219,7 @@ public class PersonelController : Controller
     [HttpGet]
     public async Task<IActionResult> Sil(string id)
     {
-        var sonuc = await _yonetici.OzetVMGetirAsync(id);
+        var sonuc = await _yonetici.SilVMGetirAsync(id);
 
         if (!sonuc.BasariliMi)
             return View(Sabit.View.Hata, sonuc);

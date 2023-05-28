@@ -1,34 +1,46 @@
-﻿@model OzetVM
+﻿@model SilVM
 
-<a asp-action="listele">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Personel Sil</h1>
 
-<hr />
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="profil" asp-route-id="@Model.Id"></a>
+    </div>
 
-<div>
-    <img src="@Model.FotoUrl" width="64" height="64" />
-    &nbsp;
-    <strong>@Model.TamIsim</strong>
-    &nbsp;
-    (@Model.Anarol)
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc gap1em max600-w100p">
+            <div class="input-box pad08em df fdc gap1em">
+                <img src="@Model.FotoUrl" class="square256px max600-w100p max600-hauto" />
+            </div>
+        </div>
+        <div class="df fdc fg gap1em">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">İsim</span>
+                <span class="color-active l text-wrap">@Model.Isim</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Soyisim</span>
+                <span class="color-active l text-wrap">@Model.Soyisim</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Rol</span>
+                <span class="tag alternative">@Model.Anarol</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Telefon</span>
+                <span class="color-active l text-wrap">@Model.Telefon</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Email</span>
+                <span class="color-active l text-wrap">@Model.Email</span>
+            </div>
+        </div>
+    </div>
+
+    <form class="w100p df fdc jce fg" method="post">
+        <input asp-for="Id" hidden />
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Sil</button>
+    </form>
+
 </div>
-<div>
-    Email:
-    &nbsp;
-    @Model.Email
-</div>
-<div>
-    <small>İlgili Finans: @Model.IlgiliFinansIslemiSayisi</small>
-    &nbsp;
-    <small>Sorumlu Finans: @Model.SorumluFinansIslemiSayisi</small>
-    &nbsp;
-    <small>Sorumlu Dosya: @Model.SorumluDosyaSayisi</small>
-    &nbsp;
-    <small>Sorumlu Görev: @Model.SorumluGorevSayisi</small>
-    &nbsp;
-    <small>Sorumlu Randevu: @Model.SorumluRandevuSayisi</small>
-</div>
 
-<form method="post">
-    <input asp-for="Id" hidden />
-    <button type="submit">Sil</button>
-</form>
