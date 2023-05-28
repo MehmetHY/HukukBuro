@@ -276,12 +276,6 @@ public class KisiYoneticisi
         var vm = await _vt.Kisiler
             .AsNoTracking()
             .Where(k => k.Id == id)
-            .Include(k => k.IlgiliKisiler)
-            .Include(k => k.IlgiliDosyalar)
-            .Include(k => k.Randevular)
-            .Include(k => k.IlgiliGorevler)
-            .Include(k => k.IlgiliFinansIslemleri)
-            .Include(k => k.Belgeler)
             .Select(k => new KisiSilVM
             {
                 Id = id,
@@ -289,13 +283,14 @@ public class KisiYoneticisi
                 Isim = k.Isim,
                 Soyisim = k.Soyisim,
                 SirketIsmi = k.SirketIsmi,
-
-                IlgiliKisiSayisi = k.IlgiliKisiler.Count(),
-                IlgiliDosyaSayisi = k.IlgiliDosyalar.Count(),
-                RandevuSayisi = k.Randevular.Count(),
-                GorevSayisi = k.IlgiliGorevler.Count(),
-                FinansSayisi = k.IlgiliFinansIslemleri.Count(),
-                BelgeSayisi = k.Belgeler.Count()
+                Adres = k.AdresBilgisi,
+                BankaHesapBilgisi = k.BankaHesapBilgisi,
+                EkBilgi = k.EkBilgi,
+                Email = k.Email,
+                TcKimlikNo = k.KimlikNo,
+                Telefon = k.Telefon,
+                VergiDairesi = k.VergiDairesi,
+                VergiNo = k.VergiNo
             })
             .FirstOrDefaultAsync();
 

@@ -152,14 +152,14 @@
                         </div>
 
                         <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
-                            <a title="Kişiye git" asp-controller="kisiler" asp-action="ozet" asp-route="@randevu.KisiId" class="ibtn1 primary fa fa-user"></a>
+                            <a title="Kişiye git" asp-controller="kisiler" asp-action="ozet" asp-route-id="@randevu.KisiId" class="ibtn1 primary fa fa-user"></a>
                         </div>
                     </div>
 
                     <div class="df aic fwrap gap1em">
                         <div class="df aic gap05em">
                             <span class="bold">Kişi:</span>
-                            <a asp-controller="kisiler" asp-action="ozet" asp-route="@randevu.KisiId" class="color-hover-primary">@randevu.Kisi</a>
+                            <a asp-controller="kisiler" asp-action="ozet" asp-route-id="@randevu.KisiId" class="color-hover-primary">@randevu.Kisi</a>
                         </div>
 
                         @if (randevu.SorumluId != null)

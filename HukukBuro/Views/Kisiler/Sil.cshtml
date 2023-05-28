@@ -1,64 +1,74 @@
 ﻿@model KisiSilVM
 
-@if (!Model.TuzelMi)
-{
-    <div>
-        <span>İsim</span>
-        <span>@Model.Isim</span>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Kisi Sil</h1>
+
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.Id"></a>
     </div>
 
-    <div>
-        <span>Soyisim</span>
-        <span>@Model.Soyisim</span>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            @if (Model.TuzelMi)
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Şirket</span>
+                    <span class="color-active l text-wrap">@Model.SirketIsmi</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Vergi Dairesi</span>
+                    <span class="color-active l text-wrap">@Model.VergiDairesi</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Vergi No</span>
+                    <span class="color-active l text-wrap">@Model.VergiNo</span>
+                </div>
+            }
+            else
+            {
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">İsim</span>
+                    <span class="color-active l text-wrap">@Model.Isim</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">Soyisim</span>
+                    <span class="color-active l text-wrap">@Model.Soyisim</span>
+                </div>
+                <div class="input-box pad08em df fwrap">
+                    <span class="color-inactive">T.C. Kimlik No</span>
+                    <span class="color-active l text-wrap">@Model.TcKimlikNo</span>
+                </div>
+            }
+
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Telefon</span>
+                <span class="color-active l text-wrap">@Model.Telefon</span>
+            </div>
+        </div>
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Email</span>
+                <span class="color-active l text-wrap">@Model.Email</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Adres</span>
+                <span class="color-active l text-wrap">@Model.Adres</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Banka Hesap Bilgisi</span>
+                <span class="color-active l text-wrap">@Model.BankaHesapBilgisi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Ek Bilgi</span>
+                <span class="color-active l text-wrap">@Model.EkBilgi</span>
+            </div>
+        </div>
     </div>
-}
-else
-{
-    <div>
-        <span>Şirket</span>
-        <span>@Model.SirketIsmi</span>
-    </div>
-}
 
-<div>
-    <span>İlgili Kişiler</span>
-    <span>@Model.IlgiliKisiSayisi</span>
-</div>
-
-<div>
-    <span>Dosyalar</span>
-    <span>@Model.IlgiliDosyaSayisi</span>
-</div>
-
-<div>
-    <span>Randevular</span>
-    <span>@Model.RandevuSayisi</span>
-</div>
-
-<div>
-    <span>Görevler</span>
-    <span>@Model.GorevSayisi</span>
-</div>
-
-<div>
-    <span>Finans İşlemleri</span>
-    <span>@Model.FinansSayisi</span>
-</div>
-
-<div>
-    <span>Vekaletnameler</span>
-    <span>@Model.VekaletnameSayisi</span>
-</div>
-
-<div>
-    <span>Belgeler</span>
-    <span>@Model.BelgeSayisi</span>
-</div>
-
-<div>
-    <form method="post">
-        <p>Bu kişiyi silmek istiyor musunuz?</p>
-        <a asp-action="listele">İptal</a>
-        <button type="submit">Sil</button>
+    <form class="w100p df fdc jce fg" method="post">
+        <input asp-for="Id" hidden />
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Sil</button>
     </form>
+
 </div>
+
