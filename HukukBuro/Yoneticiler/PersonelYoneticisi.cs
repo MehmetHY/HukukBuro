@@ -344,7 +344,8 @@ public class PersonelYoneticisi
             {
                 Email = email,
                 Isim = u.Isim,
-                Soyisim = u.Soyisim
+                Soyisim = u.Soyisim,
+                Telefon = u.PhoneNumber
             })
             .FirstAsync();
 
@@ -416,6 +417,7 @@ public class PersonelYoneticisi
 
         model.Isim = vm.Isim;
         model.Soyisim = vm.Soyisim;
+        model.PhoneNumber = vm.Telefon;
 
         _veriTabani.Users.Update(model);
         await _veriTabani.SaveChangesAsync();

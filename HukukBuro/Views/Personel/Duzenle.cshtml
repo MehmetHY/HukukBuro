@@ -1,53 +1,71 @@
 ﻿@model DuzenleVM
 
-<a asp-action="profil">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Profil Düzenle</h1>
 
-<hr />
-
-<form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="profil"></a>
     </div>
 
-    <div>
-        <label asp-for="Isim"></label>
-        <input asp-for="Isim" />
-        <span asp-validation-for="Isim"></span>
-    </div>
+    <form method="post" class="df fdc gap1em">
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
 
-    <div>
-        <label asp-for="Soyisim"></label>
-        <input asp-for="Soyisim" />
-        <span asp-validation-for="Soyisim"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Isim"></label>
+            <input class="input l" asp-for="Isim" />
+            <span class="color-danger text-right" asp-validation-for="Isim"></span>
+        </div>
 
-    <div>
-        <label asp-for="SifreDegistir"></label>
-        <input asp-for="SifreDegistir" />
-        <span asp-validation-for="SifreDegistir"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Soyisim"></label>
+            <input class="input l" asp-for="Soyisim" />
+            <span class="color-danger text-right" asp-validation-for="Soyisim"></span>
+        </div>
 
-    <div>
-        <label asp-for="EskiSifre"></label>
-        <input asp-for="EskiSifre" />
-        <span asp-validation-for="EskiSifre"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Telefon"></label>
+            <input class="input l" asp-for="Telefon" />
+            <span class="color-danger text-right" asp-validation-for="Telefon"></span>
+        </div>
 
-    <div>
-        <label asp-for="YeniSifre"></label>
-        <input asp-for="YeniSifre" />
-        <span asp-validation-for="YeniSifre"></span>
-    </div>
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="Email"></label>
+            <input class="input l" asp-for="Email" />
+            <span class="color-danger text-right" asp-validation-for="Email"></span>
+        </div>
 
-    <div>
-        <label asp-for="YeniSifreTekrar"></label>
-        <input asp-for="YeniSifreTekrar" />
-        <span asp-validation-for="YeniSifreTekrar"></span>
-    </div>
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" id="sifre-degistir" asp-for="SifreDegistir" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Şifre değiştir
+            </label>
+            <span class="color-danger text-right"></span>
+        </div>
 
-    <button type="submit">Tamam</button>
-</form>
+        <div class="input-box df fdc sifre-input">
+            <label class="s color-inactive" asp-for="EskiSifre"></label>
+            <input class="input l" asp-for="EskiSifre" />
+            <span class="color-danger text-right" asp-validation-for="EskiSifre"></span>
+        </div>
+
+        <div class="input-box df fdc sifre-input">
+            <label class="s color-inactive" asp-for="YeniSifre"></label>
+            <input class="input l" asp-for="YeniSifre" />
+            <span class="color-danger text-right" asp-validation-for="YeniSifre"></span>
+        </div>
+
+        <div class="input-box df fdc sifre-input">
+            <label class="s color-inactive" asp-for="YeniSifreTekrar"></label>
+            <input class="input l" asp-for="YeniSifreTekrar" />
+            <span class="color-danger text-right" asp-validation-for="YeniSifreTekrar"></span>
+        </div>
+
+        <button class="btn1 primary xl padv05em mart05em" type="submit">Tamam</button>
+    </form>
+
+    <script src="~/js/profilform.js"></script>
+</div>
+
