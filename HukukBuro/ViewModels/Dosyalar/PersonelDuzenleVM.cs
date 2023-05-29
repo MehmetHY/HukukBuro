@@ -4,7 +4,14 @@
 
 public class PersonelDuzenleVM
 {
+    public class Personel : CheckboxItem<string>
+    {
+        public string Anarol { get; set; }
+    }
+
     public int Id { get; set; }
 
-    public List<CheckboxItem<string>> PersonelListe { get; set; } = new();
+    public List<Personel> PersonelListe { get; set; } = new();
+
+    public List<string> Anaroller { get; set; } = new();
 }

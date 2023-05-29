@@ -502,11 +502,17 @@ public class DosyaYoneticisi
 
         vm.PersonelListe = await _veritabani.Users
             .Include(p => p.SorumluDosyalar)
-            .Select(p => new CheckboxItem<string>
+            .Select(p => new PersonelDuzenleVM.Personel
             {
                 Checked = p.SorumluDosyalar.Any(dp => dp.DosyaId == id),
                 Value = p.Id,
-                Text = $"{p.Isim} {p.Soyisim}"
+                Text = $"{p.Isim} {p.Soyisim}",
+
+                Anarol = _veritabani.UserClaims
+                    .Where(uc =>
+                        uc.UserId == p.Id && uc.ClaimType == Sabit.AnaRol.Type)
+                    .Select(uc => uc.ClaimValue)
+                    .First()!
             })
             .ToListAsync();
 

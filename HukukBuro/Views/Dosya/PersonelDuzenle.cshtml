@@ -1,24 +1,38 @@
 ﻿@model PersonelDuzenleVM
 
-<a asp-action="Ozet" asp-route-id="@Model.Id">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Sorumlu Personel</h1>
 
-<form method="post">
-    <input asp-for="Id" hidden />
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.Id"></a>
+    </div>
 
-    @for (int i = 0; i < Model.PersonelListe.Count; ++i)
-    {
-        <hr />
+    <form class="df fdc fg" method="post">
+        <input asp-for="Id" hidden />
 
-        <input asp-for="PersonelListe[i].Value" hidden />
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
 
-        <div>
-            <label>
-                <input asp-for="PersonelListe[i].Checked" />
-                @Model.PersonelListe[i].Text
-            </label>
+        <div class="df fwrap gap1em">
+
+            @for (int i = 0; i < Model.PersonelListe.Count; ++i)
+            {
+                <input asp-for="PersonelListe[i].Value" hidden />
+                <input asp-for="PersonelListe[i].Anarol" hidden />
+
+                <label class="checkbox list-item">
+                    <input type="checkbox" asp-for="@Model.PersonelListe[i].Checked" />
+                    <span class="checkbox-box"><span class="checkbox-mark"></span></span>
+                    <span>@Model.PersonelListe[i].Text</span>
+                    <span class="tag alternative">@Model.PersonelListe[i].Anarol</span>
+                </label>
+            }
+
         </div>
-    }
 
-    <hr />
-    <button type="submit">Tamam</button>
-</form>
+        <div class="w100p df fdc jce fg">
+            <button class="btn1 xxl primary w100p mart1em" type="submit">Kaydet</button>
+        </div>
+    </form>
+
+</div>
+
