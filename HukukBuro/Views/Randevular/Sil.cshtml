@@ -1,51 +1,56 @@
 ﻿@model SilVM
 
-<a asp-action="listele">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Randevu Sil</h1>
 
-<hr />
-
-<form method="post">
-    <input asp-for="Id" hidden />
-
-    <div>
-        <strong>Konu</strong>
-        &nbsp;
-        @Model.Konu
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="listele"></a>
     </div>
 
-    <div>
-        <strong>Kişi</strong>
-        &nbsp;
-        @Model.Kisi
-    </div>
-
-    @if (!string.IsNullOrWhiteSpace(Model.Aciklama))
-    {
-        <div>
-            <strong>Açıklama</strong>
-            &nbsp;
-            @Model.Aciklama
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Konu</span>
+                <span class="color-active l text-wrap">@Model.Konu</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Açıklama</span>
+                <span class="color-active l text-wrap">@Model.Aciklama</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Tarih</span>
+                <span class="color-active l text-wrap">@Model.Tarih</span>
+            </div>
         </div>
-    }
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Kişi</span>
+                <span class="color-active l text-wrap">@Model.Kisi</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Sorumlu</span>
+                <span class="color-active l text-wrap">@Model.Sorumlu</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Tamamlandı mı?</span>
 
-    <div>
-        <strong>Tarih</strong>
-        &nbsp;
-        @Model.Tarih
-    </div>
+                @if (Model.TamamlandiMi)
+                {
+                    <span class="tag success">Evet</span>
+                }
+                else
+                {
+                    <span class="tag danger">Hayır</span>
+                }
 
-    <div>
-        @(Model.TamamlandiMi ? "Tamamlandı" : "Tamamlanmadı")
-    </div>
-
-    @if (!string.IsNullOrWhiteSpace(Model.Sorumlu))
-    {
-        <div>
-            <strong>Sorumlu personel</strong>
-            &nbsp;
-            @Model.Sorumlu
+            </div>
         </div>
-    }
+    </div>
 
-    <button type="submit">Sil</button>
-</form>
+    <form class="w100p df fdc jce fg" method="post">
+        <input asp-for="Id" hidden />
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Sil</button>
+    </form>
+
+</div>
+
