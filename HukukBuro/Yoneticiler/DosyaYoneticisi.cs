@@ -7,6 +7,7 @@ using HukukBuro.ViewModels;
 using HukukBuro.ViewModels.Dosyalar;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
 
 namespace HukukBuro.Yoneticiler;
 
@@ -239,7 +240,7 @@ public class DosyaYoneticisi
 
         return new();
     }
-    
+
     public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
     {
         var vm = await _veritabani.Dosyalar
@@ -546,13 +547,39 @@ public class DosyaYoneticisi
                     dp.PersonelId == item.Value);
 
             if (dosyaPersonel != null && !item.Checked)
+            {
                 _veritabani.DosyaPersonel.Remove(dosyaPersonel);
+
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Dosya sorumluluğunuz kaldırıldı.",
+                    PersonelId = item.Value,
+                    Tarih = DateTime.Now,
+                    Url = $"/dosya/{dosyaPersonel.DosyaId}/ozet"
+                };
+
+                await _veritabani.Bildirimler.AddAsync(bildirim);
+            }
             else if (dosyaPersonel == null && item.Checked)
-                await _veritabani.DosyaPersonel.AddAsync(new()
+            {
+                var model = new DosyaPersonel
                 {
                     DosyaId = vm.Id,
                     PersonelId = item.Value
-                });
+                };
+
+                await _veritabani.DosyaPersonel.AddAsync(model);
+
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Dosya sorumluluğu eklendi.",
+                    PersonelId = item.Value,
+                    Tarih = DateTime.Now,
+                    Url = $"/dosya/{model.DosyaId}/ozet"
+                };
+
+                await _veritabani.Bildirimler.AddAsync(bildirim);
+            }
         }
 
         await _veritabani.SaveChangesAsync();
@@ -1090,7 +1117,7 @@ public class DosyaYoneticisi
             Text = d.Isim
         })
         .ToListAsync();
-    
+
     public async Task<Sonuc<DurusmalarVM>> DurusmalarVMGetirAsync(DurusmalarVM vm)
     {
         var q = _veritabani.Durusmalar
@@ -1384,20 +1411,20 @@ public class DosyaYoneticisi
                 HataMesaji = $"id: {id} bulunamadı"
             };
 
-            var belge = new BelgeAraci
+        var belge = new BelgeAraci
+        {
+            Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+        };
+
+        var sonuc = belge.Sil();
+
+        if (!sonuc.BasariliMi)
+            return new()
             {
-                Yol = Path.Combine(_env.WebRootPath, model.Url[1..])
+                BasariliMi = false,
+                HataBasligi = string.Empty,
+                HataMesaji = sonuc.HataMesaji
             };
-
-            var sonuc = belge.Sil();
-
-            if (!sonuc.BasariliMi)
-                return new()
-                {
-                    BasariliMi = false,
-                    HataBasligi = string.Empty,
-                    HataMesaji = sonuc.HataMesaji
-                };
 
         var dosyaId = model.DosyaId;
 
@@ -1430,10 +1457,22 @@ public class DosyaYoneticisi
             .Where(dp => dp.DosyaId == id)
             .ToListAsync();
 
+        foreach (var model in modeller)
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Sorumlu olduğunuz bir dosya silindi.",
+                PersonelId = model.PersonelId,
+                Tarih = DateTime.Now
+            };
+
+            await _veritabani.Bildirimler.AddAsync(bildirim);
+        }
+
         _veritabani.DosyaPersonel.RemoveRange(modeller);
         await _veritabani.SaveChangesAsync();
     }
-    
+
     public async Task DosyaBaglantilariniTemizleAsync(int id)
     {
         var modeller = await _veritabani.DosyaBaglantilari
@@ -1443,7 +1482,7 @@ public class DosyaYoneticisi
         _veritabani.DosyaBaglantilari.RemoveRange(modeller);
         await _veritabani.SaveChangesAsync();
     }
-    
+
     public async Task GorevBaglantilariniTemizleAsync(int id)
     {
         var modeller = await _veritabani.Gorevler
@@ -1453,7 +1492,7 @@ public class DosyaYoneticisi
         _veritabani.Gorevler.RemoveRange(modeller);
         await _veritabani.SaveChangesAsync();
     }
-    
+
     public async Task BelgeleriTemizleAsync(int id)
     {
         var modeller = await _veritabani.DosyaBelgeleri

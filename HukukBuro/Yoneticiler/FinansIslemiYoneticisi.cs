@@ -11,17 +11,17 @@ namespace HukukBuro.Yoneticiler;
 public class FinansIslemiYoneticisi
 {
     #region Fields
-    private readonly VeriTabani _vt;
+    private readonly VeriTabani _veriTabani;
 
     public FinansIslemiYoneticisi(VeriTabani vt)
     {
-        _vt = vt;
+        _veriTabani = vt;
     }
     #endregion
 
     #region Utils
     public async Task<List<SelectListItem>> PersonelGetirAsync()
-        => await _vt.Users
+        => await _veriTabani.Users
         .Select(u => new SelectListItem
         {
             Value = u.Id,
@@ -30,7 +30,7 @@ public class FinansIslemiYoneticisi
         .ToListAsync();
 
     public async Task<List<SelectListItem>> KisilerGetirAsync()
-        => await _vt.Kisiler
+        => await _veriTabani.Kisiler
         .Select(k => new SelectListItem
         {
             Value = k.Id.ToString(),
@@ -39,7 +39,7 @@ public class FinansIslemiYoneticisi
         .ToListAsync();
 
     public async Task<List<SelectListItem>> DosyalarGetirAsync()
-        => await _vt.Dosyalar
+        => await _veriTabani.Dosyalar
         .Select(d => new SelectListItem
         {
             Value = d.Id.ToString(),
@@ -50,7 +50,7 @@ public class FinansIslemiYoneticisi
 
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
-        var q = _vt.FinansIslemleri
+        var q = _veriTabani.FinansIslemleri
             .Where(f =>
                 string.IsNullOrWhiteSpace(vm.Arama) ||
                 f.Miktar.ToString().Contains(vm.Arama) ||
@@ -137,7 +137,7 @@ public class FinansIslemiYoneticisi
         };
 
         if (vm.IslemYapanId != null &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.IslemYapanId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.IslemYapanId))
             return new()
             {
                 BasariliMi = false,
@@ -155,7 +155,7 @@ public class FinansIslemiYoneticisi
                     HataMesaji = "Gerekli."
                 };
 
-            if (!await _vt.Users.AnyAsync(u => u.Id == vm.PersonelId))
+            if (!await _veriTabani.Users.AnyAsync(u => u.Id == vm.PersonelId))
                 return new()
                 {
                     BasariliMi = false,
@@ -176,7 +176,7 @@ public class FinansIslemiYoneticisi
                     HataMesaji = "Gerekli."
                 };
 
-            if (!await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            if (!await _veriTabani.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
                 return new()
                 {
                     BasariliMi = false,
@@ -197,7 +197,7 @@ public class FinansIslemiYoneticisi
                     HataMesaji = "Gerekli."
                 };
 
-            if (!await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            if (!await _veriTabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
                 return new()
                 {
                     BasariliMi = false,
@@ -248,15 +248,28 @@ public class FinansIslemiYoneticisi
         }
 
         model.OlusturmaTarihi = DateTime.Now;
-        await _vt.FinansIslemleri.AddAsync(model);
-        await _vt.SaveChangesAsync();
+
+        if (!string.IsNullOrWhiteSpace(model.IslemYapanId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Bir finans işlemi sorumluluğu eklendi.",
+                PersonelId = model.IslemYapanId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        await _veriTabani.FinansIslemleri.AddAsync(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
     {
-        var vm = await _vt.FinansIslemleri
+        var vm = await _veriTabani.FinansIslemleri
             .Where(f => f.Id == id)
             .Select(f => new DuzenleVM
             {
@@ -297,7 +310,7 @@ public class FinansIslemiYoneticisi
 
     public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
     {
-        var model = await _vt.FinansIslemleri.FirstOrDefaultAsync(f => f.Id == vm.Id);
+        var model = await _veriTabani.FinansIslemleri.FirstOrDefaultAsync(f => f.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -366,7 +379,7 @@ public class FinansIslemiYoneticisi
         }
 
         if (vm.IslemYapanId != null &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.IslemYapanId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.IslemYapanId))
             return new()
             {
                 BasariliMi = false,
@@ -374,10 +387,37 @@ public class FinansIslemiYoneticisi
                 HataMesaji = $"Id: {vm.IslemYapanId} bulunamadı."
             };
 
+        if (model.IslemYapanId != vm.IslemYapanId)
+        {
+            if (!string.IsNullOrWhiteSpace(model.IslemYapanId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Bir finans işlemi sorumluluğunuz kaldırıldı.",
+                    PersonelId = model.IslemYapanId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+
+            if (!string.IsNullOrWhiteSpace(vm.IslemYapanId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Bir finans işlemi sorumluluğu eklendi.",
+                    PersonelId = vm.IslemYapanId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+        }
+
         model.IslemYapanId = vm.IslemYapanId;
 
         if (vm.KisiBaglantisiVar &&
-            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            !await _veriTabani.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
             return new()
             {
                 BasariliMi = false,
@@ -388,7 +428,7 @@ public class FinansIslemiYoneticisi
         model.KisiId = vm.KisiId;
 
         if (vm.DosyaBaglantisiVar &&
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            !await _veriTabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -399,7 +439,7 @@ public class FinansIslemiYoneticisi
         model.DosyaId = vm.DosyaId;
 
         if (vm.PersonelBaglantisiVar &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.PersonelId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.PersonelId))
             return new()
             {
                 BasariliMi = false,
@@ -409,15 +449,15 @@ public class FinansIslemiYoneticisi
 
         model.PersonelId = vm.PersonelId;
 
-        _vt.FinansIslemleri.Update(model);
-        await _vt.SaveChangesAsync();
+        _veriTabani.FinansIslemleri.Update(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
     {
-        var vm = await _vt.FinansIslemleri
+        var vm = await _veriTabani.FinansIslemleri
             .Where(f => f.Id == id)
             .Select(f => new SilVM
             {
@@ -451,7 +491,7 @@ public class FinansIslemiYoneticisi
 
     public async Task<Sonuc> SilAsync(int id)
     {
-        var model = await _vt.FinansIslemleri.FirstOrDefaultAsync(f => f.Id == id);
+        var model = await _veriTabani.FinansIslemleri.FirstOrDefaultAsync(f => f.Id == id);
 
         if (model == null)
             return new()
@@ -461,8 +501,20 @@ public class FinansIslemiYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        _vt.FinansIslemleri.Remove(model);
-        await _vt.SaveChangesAsync();
+        if (!string.IsNullOrWhiteSpace(model.IslemYapanId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Sorumlu olduğunuz bir finans işlemi silindi.",
+                PersonelId = model.IslemYapanId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        _veriTabani.FinansIslemleri.Remove(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }

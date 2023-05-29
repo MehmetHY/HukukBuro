@@ -11,17 +11,17 @@ namespace HukukBuro.Yoneticiler;
 public class RandevuYoneticisi
 {
     #region Fields
-    private readonly VeriTabani _vt;
+    private readonly VeriTabani _veriTabani;
 
     public RandevuYoneticisi(VeriTabani vt)
     {
-        _vt = vt;
+        _veriTabani = vt;
     }
     #endregion
 
     #region Utils
     public async Task<List<SelectListItem>> KisilerGetirAsync()
-        => await _vt.Kisiler
+        => await _veriTabani.Kisiler
             .Select(k => new SelectListItem
             {
                 Value = k.Id.ToString(),
@@ -30,7 +30,7 @@ public class RandevuYoneticisi
             .ToListAsync();
 
     public async Task<List<SelectListItem>> PersonelGetirAsync()
-        => await _vt.Users
+        => await _veriTabani.Users
         .Select(u => new SelectListItem
         {
             Value = u.Id,
@@ -43,7 +43,7 @@ public class RandevuYoneticisi
     #region Randevu
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
-        var q = _vt.Randevular
+        var q = _veriTabani.Randevular
             .Include(r => r.Kisi)
             .Include(r => r.Sorumlu)
             .OrderBy(r => r.TamamlandiMi)
@@ -105,7 +105,7 @@ public class RandevuYoneticisi
 
     public async Task<Sonuc> EkleAsync(EkleVM vm)
     {
-        if (vm.KisiId < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+        if (vm.KisiId < 1 || !await _veriTabani.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
             return new()
             {
                 BasariliMi = false,
@@ -114,7 +114,7 @@ public class RandevuYoneticisi
             };
 
         if (!string.IsNullOrWhiteSpace(vm.SorumluId) &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.SorumluId))
             return new()
             {
                 BasariliMi = false,
@@ -133,15 +133,28 @@ public class RandevuYoneticisi
             OlusturmaTarihi = DateTime.Now
         };
 
-        await _vt.Randevular.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veriTabani.Randevular.AddAsync(model);
+
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Bir randevu sorumluluğu eklendi.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
     {
-        var vm = await _vt.Randevular
+        var vm = await _veriTabani.Randevular
             .Where(r => r.Id == id)
             .Select(r => new DuzenleVM
             {
@@ -171,7 +184,7 @@ public class RandevuYoneticisi
 
     public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
     {
-        var model = await _vt.Randevular.FirstOrDefaultAsync(r => r.Id == vm.Id);
+        var model = await _veriTabani.Randevular.FirstOrDefaultAsync(r => r.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -182,7 +195,7 @@ public class RandevuYoneticisi
             };
 
         if (vm.KisiId != model.KisiId &&
-            (vm.KisiId < 1 || !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId)))
+            (vm.KisiId < 1 || !await _veriTabani.Kisiler.AnyAsync(k => k.Id == vm.KisiId)))
             return new()
             {
                 BasariliMi = false,
@@ -192,7 +205,7 @@ public class RandevuYoneticisi
 
         if (vm.SorumluId != model.SorumluId &&
             !string.IsNullOrWhiteSpace(vm.SorumluId) &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.SorumluId))
             return new()
             {
                 BasariliMi = false,
@@ -205,17 +218,45 @@ public class RandevuYoneticisi
         model.Tarih = vm.Tarih;
         model.TamamlandiMi = vm.TamamlandiMi;
         model.KisiId = vm.KisiId;
+
+        if (model.SorumluId != vm.SorumluId)
+        {
+            if (!string.IsNullOrWhiteSpace(vm.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Randevu sorumluluğu eklendi.",
+                    PersonelId = vm.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Randevu sorumluluğunuz kaldırıldı.",
+                    PersonelId = model.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+        }
+
         model.SorumluId = vm.SorumluId;
 
-        _vt.Randevular.Update(model);
-        await _vt.SaveChangesAsync();
+        _veriTabani.Randevular.Update(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
     {
-        var vm = await _vt.Randevular
+        var vm = await _veriTabani.Randevular
             .Where(r => r.Id == id)
             .Include(r => r.Kisi)
             .Include(r => r.Sorumlu)
@@ -249,7 +290,7 @@ public class RandevuYoneticisi
 
     public async Task<Sonuc> SilAsync(int id)
     {
-        var model = await _vt.Randevular.FirstOrDefaultAsync(r => r.Id == id);
+        var model = await _veriTabani.Randevular.FirstOrDefaultAsync(r => r.Id == id);
 
         if (model == null)
             return new()
@@ -259,8 +300,32 @@ public class RandevuYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        _vt.Randevular.Remove(model);
-        await _vt.SaveChangesAsync();
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Sorumlu olduğunuz bir randevu silindi.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Sorumlu olduğunuz bir randevu silindi.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        _veriTabani.Randevular.Remove(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }

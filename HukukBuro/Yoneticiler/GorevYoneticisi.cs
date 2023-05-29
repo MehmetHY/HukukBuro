@@ -12,16 +12,16 @@ public class GorevYoneticisi
 {
     #region Fields 
 
-    private readonly VeriTabani _vt;
+    private readonly VeriTabani _veriTabani;
     public GorevYoneticisi(VeriTabani vt)
     {
-        _vt = vt;
+        _veriTabani = vt;
     }
     #endregion
 
     #region Utils
     public async Task<List<SelectListItem>> GorevDurumlariGetirAsync() =>
-        await _vt.GorevDurumlari.Select(g => new SelectListItem
+        await _veriTabani.GorevDurumlari.Select(g => new SelectListItem
         {
             Value = g.Id.ToString(),
             Text = g.Isim
@@ -29,7 +29,7 @@ public class GorevYoneticisi
         .ToListAsync();
 
     public async Task<List<SelectListItem>> PersonelGetirAsync() =>
-           await _vt.Users.Select(u => new SelectListItem
+           await _veriTabani.Users.Select(u => new SelectListItem
            {
                Value = u.Id,
                Text = $"{u.Isim} {u.Soyisim}"
@@ -37,7 +37,7 @@ public class GorevYoneticisi
            .ToListAsync();
 
     public async Task<List<SelectListItem>> DosyalariGetirAsync() =>
-           await _vt.Dosyalar.Select(d => new SelectListItem
+           await _veriTabani.Dosyalar.Select(d => new SelectListItem
            {
                Value = d.Id.ToString(),
                Text = $"{d.DosyaNo} {d.BuroNo} {d.Konu}"
@@ -45,7 +45,7 @@ public class GorevYoneticisi
            .ToListAsync();
 
     public async Task<List<SelectListItem>> KisilerGetirAsync()
-        => await _vt.Kisiler
+        => await _veriTabani.Kisiler
         .Select(k => new SelectListItem
         {
             Value = k.Id.ToString(),
@@ -56,7 +56,7 @@ public class GorevYoneticisi
 
     public async Task<Sonuc<ListeleVM>> ListeleVMGetirAsync(ListeleVM vm)
     {
-        var q = _vt.Gorevler
+        var q = _veriTabani.Gorevler
             .Include(g => g.Durum)
             .Include(g => g.Kisi)
             .Include(g => g.Dosya)
@@ -126,7 +126,7 @@ public class GorevYoneticisi
     public async Task<Sonuc> EkleAsync(EkleVM vm)
     {
         if (vm.DurumId < 1 ||
-            !await _vt.GorevDurumlari.AnyAsync(gd => gd.Id == vm.DurumId))
+            !await _veriTabani.GorevDurumlari.AnyAsync(gd => gd.Id == vm.DurumId))
             return new()
             {
                 BasariliMi = false,
@@ -135,7 +135,7 @@ public class GorevYoneticisi
             };
 
         if (vm.SorumluId != null &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.SorumluId))
             return new()
             {
                 BasariliMi = false,
@@ -165,8 +165,21 @@ public class GorevYoneticisi
             SorumluId = vm.SorumluId
         };
 
-        await _vt.Gorevler.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veriTabani.Gorevler.AddAsync(model);
+
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Görev sorumluluğu eklendi.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
@@ -182,7 +195,7 @@ public class GorevYoneticisi
             };
 
         if (vm.DosyaId < 1 &&
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            !await _veriTabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -202,8 +215,21 @@ public class GorevYoneticisi
             DosyaId = vm.DosyaId
         };
 
-        await _vt.Gorevler.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veriTabani.Gorevler.AddAsync(model);
+
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Görev sorumluluğu eklendi.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
@@ -219,7 +245,7 @@ public class GorevYoneticisi
             };
 
         if (vm.KisiId < 1 &&
-            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            !await _veriTabani.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
             return new()
             {
                 BasariliMi = false,
@@ -239,15 +265,28 @@ public class GorevYoneticisi
             KisiId = vm.KisiId
         };
 
-        await _vt.Gorevler.AddAsync(model);
-        await _vt.SaveChangesAsync();
+        await _veriTabani.Gorevler.AddAsync(model);
+
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Görev sorumluluğu eklendi.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<Sonuc<DuzenleVM>> DuzenleVMGetirAsync(int id)
     {
-        var vm = await _vt.Gorevler
+        var vm = await _veriTabani.Gorevler
             .Where(g => g.Id == id)
             .Select(g => new DuzenleVM
             {
@@ -281,7 +320,7 @@ public class GorevYoneticisi
 
     public async Task<Sonuc> DuzenleAsync(DuzenleVM vm)
     {
-        var model = await _vt.Gorevler.FirstOrDefaultAsync(g => g.Id == vm.Id);
+        var model = await _veriTabani.Gorevler.FirstOrDefaultAsync(g => g.Id == vm.Id);
 
         if (model == null)
             return new()
@@ -292,7 +331,7 @@ public class GorevYoneticisi
             };
 
         if (vm.DurumId < 1 ||
-            !await _vt.GorevDurumlari.AnyAsync(gd => gd.Id == vm.DurumId))
+            !await _veriTabani.GorevDurumlari.AnyAsync(gd => gd.Id == vm.DurumId))
             return new()
             {
                 BasariliMi = false,
@@ -301,7 +340,7 @@ public class GorevYoneticisi
             };
 
         if (vm.SorumluId != null &&
-            !await _vt.Users.AnyAsync(u => u.Id == vm.SorumluId))
+            !await _veriTabani.Users.AnyAsync(u => u.Id == vm.SorumluId))
             return new()
             {
                 BasariliMi = false,
@@ -326,10 +365,38 @@ public class GorevYoneticisi
         model.Aciklama = vm.Aciklama;
         model.BitisTarihi = vm.BitisTarihi;
         model.DurumId = vm.DurumId;
+
+        if (model.SorumluId != vm.SorumluId)
+        {
+            if (!string.IsNullOrWhiteSpace(vm.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Görev sorumluluğu eklendi.",
+                    PersonelId = vm.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Görev sorumluluğunuz kaldırıldı.",
+                    PersonelId = model.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+        }
+
         model.SorumluId = vm.SorumluId;
 
-        _vt.Gorevler.Update(model);
-        await _vt.SaveChangesAsync();
+        _veriTabani.Gorevler.Update(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
@@ -337,7 +404,7 @@ public class GorevYoneticisi
     public async Task<Sonuc> DosyaGoreviDuzenleAsync(DuzenleVM vm, Gorev model)
     {
         if (vm.DosyaId < 1 ||
-            !await _vt.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
+            !await _veriTabani.Dosyalar.AnyAsync(d => d.Id == vm.DosyaId))
             return new()
             {
                 BasariliMi = false,
@@ -352,10 +419,38 @@ public class GorevYoneticisi
         model.Aciklama = vm.Aciklama;
         model.BitisTarihi = vm.BitisTarihi;
         model.DurumId = vm.DurumId;
+
+        if (model.SorumluId != vm.SorumluId)
+        {
+            if (!string.IsNullOrWhiteSpace(vm.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Görev sorumluluğu eklendi.",
+                    PersonelId = vm.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Görev sorumluluğunuz kaldırıldı.",
+                    PersonelId = model.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+        }
+
         model.SorumluId = vm.SorumluId;
 
-        _vt.Gorevler.Update(model);
-        await _vt.SaveChangesAsync();
+        _veriTabani.Gorevler.Update(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
@@ -363,7 +458,7 @@ public class GorevYoneticisi
     public async Task<Sonuc> KisiGoreviDuzenleAsync(DuzenleVM vm, Gorev model)
     {
         if (vm.KisiId < 1 ||
-            !await _vt.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
+            !await _veriTabani.Kisiler.AnyAsync(k => k.Id == vm.KisiId))
             return new()
             {
                 BasariliMi = false,
@@ -378,17 +473,45 @@ public class GorevYoneticisi
         model.Aciklama = vm.Aciklama;
         model.BitisTarihi = vm.BitisTarihi;
         model.DurumId = vm.DurumId;
+
+        if (model.SorumluId != vm.SorumluId)
+        {
+            if (!string.IsNullOrWhiteSpace(vm.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Görev sorumluluğu eklendi.",
+                    PersonelId = vm.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.SorumluId))
+            {
+                var bildirim = new Bildirim
+                {
+                    Mesaj = "Görev sorumluluğunuz kaldırıldı.",
+                    PersonelId = model.SorumluId,
+                    Tarih = DateTime.Now
+                };
+
+                await _veriTabani.Bildirimler.AddAsync(bildirim);
+            }
+        }
+
         model.SorumluId = vm.SorumluId;
 
-        _vt.Gorevler.Update(model);
-        await _vt.SaveChangesAsync();
+        _veriTabani.Gorevler.Update(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
 
     public async Task<Sonuc<SilVM>> SilVMGetirAsync(int id)
     {
-        var vm = await _vt.Gorevler
+        var vm = await _veriTabani.Gorevler
             .Where(g => g.Id == id)
             .Include(g => g.Kisi)
             .Include(g => g.Dosya)
@@ -422,7 +545,7 @@ public class GorevYoneticisi
 
     public async Task<Sonuc> SilAsync(int id)
     {
-        var model = await _vt.Gorevler.FirstOrDefaultAsync(g => g.Id == id);
+        var model = await _veriTabani.Gorevler.FirstOrDefaultAsync(g => g.Id == id);
 
         if (model == null)
             return new()
@@ -432,8 +555,20 @@ public class GorevYoneticisi
                 HataMesaji = $"id: {id} bulunamadı."
             };
 
-        _vt.Gorevler.Remove(model);
-        await _vt.SaveChangesAsync();
+        if (!string.IsNullOrWhiteSpace(model.SorumluId))
+        {
+            var bildirim = new Bildirim
+            {
+                Mesaj = "Bir görev sorumluluğunuz kaldırıldı.",
+                PersonelId = model.SorumluId,
+                Tarih = DateTime.Now
+            };
+
+            await _veriTabani.Bildirimler.AddAsync(bildirim);
+        }
+
+        _veriTabani.Gorevler.Remove(model);
+        await _veriTabani.SaveChangesAsync();
 
         return new();
     }
