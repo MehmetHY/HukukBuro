@@ -1,29 +1,43 @@
 ﻿@model TarafSilVM
 
-<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Taraf Sil</h1>
 
-<hr />
-
-<form method="post">
-    <input asp-for="Id" hidden />
-
-    <div>
-        <strong>İsim:&nbsp;</strong>
-        <span>@Model.Isim</span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.DosyaId"></a>
     </div>
 
-    <div>
-        <strong>Taraf türü:&nbsp;</strong>
-        <span>@Model.TarafTuru</span>
-    </div>
-
-    @if (Model.KarsiTarafMi)
-    {
-        <div>
-            <strong>Karşı Taraf</strong>
+    <div class="df max600-fdc gap1em">
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Kişi</span>
+                <span class="color-active l text-wrap">@Model.Isim</span>
+            </div>
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Taraf türü</span>
+                <span class="tag alternative l">@Model.TarafTuru</span>
+            </div>
         </div>
-    }
+        <div class="df fdc fg gap1em w50p max600-w100p">
+            <div class="input-box pad08em df fwrap">
+                <span class="color-inactive">Karşı taraf mı?</span>
 
+                @if (Model.KarsiTarafMi)
+                {
+                    <span class="tag danger l">Evet</span>
+                }
+                else
+                {
+                    <span class="tag success l">Hayır</span>
+                }
+            </div>
+        </div>
+    </div>
 
-    <button type="submit">Sil</button>
-</form>
+    <form class="w100p df fdc jce fg" method="post">
+        <input asp-for="Id" hidden />
+        <button class="btn1 xxl danger w100p mart1em" type="submit">Sil</button>
+    </form>
+
+</div>
+
