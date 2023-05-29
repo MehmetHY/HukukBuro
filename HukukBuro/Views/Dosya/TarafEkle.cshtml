@@ -1,29 +1,41 @@
 ﻿@model TarafEkleVM
 
-<a asp-action="ozet" asp-route-id="@Model.DosyaId">Geri</a>
+<form method="post" class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Taraf Ekle</h1>
 
-<hr />
-
-<form method="post">
-    <input asp-for="DosyaId" hidden />
-
-    <div>
-        <label asp-for="KisiId"></label>
-        <select asp-for="KisiId" asp-items="@Model.Kisiler"></select>
-        <span asp-validation-for="KisiId"></span>
+    <div class="df gap1em marb1rem">
+        <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.DosyaId"></a>
     </div>
 
-    <div>
-        <label asp-for="TarafTuruId"></label>
-        <select asp-for="TarafTuruId" asp-items="@Model.TarafTurleri"></select>
-        <span asp-validation-for="TarafTuruId"></span>
+    <div class="df fdc gap1em">
+        <input asp-for="DosyaId" hidden />
+
+        <div class="color-danger color-inherit-children" asp-validation-summary="ModelOnly"></div>
+
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="KisiId"></label>
+            <select class="input l" asp-for="KisiId" asp-items="@Model.Kisiler"></select>
+            <span class="color-danger text-right" asp-validation-for="KisiId"></span>
+        </div>
+
+        <div class="input-box df fdc">
+            <label class="s color-inactive" asp-for="TarafTuruId"></label>
+            <select class="input l" asp-for="TarafTuruId" asp-items="@Model.TarafTurleri"></select>
+            <span class="color-danger text-right" asp-validation-for="TarafTuruId"></span>
+        </div>
+
+        <div class="input-box pad1rem df fdc">
+            <label class="checkbox l">
+                <input type="checkbox" asp-for="KarsiTarafMi" />
+                <span class="checkbox-box">
+                    <span class="checkbox-mark"></span>
+                </span>
+                Karşı taraf mı?
+            </label>
+            <span class="color-danger text-right" asp-validation-for="KarsiTarafMi"></span>
+        </div>
     </div>
 
-    <div>
-        <label asp-for="KarsiTarafMi"></label>
-        <input asp-for="KarsiTarafMi" />
-        <span asp-validation-for="KarsiTarafMi"></span>
-    </div>
-
-    <button type="submit">Tamam</button>
+    <button class="btn1 primary xl padv05em mart2em" type="submit">Tamam</button>
 </form>
+
