@@ -46,6 +46,8 @@ public class RandevuYoneticisi
         var q = _vt.Randevular
             .Include(r => r.Kisi)
             .Include(r => r.Sorumlu)
+            .OrderBy(r => r.TamamlandiMi)
+            .ThenByDescending(r => r.Tarih)
             .Where(r =>
                 string.IsNullOrWhiteSpace(vm.Arama) ||
                 (r.Kisi.Isim != null && r.Kisi.Isim.Contains(vm.Arama)) ||
@@ -60,6 +62,7 @@ public class RandevuYoneticisi
             {
                 Id = r.Id,
 
+                KisiId = r.KisiId,
                 Kisi = r.Kisi.TuzelMi ?
                     r.Kisi.SirketIsmi! :
                     $"{r.Kisi.Isim} {r.Kisi.Soyisim}",
@@ -69,8 +72,10 @@ public class RandevuYoneticisi
                 TamamlandiMi = r.TamamlandiMi,
                 Tarih = r.Tarih,
 
-                Sorumlu = r.Sorumlu == null ?
-                    null : $"{r.Sorumlu.Isim} {r.Sorumlu.Soyisim}"
+                SorumluId = r.SorumluId,
+
+                Sorumlu = r.SorumluId == null ?
+                    null : $"{r.Sorumlu!.Isim} {r.Sorumlu.Soyisim}"
             });
 
         if (!await q.SayfaGecerliMiAsync(vm.Sayfa, vm.SayfaBoyutu))

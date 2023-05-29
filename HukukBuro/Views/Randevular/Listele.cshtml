@@ -1,42 +1,75 @@
 ﻿@model ListeleVM
 
-<a asp-action="ekle">Yeni randevu ekle</a>
-&nbsp;
-<partial name="_Arama" model="@Model" />
 
-@foreach (var oge in Model.Ogeler)
-{
-    <hr />
+<div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
+    <h1 class="marb1em mart0">Randevular</h1>
 
-    <div>
-        <strong>@oge.Konu</strong>
-        &nbsp;
-        @oge.Kisi
-        &nbsp;
-        @oge.Tarih
-        &nbsp;
-        <a asp-action="duzenle" asp-route-id="@oge.Id">Düzenle</a>
-        <a asp-action="sil" asp-route-id="@oge.Id">Sil</a>
-        &nbsp;
+    <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
+        <a asp-action="ekle" class="btn2 success gap05em">
+            <span class="fa fa-plus color-inherit"></span>
+            <span class="color-inherit max400-hidden">Yeni randevu ekle</span>
+        </a>
 
-        @if (oge.TamamlandiMi)
-        {
-            <strong>&nbsp;Tamamlandı</strong>
-        }
-
-        @if (!string.IsNullOrWhiteSpace(oge.Sorumlu))
-        {
-            <strong>Sorumlu &nbsp;</strong>
-            @oge.Sorumlu
-        }
-
-        @if (!string.IsNullOrWhiteSpace(oge.Aciklama))
-        {
-            <p>Açıklama: @oge.Aciklama</p>
-        }
+        <partial name="_Arama" model="@Model" />
     </div>
-}
 
-<hr />
+    <div class="list-container mart1em">
 
-<partial name="_Sayfa" model="@Model" />
+        @foreach (var randevu in Model.Ogeler)
+        {
+            <div class="list-item activator-hover df fdc gap1em">
+
+                <div class="df jcsb max500-fdcr max500-gap05rem">
+                    <div class="df fwrap gap1em aic">
+                        <span class="color-active bold l">@randevu.Konu</span>
+
+                        @if (randevu.TamamlandiMi)
+                        {
+                            <span class="tag success">Tamamlandı</span>
+                        }
+
+                    </div>
+
+                    <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
+                        <a title="Kişiye git" asp-controller="kisiler" asp-action="ozet" asp-route-id="@randevu.KisiId" class="ibtn1 primary fa fa-user"></a>
+                        <a title="Düzenle" asp-action="duzenle" asp-route-id="@randevu.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                        <a title="Sil" asp-action="sil" asp-route-id="@randevu.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                    </div>
+                </div>
+
+                <div class="df aic fwrap gap1em">
+                    <div class="df aic gap05em">
+                        <span class="bold">Kişi:</span>
+                        <a asp-controller="kisiler" asp-action="ozet" asp-route-id="@randevu.KisiId" class="color-hover-primary">@randevu.Kisi</a>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(randevu.SorumluId) && !string.IsNullOrWhiteSpace(randevu.Sorumlu))
+                    {
+                        <div class="df aic gap05em">
+                            <span class="bold">Sorumlu:</span>
+                            <a asp-controller="personel" asp-action="profil" asp-route-id="@randevu.SorumluId" class="color-hover-primary">@randevu.Sorumlu</a>
+                        </div>
+                    }
+
+                    <div class="df aic gap05em">
+                        <span class="bold">Tarih:</span>
+                        <span>@randevu.Tarih</span>
+                    </div>
+                </div>
+
+                <div class="df aic fwrap gap05em">
+                    <span class="bold">Açıklama:</span>
+                    <span class="text-wrap">@randevu.Aciklama</span>
+                </div>
+
+
+            </div>
+        }
+
+    </div>
+
+    <partial name="_Sayfa" model="@Model" />
+</div>
+
+
+

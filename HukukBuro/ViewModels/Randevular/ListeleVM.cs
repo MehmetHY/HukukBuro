@@ -8,6 +8,7 @@ public class ListeleVM : SayfaListe<ListeleVM.Oge>
     {
         public int Id { get; set; }
 
+        public int KisiId { get; set; }
         public string Kisi { get; set; }
 
         public DateTime Tarih { get; set; }
@@ -18,6 +19,7 @@ public class ListeleVM : SayfaListe<ListeleVM.Oge>
 
         public string? Aciklama { get; set; }
 
+        public string? SorumluId { get; set; }
         public string? Sorumlu { get; set; }
     }
 }
