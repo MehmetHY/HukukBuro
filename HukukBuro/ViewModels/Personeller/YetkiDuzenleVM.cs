@@ -8,8 +8,6 @@ public class YetkiDuzenleVM
 {
     public string Id { get; set; }
 
-    public string TamIsim { get; set; }
-
     public string Anarol { get; set; }
     public List<SelectListItem> Anaroller { get; set; } = new();
 

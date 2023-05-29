@@ -508,7 +508,6 @@ public class PersonelYoneticisi
             .Select(u => new YetkiDuzenleVM
             {
                 Id = u.Id,
-                TamIsim = u.TamIsim,
 
                 Anarol = _veriTabani.UserClaims
                     .Where(uc => uc.UserId == id && uc.ClaimType == Sabit.AnaRol.Type)

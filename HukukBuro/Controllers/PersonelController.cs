@@ -205,7 +205,7 @@ public class PersonelController : Controller
             var sonuc = await _yonetici.YetkiDuzenleAsync(vm);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Listele));
+                return RedirectToAction(nameof(Profil), new { id = vm.Id });
 
             ModelState.HataEkle(sonuc);
         }
