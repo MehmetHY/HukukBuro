@@ -3,10 +3,13 @@
 <div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
     <h1 class="marb1em mart0">Kişi</h1>
 
-    <div class="df gap1em marb1rem">
-        <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="ozetduzenle" asp-route-id="@Model.Id"></a>
-        <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
-    </div>
+    @if (User.KisiYoneticisiMi())
+    {
+        <div class="df gap1em marb1rem">
+            <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="ozetduzenle" asp-route-id="@Model.Id"></a>
+            <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
+        </div>
+    }
 
     <div class="df max600-fdc gap1em">
         <div class="df fdc fg gap1em w50p max600-w100p">
@@ -70,10 +73,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Bağlantılı Kişiler</h3>
-            <a class="btn2 success gap05em" asp-action="ilgilikisiekle" asp-route-id="@Model.Id">
-                <span class="fa fa-plus color-inherit"></span>
-                Ekle
-            </a>
+
+            @if (User.KisiYoneticisiMi())
+            {
+                <a class="btn2 success gap05em" asp-action="ilgilikisiekle" asp-route-id="@Model.Id">
+                    <span class="fa fa-plus color-inherit"></span>
+                    Ekle
+                </a>
+            }
+
         </div>
         <div class="list-container">
 
@@ -95,8 +103,13 @@
 
                     </div>
                     <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
-                        <a title="Düzenle" asp-action="ilgilikisiduzenle" asp-route-id="@baglanti.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                        <a title="Sil" asp-action="ilgilikisisil" asp-route-id="@baglanti.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                        @if (User.KisiYoneticisiMi())
+                        {
+                            <a title="Düzenle" asp-action="ilgilikisiduzenle" asp-route-id="@baglanti.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                            <a title="Sil" asp-action="ilgilikisisil" asp-route-id="@baglanti.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        }
+
                     </div>
                 </div>
             }
@@ -132,10 +145,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Belgeler</h3>
-            <a class="btn2 success gap05em" asp-action="belgeekle" asp-route-id="@Model.Id">
-                <span class="fa fa-plus color-inherit"></span>
-                Ekle
-            </a>
+
+            @if (User.KisiYoneticisiMi())
+            {
+                <a class="btn2 success gap05em" asp-action="belgeekle" asp-route-id="@Model.Id">
+                    <span class="fa fa-plus color-inherit"></span>
+                    Ekle
+                </a>
+            }
+
         </div>
         <div class="list-container">
 
@@ -155,8 +173,13 @@
                         <span class="s">@belge.Tarih</span>
                         <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
                             <a title="Belge" target="_blank" href="@belge.Url" class="ibtn1 primary fa fa-file normal"></a>
-                            <a title="Düzenle" asp-action="belgeduzenle" asp-route-id="@belge.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                            <a title="Sil" asp-action="belgesil" asp-route-id="@belge.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                            @if (User.KisiYoneticisiMi())
+                            {
+                                <a title="Düzenle" asp-action="belgeduzenle" asp-route-id="@belge.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                                <a title="Sil" asp-action="belgesil" asp-route-id="@belge.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                            }
+
                         </div>
                     </div>
                     <div class="df fdc">

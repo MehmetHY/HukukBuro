@@ -14,6 +14,7 @@ public static class Sabit
     public static class View
     {
         public const string Hata = "~/Views/Genel/Hata.cshtml";
+        public const string Bilgi = "~/Views/Genel/Bilgi.cshtml";
     }
 
     public static class Belge

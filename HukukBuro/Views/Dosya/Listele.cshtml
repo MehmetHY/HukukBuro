@@ -4,10 +4,18 @@
     <h1 class="marb1em mart0">Dosyalar</h1>
 
     <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
-        <a asp-action="ekle" class="btn2 success gap05em">
-            <span class="fa fa-plus color-inherit"></span>
-            <span class="color-inherit max400-hidden">Yeni dosya ekle</span>
-        </a>
+
+        @if (User.DosyaYoneticisiMi())
+        {
+            <a asp-action="ekle" class="btn2 success gap05em">
+                <span class="fa fa-plus color-inherit"></span>
+                <span class="color-inherit max400-hidden">Yeni dosya ekle</span>
+            </a>
+        }
+        else
+        {
+            <span></span>
+        }
 
         <partial name="_Arama" model="Model" />
     </div>
@@ -32,8 +40,13 @@
 
                     <div class="df gap05em ais xl opacity0 max1000-opacity100 on-activator-hover-opacity100 anim-color max500-jcse">
                         <a asp-action="ozet" asp-route-id="@dosya.Id" class="ibtn1 primary fa fa-folder normal"></a>
-                        <a asp-action="duzenle" asp-route-id="@dosya.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                        <a asp-action="sil" asp-route-id="@dosya.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                        @if (User.DosyaYoneticisiMi())
+                        {
+                            <a asp-action="duzenle" asp-route-id="@dosya.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                            <a asp-action="sil" asp-route-id="@dosya.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        }
+
                     </div>
                 </div>
 

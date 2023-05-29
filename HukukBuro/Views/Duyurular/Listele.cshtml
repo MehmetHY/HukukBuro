@@ -5,10 +5,18 @@
     <h1 class="marb1em mart0">Duyuru</h1>
 
     <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
-        <a asp-action="ekle" class="btn2 success gap05em">
-            <span class="fa fa-plus color-inherit"></span>
-            <span class="color-inherit max400-hidden">Yeni duyuru ekle</span>
-        </a>
+
+        @if (User.DuyuruYoneticisiMi())
+        {
+            <a asp-action="ekle" class="btn2 success gap05em">
+                <span class="fa fa-plus color-inherit"></span>
+                <span class="color-inherit max400-hidden">Yeni duyuru ekle</span>
+            </a>
+        }
+        else
+        {
+            <span></span>
+        }
 
         <partial name="_Arama" model="@Model" />
     </div>
@@ -31,8 +39,12 @@
                             <a title="Bağlantıya git" href="@duyuru.Url" class="ibtn1 primary fa fa-link"></a>
                         }
 
-                        <a title="Düzenle" asp-action="duzenle" asp-route-id="@duyuru.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                        <a title="Sil" asp-action="sil" asp-route-id="@duyuru.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        @if (User.DuyuruYoneticisiMi())
+                        {
+                            <a title="Düzenle" asp-action="duzenle" asp-route-id="@duyuru.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                            <a title="Sil" asp-action="sil" asp-route-id="@duyuru.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        }
+
                     </div>
                 </div>
 

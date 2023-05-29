@@ -27,7 +27,6 @@ public class PersonelController : Controller
 
     #region giris
 
-    [Authorize(Policy = Sabit.Policy.Personel)]
     public async Task<IActionResult> Listele(ListeleVM? vm)
     {
         var sonuc = await _yonetici.ListeleVMGetirAsync(vm ?? new());
@@ -62,7 +61,13 @@ public class PersonelController : Controller
             var sonuc = await _yonetici.KaydolAsync(vm);
 
             if (sonuc.BasariliMi)
-                return RedirectToAction(nameof(Listele));
+                return View(
+                    Sabit.View.Bilgi,
+                    new Bilgi
+                    {
+                        Baslik = "Onay Gerekli",
+                        Mesaj = "Kayıt işleminizin tamamlanması için; yöneticilerin, hesabınızı onaylaması gerekli."
+                    });
 
             ModelState.HataEkle(sonuc);
         }
@@ -115,11 +120,14 @@ public class PersonelController : Controller
 
     #region personel
     [HttpGet]
-    public async Task<IActionResult> Profil()
+    public async Task<IActionResult> Profil(string? id = null)
     {
-        var vm = await _yonetici.ProfilVMGetirAsync(User.Identity!.Name!);
+        var sonuc = await _yonetici.ProfilVMGetirAsync(User.Identity!.Name!, id);
 
-        return View(vm);
+        if (!sonuc.BasariliMi)
+            return View(Sabit.View.Hata, sonuc);
+
+        return View(sonuc.Deger);
     }
 
     [HttpGet]
@@ -184,7 +192,7 @@ public class PersonelController : Controller
         return RedirectToAction(nameof(Profil));
     }
 
-    [Authorize(Policy = Sabit.Policy.Personel)]
+    [Authorize(Policy = Sabit.Policy.Rol)]
     [HttpGet]
     public async Task<IActionResult> YetkiDuzenle(string id)
     {
@@ -196,7 +204,7 @@ public class PersonelController : Controller
         return View(sonuc.Deger);
     }
 
-    [Authorize(Policy = Sabit.Policy.Personel)]
+    [Authorize(Policy = Sabit.Policy.Rol)]
     [HttpPost]
     public async Task<IActionResult> YetkiDuzenle(YetkiDuzenleVM vm)
     {

@@ -6,6 +6,7 @@ namespace HukukBuro.ViewModels.Personeller;
 
 public class ProfilVM
 {
+    public bool KendiProfiliMi { get; set; }
     public string Id { get; set; }
 
     public string Isim { get; set; }

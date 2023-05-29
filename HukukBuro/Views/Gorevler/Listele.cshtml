@@ -4,10 +4,18 @@
     <h1 class="marb1em mart0">Görevler</h1>
 
     <div class="df jcsb panel1 pad1em max800-fdc gap50p max800-gap1rem">
-        <a asp-action="ekle" class="btn2 success gap05em">
-            <span class="fa fa-plus color-inherit"></span>
-            <span class="color-inherit max400-hidden">Yeni görev ekle</span>
-        </a>
+
+        @if (User.GorevYoneticisiMi())
+        {
+            <a asp-action="ekle" class="btn2 success gap05em">
+                <span class="fa fa-plus color-inherit"></span>
+                <span class="color-inherit max400-hidden">Yeni görev ekle</span>
+            </a>
+        }
+        else
+        {
+            <span></span>
+        }
 
         <partial name="_Arama" model="@Model" />
     </div>
@@ -51,8 +59,12 @@
                             <a title="Dosyaya Git" asp-controller="Dosya" asp-action="ozet" asp-route-id="@gorev.DosyaId" class="ibtn1 primary fa fa-folder normal"></a>
                         }
 
-                        <a title="Düzenle" asp-action="duzenle" asp-route-id="@gorev.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                        <a title="Sil" asp-action="sil" asp-route-id="@gorev.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        @if (User.KisiYoneticisiMi())
+                        {
+                            <a title="Düzenle" asp-action="duzenle" asp-route-id="@gorev.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                            <a title="Sil" asp-action="sil" asp-route-id="@gorev.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        }
+
                     </div>
                 </div>
 

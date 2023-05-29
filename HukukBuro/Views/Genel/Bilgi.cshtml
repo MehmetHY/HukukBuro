@@ -1,0 +1,15 @@
+﻿@model Bilgi?
+
+<div class="panel1 mart2em ass padh2em padb1em radius1em shadow-rightbottom-l">
+
+    <h1 class="color-primary">
+        @(Model != null && !string.IsNullOrWhiteSpace(Model.Baslik) ?
+            Model.Baslik : "Burada bir şey yok")
+    </h1>
+
+    <p>
+        @(Model != null && !string.IsNullOrWhiteSpace(Model.Mesaj) ?
+            Model.Mesaj : "")
+    </p>
+</div>
+

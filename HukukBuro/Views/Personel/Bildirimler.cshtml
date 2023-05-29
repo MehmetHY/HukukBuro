@@ -3,9 +3,17 @@
 <div class="df fdc panel3 pad5vmin fg radius1em shadow-rightbottom-l maxw1200">
     <h1 class="marb1em mart0">Bildirimler</h1>
 
-    <form method="post" asp-action="bildirimleritemizle">
-        <button class="xl btn2 danger" type="submit">Temizle</button>
-    </form>
+    @if (Model.Ogeler.Count > 0)
+    {
+        <form method="post" asp-action="bildirimleritemizle">
+            <button class="xl btn2 danger" type="submit">Temizle</button>
+        </form>
+    }
+    else
+    {
+        <p>Yeni bildirim yok.</p>
+    }
+
 
     <div class="list-container mart1em">
 

@@ -5,7 +5,12 @@
 
     <div class="df gap1em marb1rem">
         <a title="Geri" class="ibtn2 secondary xxl fa fa-arrow-left-long" asp-action="ozet" asp-route-id="@Model.DosyaId"></a>
-        <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="kararduzenle" asp-route-id="@Model.DosyaId"></a>
+
+        @if (User.DosyaYoneticisiMi())
+        {
+            <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="kararduzenle" asp-route-id="@Model.DosyaId"></a>
+        }
+
     </div>
 
     <h3>Karar Bilgileri</h3>

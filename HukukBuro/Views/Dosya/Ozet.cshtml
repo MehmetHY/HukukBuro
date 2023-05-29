@@ -5,8 +5,12 @@
 
     <div class="df gap1em marb1rem">
         <a title="Karar Bilgileri" class="ibtn1 alternative xxl fa fa-gavel" asp-action="karar" asp-route-id="@Model.Id"></a>
-        <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="duzenle" asp-route-id="@Model.Id"></a>
-        <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
+
+        @if (User.DosyaYoneticisiMi())
+        {
+            <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="duzenle" asp-route-id="@Model.Id"></a>
+            <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
+        }
     </div>
 
     <div class="df max600-fdc gap1em">
@@ -59,10 +63,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Taraflar</h3>
-            <a class="btn2 success gap05em" asp-action="tarafekle" asp-route-dosyaId="@Model.Id">
-                <span class="fa fa-plus color-inherit"></span>
-                Ekle
-            </a>
+
+            @if (User.DosyaYoneticisiMi())
+            {
+                <a class="btn2 success gap05em" asp-action="tarafekle" asp-route-dosyaId="@Model.Id">
+                    <span class="fa fa-plus color-inherit"></span>
+                    Ekle
+                </a>
+            }
+
         </div>
         <div class="list-container">
             @foreach (var taraf in Model.Taraflar)
@@ -77,8 +86,13 @@
                     }
 
                     <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
-                        <a title="Düzenle" asp-action="tarafduzenle" asp-route-id="@taraf.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                        <a title="Sil" asp-action="tarafsil" asp-route-id="@taraf.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                        @if (User.DosyaYoneticisiMi())
+                        {
+                            <a title="Düzenle" asp-action="tarafduzenle" asp-route-id="@taraf.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                            <a title="Sil" asp-action="tarafsil" asp-route-id="@taraf.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                        }
+
                     </div>
                 </div>
             }
@@ -88,10 +102,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Sorumlular</h3>
-            <a class="btn2 secondary gap05em" asp-action="personelduzenle" asp-route-id="@Model.Id">
-                <span class="fa-regular fa-pen-to-square color-inherit"></span>
-                Düzenle
-            </a>
+
+            @if (User.DosyaYoneticisiMi())
+            {
+                <a class="btn2 secondary gap05em" asp-action="personelduzenle" asp-route-id="@Model.Id">
+                    <span class="fa-regular fa-pen-to-square color-inherit"></span>
+                    Düzenle
+                </a>
+            }
+
         </div>
         <div class="df aic fwrap gap1em">
             @foreach (var sorumlu in Model.SorumluPersonel)
@@ -107,10 +126,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Bağlantılı Dosyalar</h3>
-            <a class="btn2 success gap05em" asp-action="dosyabaglantisiekle" asp-route-dosyaId="@Model.Id">
-                <span class="fa fa-plus color-inherit"></span>
-                Ekle
-            </a>
+
+            @if (User.DosyaYoneticisiMi())
+            {
+                <a class="btn2 success gap05em" asp-action="dosyabaglantisiekle" asp-route-dosyaId="@Model.Id">
+                    <span class="fa fa-plus color-inherit"></span>
+                    Ekle
+                </a>
+            }
+
         </div>
         <div class="list-container">
             @foreach (var baglanti in Model.DosyaBaglantilari)
@@ -122,8 +146,13 @@
                         <span class="tag alternative">@baglanti.Kategori</span>
                         <span class="tag alternative">@baglanti.Durum</span>
                         <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
-                            <a title="Düzenle" asp-action="dosyabaglantisiduzenle" asp-route-id="@baglanti.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                            <a title="Sil" asp-action="dosyabaglantisisil" asp-route-id="@baglanti.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                            @if (User.DosyaYoneticisiMi())
+                            {
+                                <a title="Düzenle" asp-action="dosyabaglantisiduzenle" asp-route-id="@baglanti.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                                <a title="Sil" asp-action="dosyabaglantisisil" asp-route-id="@baglanti.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                            }
+
                         </div>
                     </div>
                     <div class="df fdc">
@@ -138,10 +167,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Duruşmalar</h3>
-            <a class="btn2 success gap05em" asp-action="durusmaekle" asp-route-id="@Model.Id">
-                <span class="fa fa-plus color-inherit"></span>
-                Ekle
-            </a>
+
+            @if (User.DosyaYoneticisiMi())
+            {
+                <a class="btn2 success gap05em" asp-action="durusmaekle" asp-route-id="@Model.Id">
+                    <span class="fa fa-plus color-inherit"></span>
+                    Ekle
+                </a>
+            }
+
         </div>
         <div class="list-container">
 
@@ -161,8 +195,13 @@
 
                         <span class="tag alternative">@durusma.AktiviteTuru</span>
                         <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
-                            <a title="Düzenle" asp-action="durusmaduzenle" asp-route-id="@durusma.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                            <a title="Sil" asp-action="durusmasil" asp-route-id="@durusma.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                            @if (User.DosyaYoneticisiMi())
+                            {
+                                <a title="Düzenle" asp-action="durusmaduzenle" asp-route-id="@durusma.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                                <a title="Sil" asp-action="durusmasil" asp-route-id="@durusma.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                            }
+
                         </div>
                     </div>
                     <div class="df fdc">
@@ -178,10 +217,15 @@
     <div class="mart2rem">
         <div class="df jcsb aic">
             <h3>Belgeler</h3>
-            <a class="btn2 success gap05em" asp-action="belgeekle" asp-route-id="@Model.Id">
-                <span class="fa fa-plus color-inherit"></span>
-                Ekle
-            </a>
+
+            @if (User.DosyaYoneticisiMi())
+            {
+                <a class="btn2 success gap05em" asp-action="belgeekle" asp-route-id="@Model.Id">
+                    <span class="fa fa-plus color-inherit"></span>
+                    Ekle
+                </a>
+            }
+
         </div>
         <div class="list-container">
 
@@ -195,8 +239,13 @@
                         <span class="s">@belge.Tarih</span>
                         <div class="df aic gap1rem fg jce opacity0 on-activator-hover-opacity100 anim-color max1000-opacity100">
                             <a title="Belge" target="_blank" href="@belge.Url" class="ibtn1 primary fa fa-file normal"></a>
-                            <a title="Düzenle" asp-action="belgeduzenle" asp-route-id="@belge.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
-                            <a title="Sil" asp-action="belgesil" asp-route-id="@belge.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+
+                            @if (User.DosyaYoneticisiMi())
+                            {
+                                <a title="Düzenle" asp-action="belgeduzenle" asp-route-id="@belge.Id" class="ibtn2 secondary fa-regular fa-pen-to-square"></a>
+                                <a title="Sil" asp-action="belgesil" asp-route-id="@belge.Id" class="ibtn2 danger normal fa fa-trash-can"></a>
+                            }
+
                         </div>
                     </div>
                     <div class="df fdc">

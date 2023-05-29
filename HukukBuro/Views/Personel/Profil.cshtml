@@ -4,19 +4,42 @@
     <h1 class="marb1em mart0">Profil</h1>
 
     <div class="df gap1em marb1rem">
-        <a title="Yetkiler" class="ibtn1 primary xxl fa fa-unlock" asp-action="yetkiduzenle" asp-route-id="@Model.Id"></a>
-        <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="duzenle"></a>
-        <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
+
+        @if (User.RolYoneticisiMi())
+        {
+            <a title="Yetkiler" class="ibtn1 primary xxl fa fa-unlock" asp-action="yetkiduzenle" asp-route-id="@Model.Id"></a>
+        }
+
+        @if (Model.KendiProfiliMi)
+        {
+            <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="duzenle"></a>
+        }
+
+        @if (User.PersonelYoneticisiMi())
+        {
+            <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
+        }
+
     </div>
 
     <div class="df max600-fdc gap1em">
         <div class="df fdc gap1em max600-w100p">
             <div class="input-box pad08em df fdc gap1em">
                 <img src="@Model.FotoUrl" class="square256px max600-w100p max600-hauto" />
-                <div class="df aic jce gap1em">
-                    <a title="Fotoğraf düzenle" class="ibtn2 secondary xxl fa fa-image" asp-action="fotoduzenle"></a>
-                    <a title="Fotoğraf sil" class="ibtn2 danger xxl fa fa-trash-can" asp-action="fotokaldir"></a>
-                </div>
+
+                @if (Model.KendiProfiliMi)
+                {
+                    <div class="df aic jce gap1em">
+                        <a title="Fotoğraf düzenle" class="ibtn2 secondary xxl fa fa-image" asp-action="fotoduzenle"></a>
+
+                        @if (Model.FotoUrl != Sabit.Belge.VarsayilanFotoUrl)
+                        {
+                            <a title="Fotoğraf sil" class="ibtn2 danger xxl fa fa-trash-can" asp-action="fotokaldir"></a>
+                        }
+
+                    </div>
+                }
+
             </div>
         </div>
         <div class="df fdc fg gap1em">

@@ -351,7 +351,6 @@ public class DosyaController : Controller
     #endregion
 
     #region Karar
-    [Authorize(Policy = Sabit.Policy.Dosya)]
     [HttpGet]
     [Route("[controller]/{id}/[action]")]
     public async Task<IActionResult> Karar(int id)

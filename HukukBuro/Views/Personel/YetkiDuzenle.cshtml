@@ -14,12 +14,12 @@
 
         <div class="input-box df fdc">
             <label class="s color-inactive" asp-for="Anarol"></label>
-            <select class="input l" asp-for="Anarol" asp-items="@Model.Anaroller"></select>
+            <select id="anarol" class="input l" asp-for="Anarol" asp-items="@Model.Anaroller"></select>
             <span class="color-danger text-right" asp-validation-for="Anarol"></span>
         </div>
 
-        <h3>Yetkiler</h3>
-        <div class="df fwrap gap1em">
+        <h3 id="yetkiler-baslik">Yetkiler</h3>
+        <div id="yetkiler-input" class="df fwrap gap1em">
 
             @for (int i = 0; i < Model.Yetkiler.Count; ++i)
             {
@@ -38,5 +38,6 @@
         <button class="btn1 xxl primary w100p mart1em" type="submit">Kaydet</button>
     </form>
 
+    <script src="~/js/yetkiform.js"></script>
 </div>
 

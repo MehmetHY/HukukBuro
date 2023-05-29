@@ -230,10 +230,12 @@ public class PersonelYoneticisi
         return new();
     }
 
-    public async Task<ProfilVM> ProfilVMGetirAsync(string email)
+    public async Task<Sonuc<ProfilVM>> ProfilVMGetirAsync(string email, string? id = null)
     {
         var vm = await _veriTabani.Users
-            .Where(u => u.Email == email)
+            .Where(u => 
+                (!string.IsNullOrWhiteSpace(id) && u.Id == id) ||
+                (string.IsNullOrWhiteSpace(id) && u.Email == email))
             .Select(u => new ProfilVM
             {
                 Id = u.Id,
@@ -241,7 +243,7 @@ public class PersonelYoneticisi
                 Soyisim = u.Soyisim,
                 FotoUrl = u.FotoUrl,
                 Telefon = u.PhoneNumber,
-                Email = email,
+                Email = u.Email!,
 
                 Anarol = _veriTabani.UserClaims
                     .Where(uc =>
@@ -332,9 +334,21 @@ public class PersonelYoneticisi
                     })
                     .ToList()
             })
-            .FirstAsync();
+            .FirstOrDefaultAsync();
 
-        return vm;
+        if (vm == null)
+            return new()
+            {
+                BasariliMi = false,
+                HataBasligi = "Geçersiz Id",
+                HataMesaji = $"id: {id} bulunamadı."
+            };
+
+        vm.KendiProfiliMi =
+            string.IsNullOrWhiteSpace(id) ||
+            await _veriTabani.Users.AnyAsync(u => u.Id == id && u.Email == email);
+
+        return new() { Deger = vm };
     }
 
     public async Task<DuzenleVM> DuzenleVMGetirAsync(string email)

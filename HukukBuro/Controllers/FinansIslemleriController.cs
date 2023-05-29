@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HukukBuro.Controllers;
 
-[Authorize(Policy = Sabit.Policy.Finans)]
+[Authorize]
 public class FinansIslemleriController : Controller
 {
     #region Fields
@@ -29,6 +29,7 @@ public class FinansIslemleriController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Finans)]
     [HttpGet]
     public async Task<IActionResult> Ekle()
     {
@@ -37,6 +38,7 @@ public class FinansIslemleriController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Finans)]
     [HttpPost]
     public async Task<IActionResult> Ekle(EkleVM vm)
     {
@@ -57,6 +59,7 @@ public class FinansIslemleriController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Finans)]
     [HttpGet]
     public async Task<IActionResult> Duzenle(int id)
     {
@@ -68,6 +71,7 @@ public class FinansIslemleriController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Finans)]
     [HttpPost]
     public async Task<IActionResult> Duzenle(DuzenleVM vm)
     {
@@ -88,6 +92,7 @@ public class FinansIslemleriController : Controller
         return View(vm);
     }
 
+    [Authorize(Policy = Sabit.Policy.Finans)]
     [HttpGet]
     public async Task<IActionResult> Sil(int id)
     {
@@ -99,6 +104,7 @@ public class FinansIslemleriController : Controller
         return View(sonuc.Deger);
     }
 
+    [Authorize(Policy = Sabit.Policy.Finans)]
     [HttpPost]
     [ActionName(nameof(Sil))]
     public async Task<IActionResult> SilPOST(int id)
