@@ -40,11 +40,13 @@
                     <span>@durusma.Tarih</span>
                 </div>
 
-                <div class="df aic fwrap gap05em">
-                    <span class="bold">Açıklama:</span>
-                    <span class="text-wrap">@durusma.Aciklama</span>
-                </div>
-
+                @if (!string.IsNullOrWhiteSpace(durusma.Aciklama))
+                {
+                    <div class="df aic fwrap gap05em">
+                        <span class="bold">Açıklama:</span>
+                        <span class="text-wrap">@durusma.Aciklama</span>
+                    </div>
+                }
 
             </div>
         }

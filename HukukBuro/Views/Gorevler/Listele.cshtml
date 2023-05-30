@@ -103,10 +103,13 @@
                     </div>
                 </div>
 
-                <div class="df fdc">
-                    <span class="bold">Açıklama</span>
-                    <span class="text-wrap">@gorev.Aciklama</span>
-                </div>
+                @if (!string.IsNullOrWhiteSpace(@gorev.Aciklama))
+                {
+                    <div class="df aic fwrap gap05em">
+                        <span class="bold">Açıklama:</span>
+                        <span class="text-wrap">@gorev.Aciklama</span>
+                    </div>
+                }
 
 
             </div>

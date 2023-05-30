@@ -41,7 +41,7 @@ public static class Sabit
         public const string HataMaxBoyut = "Belge 2 MB'tan büyük olamaz.";
         public const string HataGerekli = "Belge gerekli.";
 
-        public const string VarsayilanFotoUrl = "/foto/kisi.jpg";
+        public const string VarsayilanFotoUrl = "/foto/kisi.svg";
     }
 
     public static class AnaRol

@@ -5,7 +5,7 @@
 
     <div class="df gap1em marb1rem">
 
-        @if (User.RolYoneticisiMi())
+        @if (User.RolYoneticisiMi() && Model.Anarol != Sabit.AnaRol.Admin)
         {
             <a title="Yetkiler" class="ibtn1 primary xxl fa fa-unlock" asp-action="yetkiduzenle" asp-route-id="@Model.Id"></a>
         }
@@ -15,7 +15,7 @@
             <a title="Düzenle" class="ibtn2 secondary xxl fa fa-pen-to-square" asp-action="duzenle"></a>
         }
 
-        @if (User.PersonelYoneticisiMi())
+        @if (User.PersonelYoneticisiMi() && Model.Anarol != Sabit.AnaRol.Admin)
         {
             <a title="Sil" class="ibtn2 danger xxl fa fa-trash-can normal" asp-action="sil" asp-route-id="@Model.Id"></a>
         }

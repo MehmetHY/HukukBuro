@@ -117,8 +117,8 @@
 
                     @if (!string.IsNullOrWhiteSpace(gorev.Aciklama))
                     {
-                        <div class="df fdc">
-                            <span class="bold">Açıklama</span>
+                        <div class="df aic fwrap gap05em">
+                            <span class="bold">Açıklama:</span>
                             <span class="text-wrap">@gorev.Aciklama</span>
                         </div>
                     }
@@ -204,7 +204,10 @@
 
                     <div class="df jcsb max500-fdcr max500-gap05rem">
                         <div class="df fwrap gap1em aic">
-                            <a asp-controller="dosya" asp-action="ozet" asp-route-id="@durusma.DosyaId" class="color-active bold l color-hover-primary">25 56/B Yolsuzluk</a>
+                            <div class="df aic gap05em">
+                                <span class="">Dosya:</span>
+                                <a asp-controller="dosya" asp-action="ozet" asp-route-id="@durusma.DosyaId" class="color-active bold l color-hover-primary">@durusma.Dosya</a>
+                            </div>
                             <span class="tag alternative">@durusma.AktiviteTuru</span>
 
                             @if (durusma.Tamamlandi)
