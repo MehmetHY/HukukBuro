@@ -6,6 +6,6 @@ public sealed class DosyaTuru
 {
     public int Id { get; set; }
 
-    public string Isim { get; set; }    // Dava | Danismanlik | Icra | Arabuluculuk | Sorusturma
+    public string Isim { get; set; }
 
 }

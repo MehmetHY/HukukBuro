@@ -1,5 +1,6 @@
 ﻿namespace HukukBuro.Models;
 
-public sealed class KararDuzeltmeBilgileri : MahkemeBilgileriBase
+public sealed class KararDuzeltmeBilgileri
+    : MahkemeBilgileriBase
 {
 }

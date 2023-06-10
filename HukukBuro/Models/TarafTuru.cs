@@ -2,10 +2,12 @@
 
 namespace HukukBuro.Models;
 
+#pragma warning disable CS8618
+
 public sealed class TarafTuru
 {
     [Key]
     public int Id { get; set; }
 
-    public string Isim { get; set; } // Davaci | Davali | Diger | Avukat | Alacakli | Borclu | Belirtilmemis
+    public string Isim { get; set; }
 }

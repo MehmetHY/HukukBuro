@@ -13,10 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-var baglantiStr = builder.Configuration.GetConnectionString("local")
+var baglantiAnahtari = "local";
+//var baglantiAnahtari = "azure";
+
+var baglantiStr = builder.Configuration.GetConnectionString(baglantiAnahtari)
         ?? throw new KeyNotFoundException("Baglanti metni bulunamadi.");
 
-builder.Services.AddDbContext<VeriTabani>(ayarlar => ayarlar.UseSqlServer(baglantiStr));
+builder.Services.AddDbContext<VeriTabani>(
+    ayarlar => ayarlar.UseSqlServer(baglantiStr));
 
 builder.Services.AddIdentity<Personel, IdentityRole>(ayarlar =>
 {
@@ -96,7 +100,8 @@ builder.Services.Configure<AuthorizationOptions>(ayarlar =>
         policy => policy.AddRequirements(new RolYonetimGerekliligi()));
 });
 
-builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10_000_000);
+builder.Services.Configure<FormOptions>(
+    o => o.MultipartBodyLengthLimit = 10_000_000);
 
 var app = builder.Build();
 

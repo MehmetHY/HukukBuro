@@ -9,5 +9,5 @@ public sealed class GorevDurumu
     [Key]
     public int Id { get; set; }
 
-    public string Isim { get; set; } // Tamamlandi | DevamEdiyor | Iptal
+    public string Isim { get; set; }
 }

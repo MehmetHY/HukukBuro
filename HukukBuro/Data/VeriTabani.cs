@@ -9,7 +9,10 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
 {
     public DbSet<Bildirim> Bildirimler { get; set; }
     public DbSet<Duyuru> Duyurular { get; set; }
-    public DbSet<BolgeAdliyeMahkemesiBilgileri> BolgeAdliyeMahkemesiBilgileri { get; set; }
+
+    public DbSet<BolgeAdliyeMahkemesiBilgileri>
+        BolgeAdliyeMahkemesiBilgileri { get; set; }
+
     public DbSet<Dosya> Dosyalar { get; set; }
     public DbSet<DosyaBaglantisi> DosyaBaglantilari { get; set; }
     public DbSet<DosyaBelgesi> DosyaBelgeleri { get; set; }
@@ -129,37 +132,113 @@ public sealed class VeriTabani : IdentityDbContext<Personel>
         builder.Entity<DosyaTuru>()
             .HasData
             (
-                new DosyaTuru { Id = Sabit.DosyaTuru.DavaId, Isim = Sabit.DosyaTuru.Dava },
-                new DosyaTuru { Id = Sabit.DosyaTuru.DanismanlikId, Isim = Sabit.DosyaTuru.Danismanlik },
-                new DosyaTuru { Id = Sabit.DosyaTuru.IcraId, Isim = Sabit.DosyaTuru.Icra },
-                new DosyaTuru { Id = Sabit.DosyaTuru.ArabuluculukId, Isim = Sabit.DosyaTuru.Arabuluculuk },
-                new DosyaTuru { Id = Sabit.DosyaTuru.SorusturmaId, Isim = Sabit.DosyaTuru.Sorusturma }
+                new DosyaTuru
+                {
+                    Id = Sabit.DosyaTuru.DavaId,
+                    Isim = Sabit.DosyaTuru.Dava
+                },
+                new DosyaTuru
+                {
+                    Id = Sabit.DosyaTuru.DanismanlikId,
+                    Isim = Sabit.DosyaTuru.Danismanlik
+                },
+                new DosyaTuru
+                {
+                    Id = Sabit.DosyaTuru.IcraId,
+                    Isim = Sabit.DosyaTuru.Icra
+                },
+                new DosyaTuru
+                {
+                    Id = Sabit.DosyaTuru.ArabuluculukId,
+                    Isim = Sabit.DosyaTuru.Arabuluculuk
+                },
+                new DosyaTuru
+                {
+                    Id = Sabit.DosyaTuru.SorusturmaId,
+                    Isim = Sabit.DosyaTuru.Sorusturma
+                }
             );
 
 
         builder.Entity<DosyaKategorisi>()
             .HasData
             (
-                new DosyaKategorisi { Id = 1, Isim = "Asliye Hukuk" },
-                new DosyaKategorisi { Id = 2, Isim = "Aylık Hukuk Danışmanlık" },
-                new DosyaKategorisi { Id = 3, Isim = "İcra" },
-                new DosyaKategorisi { Id = 4, Isim = "İdare Mahkemesi" },
-                new DosyaKategorisi { Id = 5, Isim = "İş Mahkemesi" }
+                new DosyaKategorisi
+                {
+                    Id = 1,
+                    Isim = "Asliye Hukuk"
+                },
+                new DosyaKategorisi
+                {
+                    Id = 2,
+                    Isim = "Aylık Hukuk Danışmanlık"
+                },
+                new DosyaKategorisi
+                {
+                    Id = 3,
+                    Isim = "İcra"
+                },
+                new DosyaKategorisi
+                {
+                    Id = 4,
+                    Isim = "İdare Mahkemesi"
+                },
+                new DosyaKategorisi
+                {
+                    Id = 5,
+                    Isim = "İş Mahkemesi"
+                }
             );
 
 
         builder.Entity<DosyaDurumu>()
             .HasData
             (
-                new DosyaDurumu { Id = 1, Isim = "Açık" },
-                new DosyaDurumu { Id = 2, Isim = "Arşiv" },
-                new DosyaDurumu { Id = 3, Isim = "Derdest" },
-                new DosyaDurumu { Id = 4, Isim = "Hazırlık" },
-                new DosyaDurumu { Id = 5, Isim = "İstinaf" },
-                new DosyaDurumu { Id = 6, Isim = "Kapalı (Aciz Vesikası)" },
-                new DosyaDurumu { Id = 7, Isim = "Kapalı (İnfaz)" },
-                new DosyaDurumu { Id = 8, Isim = "Karar" },
-                new DosyaDurumu { Id = 9, Isim = "Temyiz" }
+                new DosyaDurumu
+                {
+                    Id = 1,
+                    Isim = "Açık"
+                },
+                new DosyaDurumu
+                {
+                    Id = 2,
+                    Isim = "Arşiv"
+                },
+                new DosyaDurumu
+                {
+                    Id = 3,
+                    Isim = "Derdest"
+                },
+                new DosyaDurumu
+                {
+                    Id = 4,
+                    Isim = "Hazırlık"
+                },
+                new DosyaDurumu
+                {
+                    Id = 5,
+                    Isim = "İstinaf"
+                },
+                new DosyaDurumu
+                {
+                    Id = 6,
+                    Isim = "Kapalı (Aciz Vesikası)"
+                },
+                new DosyaDurumu
+                {
+                    Id = 7,
+                    Isim = "Kapalı (İnfaz)"
+                },
+                new DosyaDurumu
+                {
+                    Id = 8,
+                    Isim = "Karar"
+                },
+                new DosyaDurumu
+                {
+                    Id = 9,
+                    Isim = "Temyiz"
+                }
             );
 
 

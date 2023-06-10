@@ -9,5 +9,5 @@ public sealed class DurusmaAktiviteTuru
     [Key]
     public int Id { get; set; }
 
-    public string Isim { get; set; } // Durusma | Kesif | Inceleme
+    public string Isim { get; set; }
 }

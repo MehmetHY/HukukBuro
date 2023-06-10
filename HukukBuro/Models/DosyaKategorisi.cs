@@ -6,5 +6,5 @@ public sealed class DosyaKategorisi
 {
     public int Id { get; set; }
 
-    public string Isim { get; set; }    // AsliyeHukuk | AylikHukukiDanismanlik | Icra | IdareMahkemesi | IsMahkemesi
+    public string Isim { get; set; }
 }

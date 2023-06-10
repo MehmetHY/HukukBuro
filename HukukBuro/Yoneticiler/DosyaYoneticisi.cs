@@ -43,6 +43,7 @@ public class DosyaYoneticisi
                 d.DosyaTuru.Isim.Contains(vm.Arama) ||
                 d.DosyaKategorisi.Isim.Contains(vm.Arama) ||
                 d.DosyaDurumu.Isim.Contains(vm.Arama))
+            .OrderByDescending(d => d.OlusturmaTarihi)
             .Select(d => new ListeleVM.Oge
             {
                 Id = d.Id,
@@ -828,6 +829,7 @@ public class DosyaYoneticisi
             .Include(d => d.TemyizBilgileri)
             .Include(d => d.KararDuzeltmeBilgileri)
             .Include(d => d.KesinlesmeBilgileri)
+            .Where(d => d.Id == dosyaId)
             .Select(d => new KararVM
             {
                 DosyaId = dosyaId,
@@ -905,12 +907,18 @@ public class DosyaYoneticisi
                 HataMesaji = $"Id: {vm.DosyaId} bulunamadı."
             };
 
-        dosya.KararBilgileri!.KararNo = vm.KararBilgileri!.KararNo;
+        dosya.KararBilgileri ??= new();
+        dosya.BolgeAdliyeMahkemesiBilgileri ??= new();
+        dosya.TemyizBilgileri ??= new();
+        dosya.KararDuzeltmeBilgileri ??= new();
+        dosya.KesinlesmeBilgileri ??= new();
+
+        dosya.KararBilgileri.KararNo = vm.KararBilgileri.KararNo;
         dosya.KararBilgileri.KararOzeti = vm.KararBilgileri.KararOzeti;
         dosya.KararBilgileri.KararTarihi = vm.KararBilgileri.KararTarihi;
         dosya.KararBilgileri.TebligTarihi = vm.KararBilgileri.TebligTarihi;
 
-        dosya.BolgeAdliyeMahkemesiBilgileri!.Aciklama = vm.BolgeAdliyeMahkemesiBilgileri!.Aciklama;
+        dosya.BolgeAdliyeMahkemesiBilgileri.Aciklama = vm.BolgeAdliyeMahkemesiBilgileri.Aciklama;
         dosya.BolgeAdliyeMahkemesiBilgileri.EsasNo = vm.BolgeAdliyeMahkemesiBilgileri.EsasNo;
         dosya.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi = vm.BolgeAdliyeMahkemesiBilgileri.GondermeTarihi;
         dosya.BolgeAdliyeMahkemesiBilgileri.KararNo = vm.BolgeAdliyeMahkemesiBilgileri.KararNo;
@@ -919,7 +927,7 @@ public class DosyaYoneticisi
         dosya.BolgeAdliyeMahkemesiBilgileri.Mahkeme = vm.BolgeAdliyeMahkemesiBilgileri.Mahkeme;
         dosya.BolgeAdliyeMahkemesiBilgileri.TebligTarihi = vm.BolgeAdliyeMahkemesiBilgileri.TebligTarihi;
 
-        dosya.TemyizBilgileri!.Aciklama = vm.TemyizBilgileri!.Aciklama;
+        dosya.TemyizBilgileri.Aciklama = vm.TemyizBilgileri.Aciklama;
         dosya.TemyizBilgileri.EsasNo = vm.TemyizBilgileri.EsasNo;
         dosya.TemyizBilgileri.GondermeTarihi = vm.TemyizBilgileri.GondermeTarihi;
         dosya.TemyizBilgileri.KararNo = vm.TemyizBilgileri.KararNo;
@@ -928,7 +936,7 @@ public class DosyaYoneticisi
         dosya.TemyizBilgileri.Mahkeme = vm.TemyizBilgileri.Mahkeme;
         dosya.TemyizBilgileri.TebligTarihi = vm.TemyizBilgileri.TebligTarihi;
 
-        dosya.KararDuzeltmeBilgileri!.Aciklama = vm.KararDuzeltmeBilgileri!.Aciklama;
+        dosya.KararDuzeltmeBilgileri.Aciklama = vm.KararDuzeltmeBilgileri.Aciklama;
         dosya.KararDuzeltmeBilgileri.EsasNo = vm.KararDuzeltmeBilgileri.EsasNo;
         dosya.KararDuzeltmeBilgileri.GondermeTarihi = vm.KararDuzeltmeBilgileri.GondermeTarihi;
         dosya.KararDuzeltmeBilgileri.KararNo = vm.KararDuzeltmeBilgileri.KararNo;
@@ -937,14 +945,10 @@ public class DosyaYoneticisi
         dosya.KararDuzeltmeBilgileri.Mahkeme = vm.KararDuzeltmeBilgileri.Mahkeme;
         dosya.KararDuzeltmeBilgileri.TebligTarihi = vm.KararDuzeltmeBilgileri.TebligTarihi;
 
-        dosya.KesinlesmeBilgileri!.KararOzeti = vm.KesinlesmeBilgileri!.KararOzeti;
+        dosya.KesinlesmeBilgileri.KararOzeti = vm.KesinlesmeBilgileri.KararOzeti;
         dosya.KesinlesmeBilgileri.KesinlesmeTarihi = vm.KesinlesmeBilgileri.KesinlesmeTarihi;
 
-        _veritabani.KararBilgileri.Update(dosya.KararBilgileri);
-        _veritabani.BolgeAdliyeMahkemesiBilgileri.Update(dosya.BolgeAdliyeMahkemesiBilgileri);
-        _veritabani.TemyizBilgileri.Update(dosya.TemyizBilgileri);
-        _veritabani.KararDuzeltmeBilgileri.Update(dosya.KararDuzeltmeBilgileri);
-        _veritabani.KesinlesmeBilgileri.Update(dosya.KesinlesmeBilgileri);
+        _veritabani.Dosyalar.Update(dosya);
         await _veritabani.SaveChangesAsync();
 
         return new() { Deger = vm.DosyaId };
